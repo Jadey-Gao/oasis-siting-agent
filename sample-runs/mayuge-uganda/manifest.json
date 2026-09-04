@@ -1,0 +1,139 @@
+{
+  "run_id": "mayuge-water-20260904T155905Z",
+  "generated_at": "2026-09-04T15:59:05Z",
+  "command": [
+    "python",
+    "-m",
+    "siting.cli",
+    "--country",
+    "Uganda",
+    "--adm2",
+    "Mayuge",
+    "--iso3",
+    "UGA",
+    "--domain",
+    "water",
+    "--mode",
+    "manual",
+    "--out",
+    "sessions/mayuge-20260904T152614Z-6127d5/runs",
+    "--format",
+    "both",
+    "--reviewer",
+    "rules",
+    "--decisions",
+    "sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml"
+  ],
+  "scope": {
+    "country": "Uganda",
+    "adm2": "Mayuge",
+    "iso3": "UGA",
+    "radius_m": 1000.0,
+    "objective": "max_coverage",
+    "objective_label": "maximum coverage",
+    "objective_short": "most people reached",
+    "coverage_basis": "walking_time",
+    "coverage_minutes": 21.3,
+    "friction_calibration": {
+      "median_minutes_per_km": 21.296586990356445,
+      "p90_minutes_per_km": 60.0,
+      "radius_m": 1000.0,
+      "median_minutes_at_radius": 21.296586990356445,
+      "p90_minutes_at_radius": 60.0
+    },
+    "grid_m": 750.0,
+    "min_separation_m": 1000.0,
+    "separation_fraction": 1.0,
+    "bounds": [
+      33.2835,
+      -0.0474,
+      33.7104,
+      0.6061
+    ],
+    "points_total": 1251,
+    "points_working": 354,
+    "points_broken": 897,
+    "points_at_risk": 354,
+    "boundary": "administrative",
+    "boundary_match": {
+      "requested": "Mayuge",
+      "matched": "Mayuge",
+      "how": "exact",
+      "level": 1,
+      "gid": "UGA.37_1",
+      "within": "",
+      "levels_tried": [
+        "level 2: not found among 166 units",
+        "level 3: not found among 965 units"
+      ],
+      "levels_matched": [
+        1
+      ],
+      "chosen_by": "share of register records contained",
+      "agreement": {
+        "share_inside": 0.996,
+        "inside": 1246,
+        "total": 1251,
+        "corresponds": true,
+        "threshold": 0.8,
+        "verdict": "1,246 of 1,251 records (100%) fall inside the matched boundary, at or above the 80% required for the two to be treated as the same unit."
+      }
+    },
+    "boundary_agreement": {
+      "share_inside": 0.996,
+      "inside": 1246,
+      "total": 1251,
+      "corresponds": true,
+      "threshold": 0.8,
+      "verdict": "1,246 of 1,251 records (100%) fall inside the matched boundary, at or above the 80% required for the two to be treated as the same unit."
+    },
+    "population_outside_boundary": 375068,
+    "median_record_age_years": 1.9,
+    "grid_fraction": 0.75,
+    "crs": "EPSG:32636 (WGS 84 / UTM zone 36N)",
+    "crs_rationale": "Area of interest spans 0.43 degrees of longitude and is centred at 0.279, 33.497, which falls in UTM zone 36N. UTM is conformal and preserves local distance to about one part in 2,500 within a zone, which is well inside the tolerance of a service-radius analysis.",
+    "crs_check": {
+      "pairs": 400,
+      "max_relative_error": 0.0059469701113532844,
+      "median_relative_error": 0.003166784961709769
+    },
+    "domain": "water",
+    "domain_title": "Rural water point siting",
+    "unit": "water point",
+    "budget": 10,
+    "coverage_rule": "within about 21 minutes of walking over the modelled terrain"
+  },
+  "overrides_file": null,
+  "provenance_hash": "ac15a4eae9de9c52",
+  "sources": [
+    {
+      "source": "WPdx+",
+      "query": "clean_country_name = 'Uganda' AND clean_adm2 = 'Mayuge'",
+      "fetched_at": "2026-09-04T10:53:29Z",
+      "rows_clean": 1251,
+      "from_cache": true
+    },
+    {
+      "source": "GADM",
+      "query": "UGA administrative level 1",
+      "fetched_at": "2026-09-03T01:51:52Z",
+      "rows_clean": 58,
+      "from_cache": true
+    },
+    {
+      "source": "WorldPop",
+      "query": "UGA ppp 2020, bbox 33.2835 -0.0474 33.7104 0.6061 (WGS 84), aggregated 5x5",
+      "fetched_at": "2026-09-03T01:59:46Z",
+      "rows_clean": 8992,
+      "from_cache": true
+    },
+    {
+      "source": "MAP friction surface",
+      "query": "Accessibility__202001_Global_Walking_Only_Friction_Surface, bbox 33.2335 -0.0974 33.7604 0.6561 (WGS 84)",
+      "fetched_at": "2026-09-04T10:53:31Z",
+      "rows_clean": 5670,
+      "from_cache": true
+    }
+  ],
+  "manifest_hash": "70831fd2c0b51651"
+}

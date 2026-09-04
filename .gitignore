@@ -11,8 +11,8 @@ __pycache__/
 *.pyc
 .playwright-mcp/
 *.pdf
-# ...except the two worked examples. They are the only compiled bundles anyone
-# can read without running the agent themselves.
+# ...except the worked example, sample-runs/mayuge-uganda. It is the only
+# compiled bundle anyone can read without running the agent themselves.
 !sample-runs/**/*.pdf
 .DS_Store
 ~$*

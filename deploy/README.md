@@ -73,10 +73,10 @@ changes. `sessions/_pricing/work/` is scratch and is not.
 | `compose.yaml` | the one command an operator runs. Bind-mounts `cache/`, `sessions/`, `runs/` so a run's output lands on the host |
 | `scripts/fetch_cache.py` | pulls the published cache; `--country UGA` for one country, `--check` to report |
 | `.dockerignore` | excludes `cache/` (mounted, not baked) and every run artefact |
-| `.gitignore` | `cache/` back out of git; `.DS_Store`, Office lock files and `.claude/settings.local.json` added; the two `sample-runs` PDFs kept despite the blanket `*.pdf` |
+| `.gitignore` | `cache/` back out of git; `.DS_Store`, Office lock files and `.claude/settings.local.json` added; the `sample-runs` PDFs kept despite the blanket `*.pdf` |
 | `sessions/.gitignore` | every session directory ignored — they hold verbatim transcripts — except `_pricing/*.json` |
 | `requirements.txt` | one line: `huggingface_hub`, used only by the fetch script |
-| `README.md` | a "Running the web interview" section. The rest is untouched |
+| `README.md` | a web interview section, since folded into "Two ways to run it" alongside the Claude Code path |
 
 No file under `siting/`, `web/`, `handbooks/`, `skills/` or `.claude/agents/`
 was modified. The analysis is exactly what it was.

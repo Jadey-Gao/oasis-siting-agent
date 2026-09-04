@@ -1,0 +1,42 @@
+# Decisions for the Mayuge siting assessment.
+#
+# Each of these is a judgement about values, not a technical parameter.
+# Every entry carries the name of whoever made it and their reason, and
+# both are printed in the assessment beside the figure they produced.
+# The reason is the officer's own words, recorded verbatim.
+#
+# Written by the siting interview, 2026-09-04 16:11 UTC.
+decisions:
+- key: data_currency_accepted
+  value: 'yes'
+  decided_by: Jadey
+  reason: |-
+    conditional, some will have been repaired and some of the 354 will have failed
+- key: budget
+  value: 10
+  decided_by: Jadey
+  reason: we have varied budget, we want to find an ideal number
+- key: coverage_basis
+  value: walking_time
+  decided_by: Jadey
+  reason: 'walking time : Mayuge walk around water rather than across it'
+- key: service_radius_m
+  value: 1000.0
+  decided_by: Jadey
+  reason: 1000 m  Mayuge already reports against,
+- key: objective
+  value: max_coverage
+  decided_by: Jadey
+  reason: 198,832 unserved is too many to spend a small programme on the margins
+- key: coverage_tolerance
+  value: 0.05
+  decided_by: Jadey
+  reason: 198,832 unserved is too many to spend a small programme on the margins
+- key: review_floor
+  value: '6.5'
+  decided_by: Jadey
+  reason: don't be too strict
+- key: equity_accepted
+  value: 'yes'
+  decided_by: Jadey
+  reason: 198,832 unserved is too many to spend a small programme on the margins

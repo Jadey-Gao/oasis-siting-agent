@@ -215,7 +215,7 @@ def _dig(doc: dict, path: str):
 
 
 def check_results() -> list[Result]:
-    """Read against a sample run, which is committed and always present."""
+    """Read against the sample run, which is committed and always present."""
     samples = sorted((REPO / "sample-runs").glob("*/results.json"))
     if not samples:
         return [Result(WARN, "results.json fields",

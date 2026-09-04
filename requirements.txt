@@ -1,6 +1,23 @@
 # OASIS siting agent — Python dependencies
 # verified against PyPI 2026-08-26
 
+# --- the core, named rather than inherited -----------------------------
+# pandas, numpy, PyYAML and matplotlib arrive transitively through geopandas
+# and its neighbours, which is exactly why they are named here: siting/ imports
+# all four directly, and a transitive dependency is only a dependency until the
+# package that happened to carry it drops it — osmnx 2.x already demoted
+# matplotlib to an extra. pyarrow arrives from nothing at all. It was absent
+# from this file until 2026-09-04, so a clone into an environment that did not
+# already happen to carry it failed at the first retrieval, several messages
+# into an interview, as a tool error.
+pandas>=2.2                # BSD-3
+numpy>=1.26                # BSD-3
+PyYAML>=6.0                # handbooks, decisions, overrides   MIT
+matplotlib>=3.9            # siting/report/maps.py             matplotlib licence, BSD-style
+pyarrow>=17                # pandas' parquet engine. The WPdx cache is parquet;
+                           # without this it can be neither read nor written and
+                           # every run dies in wpdx.fetch    Apache-2.0
+
 # --- L1  retrieval -----------------------------------------------------
 sodapy>=2.2.0              # WPdx+ via Socrata            MIT
 osmnx>=2.1.1               # OSM facilities + roads       MIT

@@ -1,0 +1,101 @@
+[
+  {
+    "ts": "2026-09-04T15:59:05Z",
+    "stage": "retrieve",
+    "event": "start",
+    "note": "water for Mayuge, Uganda"
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "retrieve",
+    "event": "done",
+    "artifacts": []
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "compile",
+    "event": "start",
+    "note": ""
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "compile",
+    "event": "done",
+    "artifacts": []
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "solve",
+    "event": "start",
+    "note": ""
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "solve",
+    "event": "done",
+    "artifacts": []
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "review",
+    "event": "start",
+    "note": ""
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "review",
+    "event": "done",
+    "artifacts": []
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "evaluate",
+    "event": "start",
+    "note": ""
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "evaluate",
+    "event": "done",
+    "artifacts": []
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "score",
+    "event": "start",
+    "note": ""
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "score",
+    "event": "done",
+    "artifacts": []
+  },
+  {
+    "ts": "2026-09-04T15:59:06Z",
+    "stage": "render",
+    "event": "start",
+    "note": "assessment, bundle requested, nothing on disk"
+  },
+  {
+    "ts": "2026-09-04T15:59:07Z",
+    "stage": "render",
+    "event": "done",
+    "artifacts": [
+      "document_0",
+      "document_1"
+    ]
+  },
+  {
+    "ts": "2026-09-04T15:59:07Z",
+    "stage": "issue",
+    "event": "start",
+    "note": ""
+  },
+  {
+    "ts": "2026-09-04T15:59:07Z",
+    "stage": "issue",
+    "event": "done",
+    "artifacts": []
+  }
+]

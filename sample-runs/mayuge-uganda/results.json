@@ -1,0 +1,1481 @@
+{
+  "run": {
+    "id": "mayuge-water-20260904T155905Z",
+    "generated_at": "2026-09-04T15:59:05Z",
+    "provenance_hash": "ac15a4eae9de9c52",
+    "agent": "OASIS siting agent"
+  },
+  "scope": {
+    "country": "Uganda",
+    "adm2": "Mayuge",
+    "iso3": "UGA",
+    "radius_m": 1000.0,
+    "objective": "max_coverage",
+    "objective_label": "maximum coverage",
+    "objective_short": "most people reached",
+    "coverage_basis": "walking_time",
+    "coverage_minutes": 21.3,
+    "friction_calibration": {
+      "median_minutes_per_km": 21.296586990356445,
+      "p90_minutes_per_km": 60.0,
+      "radius_m": 1000.0,
+      "median_minutes_at_radius": 21.296586990356445,
+      "p90_minutes_at_radius": 60.0
+    },
+    "grid_m": 750.0,
+    "min_separation_m": 1000.0,
+    "separation_fraction": 1.0,
+    "bounds": [
+      33.2835,
+      -0.0474,
+      33.7104,
+      0.6061
+    ],
+    "points_total": 1251,
+    "points_working": 354,
+    "points_broken": 897,
+    "points_at_risk": 354,
+    "boundary": "administrative",
+    "boundary_match": {
+      "requested": "Mayuge",
+      "matched": "Mayuge",
+      "how": "exact",
+      "level": 1,
+      "gid": "UGA.37_1",
+      "within": "",
+      "levels_tried": [
+        "level 2: not found among 166 units",
+        "level 3: not found among 965 units"
+      ],
+      "levels_matched": [
+        1
+      ],
+      "chosen_by": "share of register records contained",
+      "agreement": {
+        "share_inside": 0.996,
+        "inside": 1246,
+        "total": 1251,
+        "corresponds": true,
+        "threshold": 0.8,
+        "verdict": "1,246 of 1,251 records (100%) fall inside the matched boundary, at or above the 80% required for the two to be treated as the same unit."
+      }
+    },
+    "boundary_agreement": {
+      "share_inside": 0.996,
+      "inside": 1246,
+      "total": 1251,
+      "corresponds": true,
+      "threshold": 0.8,
+      "verdict": "1,246 of 1,251 records (100%) fall inside the matched boundary, at or above the 80% required for the two to be treated as the same unit."
+    },
+    "population_outside_boundary": 375068,
+    "median_record_age_years": 1.9,
+    "grid_fraction": 0.75,
+    "crs": "EPSG:32636 (WGS 84 / UTM zone 36N)",
+    "crs_rationale": "Area of interest spans 0.43 degrees of longitude and is centred at 0.279, 33.497, which falls in UTM zone 36N. UTM is conformal and preserves local distance to about one part in 2,500 within a zone, which is well inside the tolerance of a service-radius analysis.",
+    "crs_check": {
+      "pairs": 400,
+      "max_relative_error": 0.0059469701113532844,
+      "median_relative_error": 0.003166784961709769
+    },
+    "domain": "water",
+    "domain_title": "Rural water point siting",
+    "unit": "water point",
+    "budget": 10,
+    "coverage_rule": "within about 21 minutes of walking over the modelled terrain"
+  },
+  "baseline": {
+    "population": 570781,
+    "covered": 371949,
+    "uncovered": 198832,
+    "covered_share": 0.6516,
+    "demand_cells": 5153,
+    "candidates": 2095
+  },
+  "plan": {
+    "sites": [
+      {
+        "id": "S-001",
+        "rank": 1,
+        "candidate": 2040,
+        "lat": 0.508997,
+        "lon": 33.344157,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 12365,
+        "nearest_working_m": 2092,
+        "rationale": "New site covering 12,365 people currently beyond the service radius; nearest working point 2.1 km away."
+      },
+      {
+        "id": "S-002",
+        "rank": 2,
+        "candidate": 1373,
+        "lat": 0.325776,
+        "lon": 33.667664,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 7240,
+        "nearest_working_m": 4308,
+        "rationale": "New site covering 7,240 people currently beyond the service radius; nearest working point 4.3 km away."
+      },
+      {
+        "id": "S-003",
+        "rank": 3,
+        "candidate": 1429,
+        "lat": 0.339348,
+        "lon": 33.633967,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 6715,
+        "nearest_working_m": 3506,
+        "rationale": "New site covering 6,715 people currently beyond the service radius; nearest working point 3.5 km away."
+      },
+      {
+        "id": "S-004",
+        "rank": 4,
+        "candidate": 197,
+        "lat": 0.188855,
+        "lon": 33.560096,
+        "kind": "rehabilitate",
+        "adm3": "Bunya",
+        "newly_covered": 6100,
+        "nearest_working_m": 7517,
+        "rationale": "Rehabilitate the existing point covering 6,100 people currently beyond the service radius; recorded as non-functional; technology on record: Public Tapstand; nearest working point 7.5 km away."
+      },
+      {
+        "id": "S-005",
+        "rank": 5,
+        "candidate": 1212,
+        "lat": 0.2715,
+        "lon": 33.580045,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 5076,
+        "nearest_working_m": 5393,
+        "rationale": "New site covering 5,076 people currently beyond the service radius; nearest working point 5.4 km away."
+      },
+      {
+        "id": "S-006",
+        "rank": 6,
+        "candidate": 1090,
+        "lat": 0.230788,
+        "lon": 33.600262,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4775,
+        "nearest_working_m": 8417,
+        "rationale": "New site covering 4,775 people currently beyond the service radius; nearest working point 8.4 km away."
+      },
+      {
+        "id": "S-007",
+        "rank": 7,
+        "candidate": 1041,
+        "lat": 0.217221,
+        "lon": 33.519384,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4609,
+        "nearest_working_m": 3013,
+        "rationale": "New site covering 4,609 people currently beyond the service radius; nearest working point 3.0 km away."
+      },
+      {
+        "id": "S-008",
+        "rank": 8,
+        "candidate": 1523,
+        "lat": 0.359699,
+        "lon": 33.687886,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4589,
+        "nearest_working_m": 2763,
+        "rationale": "New site covering 4,589 people currently beyond the service radius; nearest working point 2.8 km away."
+      },
+      {
+        "id": "S-009",
+        "rank": 9,
+        "candidate": 1085,
+        "lat": 0.23079,
+        "lon": 33.566563,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4533,
+        "nearest_working_m": 4836,
+        "rationale": "New site covering 4,533 people currently beyond the service radius; nearest working point 4.8 km away."
+      },
+      {
+        "id": "S-010",
+        "rank": 10,
+        "candidate": 1196,
+        "lat": 0.264714,
+        "lon": 33.607003,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4207,
+        "nearest_working_m": 8469,
+        "rationale": "New site covering 4,207 people currently beyond the service radius; nearest working point 8.5 km away."
+      }
+    ],
+    "covered": 432157,
+    "covered_share": 0.7571,
+    "newly_covered": 60208,
+    "guarantee": "On a monotone submodular coverage function greedy selection is within a factor of 1 - 1/e, about 63 per cent, of the optimum.",
+    "method": "Candidates are scored by the population they would newly bring inside the service radius and selected greedily.",
+    "objective_label": "maximum coverage",
+    "notes": []
+  },
+  "curve": [
+    {
+      "n": 1,
+      "marginal": 12365,
+      "cumulative": 384314,
+      "cumulative_share": 0.6733
+    },
+    {
+      "n": 2,
+      "marginal": 7240,
+      "cumulative": 391554,
+      "cumulative_share": 0.686
+    },
+    {
+      "n": 3,
+      "marginal": 6715,
+      "cumulative": 398268,
+      "cumulative_share": 0.6978
+    },
+    {
+      "n": 4,
+      "marginal": 6100,
+      "cumulative": 404368,
+      "cumulative_share": 0.7084
+    },
+    {
+      "n": 5,
+      "marginal": 5076,
+      "cumulative": 409444,
+      "cumulative_share": 0.7173
+    },
+    {
+      "n": 6,
+      "marginal": 4775,
+      "cumulative": 414219,
+      "cumulative_share": 0.7257
+    },
+    {
+      "n": 7,
+      "marginal": 4609,
+      "cumulative": 418828,
+      "cumulative_share": 0.7338
+    },
+    {
+      "n": 8,
+      "marginal": 4589,
+      "cumulative": 423417,
+      "cumulative_share": 0.7418
+    },
+    {
+      "n": 9,
+      "marginal": 4533,
+      "cumulative": 427950,
+      "cumulative_share": 0.7498
+    },
+    {
+      "n": 10,
+      "marginal": 4207,
+      "cumulative": 432157,
+      "cumulative_share": 0.7571
+    }
+  ],
+  "guardrail": {
+    "optimum_covered": 432157,
+    "final_covered": 432157,
+    "people_forgone": 0,
+    "relative_loss": 0.0,
+    "tolerance": 0.05,
+    "breached": false,
+    "verdict": "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run."
+  },
+  "audit": [],
+  "evaluation": [
+    {
+      "check": "coverage arithmetic",
+      "level": "pass",
+      "detail": "union recount matches at 432,157; across the 10 new sites a per-facility sum would report 68,916 against a true union of 68,602, an overcount of 313"
+    },
+    {
+      "check": "geometry",
+      "level": "pass",
+      "detail": "all 10 sites lie inside the area of interest"
+    },
+    {
+      "check": "budget",
+      "level": "pass",
+      "detail": "10 sites within the budget of 10"
+    },
+    {
+      "check": "coordinate reference system",
+      "level": "pass",
+      "detail": "EPSG:32636 (WGS 84 / UTM zone 36N); over 400 sampled pairs the projected distance departs from great-circle by 0.317% at the median and 0.595% at most, or about 6 m on a 1000 m service radius"
+    },
+    {
+      "check": "data currency",
+      "level": "flag",
+      "detail": "median source record is 1.9 years old. The age was put to the accountable officer and accepted: conditional, some will have been repaired and some of the 354 will have failed"
+    },
+    {
+      "check": "aggregation sensitivity",
+      "level": "pass",
+      "detail": "reweighting the demand surface within cells moves the coverage claim from 75.7% to 75.7%, a shift of 0.02%"
+    },
+    {
+      "check": "boundary effect",
+      "level": "flag",
+      "detail": "2 of 10 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated"
+    },
+    {
+      "check": "equity",
+      "level": "flag",
+      "detail": "59% of newly covered people live in the densest quartile of cells, against 42% district-wide; the plan favours dense settlements over remote ones"
+    },
+    {
+      "check": "provenance",
+      "level": "pass",
+      "detail": "4 sources recorded, all figures traceable"
+    },
+    {
+      "check": "cartographic consistency",
+      "level": "flag",
+      "detail": "the rendered figures were not reviewed against the account; run the map-reviewer agent over figures.json and pass its verdict with --figure-review"
+    }
+  ],
+  "provenance": [
+    {
+      "source": "WPdx+",
+      "endpoint": "https://data.waterpointdata.org/resource/eqje-vguj.json",
+      "query": "clean_country_name = 'Uganda' AND clean_adm2 = 'Mayuge'",
+      "handbook": "wpdx",
+      "fetched_at": "2026-09-04T10:53:29Z",
+      "rows_raw": 1378,
+      "rows_clean": 1251,
+      "drops": {
+        "flagged duplicate by WPdx": 127
+      },
+      "licence": "CC BY 4.0",
+      "note": "",
+      "from_cache": true,
+      "cache_path": "cache/wpdx_uganda_mayuge.parquet",
+      "dropped_total": 127,
+      "footnote": "WPdx+, retrieved 2026-09-04 and read from the local cache for this run; 1,251 records after cleaning (127 dropped). Licence: CC BY 4.0."
+    },
+    {
+      "source": "GADM",
+      "endpoint": "https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41_UGA_1.json.zip",
+      "query": "UGA administrative level 1",
+      "handbook": "gadm",
+      "fetched_at": "2026-09-03T01:51:52Z",
+      "rows_raw": 58,
+      "rows_clean": 58,
+      "drops": {},
+      "licence": "GADM licence, free for academic and non-commercial use",
+      "note": "1 invalid polygons repaired",
+      "from_cache": true,
+      "cache_path": "cache/boundaries/gadm41_UGA_1.gpkg",
+      "dropped_total": 0,
+      "footnote": "GADM, retrieved 2026-09-03 and read from the local cache for this run; 58 records after cleaning. Licence: GADM licence, free for academic and non-commercial use."
+    },
+    {
+      "source": "WorldPop",
+      "endpoint": "https://hub.worldpop.org/rest/data/pop/wpgp",
+      "query": "UGA ppp 2020, bbox 33.2835 -0.0474 33.7104 0.6061 (WGS 84), aggregated 5x5",
+      "handbook": "worldpop",
+      "fetched_at": "2026-09-03T01:59:46Z",
+      "rows_raw": 15912,
+      "rows_clean": 8992,
+      "drops": {
+        "cells below the population floor": 6920
+      },
+      "licence": "CC BY 4.0",
+      "note": "population year 2020; 401,408 source cells at ~100 m read over the window, aggregated 5x5 into 15,912 cells of ~500 m",
+      "from_cache": true,
+      "cache_path": "cache/raster/uga_ppp_2020.tif",
+      "dropped_total": 6920,
+      "footnote": "WorldPop, retrieved 2026-09-03 and read from the local cache for this run; 8,992 records after cleaning (6,920 dropped). Licence: CC BY 4.0."
+    },
+    {
+      "source": "MAP friction surface",
+      "endpoint": "https://data.malariaatlas.org/geoserver/Accessibility/ows",
+      "query": "Accessibility__202001_Global_Walking_Only_Friction_Surface, bbox 33.2335 -0.0974 33.7604 0.6561 (WGS 84)",
+      "handbook": "map_friction",
+      "fetched_at": "2026-09-04T10:53:31Z",
+      "rows_raw": 5670,
+      "rows_clean": 5670,
+      "drops": {},
+      "licence": "CC BY 4.0",
+      "note": "walking-only friction, minutes per metre",
+      "from_cache": true,
+      "cache_path": "cache/friction/walking_33.233_m0.097_33.760_0.656.tif",
+      "dropped_total": 0,
+      "footnote": "MAP friction surface, retrieved 2026-09-04 and read from the local cache for this run; 5,670 records after cleaning. Licence: CC BY 4.0."
+    }
+  ],
+  "benchmark": {
+    "status": "not run"
+  },
+  "sensitivity": [
+    {
+      "label": "Rehabilitation of existing points only",
+      "covered": 398352,
+      "share": 0.6979,
+      "delta": -33805
+    },
+    {
+      "label": "Half the budget (5 sites)",
+      "covered": 409444,
+      "share": 0.7173,
+      "delta": -22713
+    },
+    {
+      "label": "Double the budget (20 sites)",
+      "covered": 469384,
+      "share": 0.8224,
+      "delta": 37227
+    }
+  ],
+  "references": [
+    {
+      "key": "wpdx",
+      "citation": "Water Point Data Exchange (WPdx+), global water point registry, https://www.waterpointdata.org/",
+      "licence": "CC BY 4.0",
+      "accessed": "2026-09-04"
+    },
+    {
+      "key": "gadm",
+      "citation": "GADM database of Global Administrative Areas, version 4.1, https://gadm.org",
+      "licence": "GADM licence, free for academic and non-commercial use",
+      "accessed": "2026-09-03"
+    },
+    {
+      "key": "worldpop",
+      "citation": "WorldPop, School of Geography and Environmental Science, University of Southampton, https://www.worldpop.org",
+      "licence": "CC BY 4.0",
+      "accessed": "2026-09-03"
+    },
+    {
+      "key": "map_friction",
+      "citation": "Weiss, D.J. et al. Global maps of travel time to healthcare facilities. Nature Medicine 26, 1835-1838 (2020).",
+      "licence": "CC BY 4.0",
+      "accessed": "2026-09-04"
+    }
+  ],
+  "anomalies": [
+    {
+      "source": "WPdx+",
+      "kind": "semantics",
+      "observed": "status_clean is not two-valued in this district. Values present: Non-Functional (891); Functional, needs repair (354); Functional, not in use (6).",
+      "handling": "Serving status is read from the status_semantics block in handbooks/wpdx.yaml, which treats Functional and Functional, needs repair as serving and everything else as not serving.",
+      "consequence": "An equality test against the string Functional would score every point in this district as not serving and inflate the gap."
+    },
+    {
+      "source": "WPdx+",
+      "kind": "duplication",
+      "observed": "127 of 1,378 returned records were removed: flagged duplicate by WPdx.",
+      "handling": "Removed before any coverage computation, per the cleaning rules declared in the handbook.",
+      "consequence": "Coverage computed on the raw response would count these records twice or count superseded observations."
+    },
+    {
+      "source": "MAP friction surface",
+      "kind": "method",
+      "observed": "Over this area the walking friction surface implies 21 minutes per kilometre at the median and 60 at the 90th percentile, so the chosen 1000 m corresponds to about 21 minutes of walking.",
+      "handling": "Coverage is tested as walking time rather than straight-line distance. Reach is computed per candidate from the local friction value rather than by a least-cost accumulation from every candidate, which would be exact but is not tractable at this candidate count.",
+      "consequence": "Where terrain changes sharply within one facility's reach, the local-friction approximation applies the conditions at the site in every direction, and is conservative rather than optimistic. The surface is modelled at about one kilometre and does not represent local footpaths."
+    }
+  ],
+  "overrides_source": "",
+  "command": "python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml",
+  "gate_decisions": [
+    {
+      "checkpoint": "source authorisation",
+      "allowed": true,
+      "reason": "Water Point Data Exchange Plus (WPdx+) is a public endpoint; no authorisation required",
+      "actor": "harness",
+      "ts": "2026-09-04T15:59:05Z"
+    },
+    {
+      "checkpoint": "source authorisation",
+      "allowed": true,
+      "reason": "WorldPop gridded population is a public endpoint; no authorisation required",
+      "actor": "harness",
+      "ts": "2026-09-04T15:59:05Z"
+    },
+    {
+      "checkpoint": "guardrail breach",
+      "allowed": true,
+      "reason": "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run.",
+      "actor": "harness",
+      "ts": "2026-09-04T15:59:06Z"
+    }
+  ],
+  "decisions": [
+    {
+      "key": "service_radius_m",
+      "value": 1000.0,
+      "decided_by": "Jadey",
+      "reason": "1000 m  Mayuge already reports against,",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "What distance, or what walking time, counts as served?",
+      "unit": "metres",
+      "stance": ""
+    },
+    {
+      "key": "coverage_basis",
+      "value": "walking_time",
+      "decided_by": "Jadey",
+      "reason": "walking time : Mayuge walk around water rather than across it",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "Should reach be measured as straight-line distance, or as walking time over terrain?",
+      "unit": "",
+      "stance": ""
+    },
+    {
+      "key": "objective",
+      "value": "max_coverage",
+      "decided_by": "Jadey",
+      "reason": "198,832 unserved is too many to spend a small programme on the margins",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "Should the programme reach the most people, or the worst-served people?",
+      "unit": "",
+      "stance": ""
+    },
+    {
+      "key": "budget",
+      "value": 10,
+      "decided_by": "Jadey",
+      "reason": "we have varied budget, we want to find an ideal number",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "How many facilities does the programme fund?",
+      "unit": "facilities",
+      "stance": ""
+    },
+    {
+      "key": "data_currency_accepted",
+      "value": "yes",
+      "decided_by": "Jadey",
+      "reason": "conditional, some will have been repaired and some of the 354 will have failed",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "Is the age of the source register acceptable for this decision?",
+      "unit": "",
+      "stance": "yes"
+    },
+    {
+      "key": "coverage_tolerance",
+      "value": 0.05,
+      "decided_by": "Jadey",
+      "reason": "198,832 unserved is too many to spend a small programme on the margins",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "How much coverage may reviewing decisions forgo before that is escalated in the report?",
+      "unit": "share of achievable coverage",
+      "stance": ""
+    },
+    {
+      "key": "review_floor",
+      "value": "6.5",
+      "decided_by": "Jadey",
+      "reason": "don't be too strict",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:58:53Z",
+      "question": "How complete must the account be before the assessment may be issued without an explicit instruction?",
+      "unit": "weighted score out of 10",
+      "stance": ""
+    },
+    {
+      "key": "equity_accepted",
+      "value": "unresolved",
+      "decided_by": "not settled at run time",
+      "reason": "The measured distribution was reported to the operator and no position was recorded, so the assessment states it as unresolved rather than accepted.",
+      "authored_by_agent": false,
+      "ts": "2026-09-04T15:59:06Z",
+      "question": "The plan's distribution between dense and remote population has been measured. Is it accepted?",
+      "unit": "",
+      "stance": "unresolved"
+    }
+  ],
+  "figure_review": null,
+  "authorship": {
+    "mode": "manual",
+    "by_person": 8,
+    "by_agent": 0,
+    "agent_authored_keys": [],
+    "statement": "All 8 decisions in this run were recorded by a person."
+  },
+  "exhibits": [
+    {
+      "id": "Ex00",
+      "num": "00",
+      "title": "Decisions taken, and by whom",
+      "supports": "That the judgements this assessment rests on are attributable",
+      "captured": "Recorded before the analysis ran",
+      "method": "Each row is a judgement about values rather than a technical parameter: what counts as served, whose need the programme answers, whether a register of this age is fit to direct spending. The analysis refuses to run without them rather than assuming one, because assuming one would move the decision away from the officer accountable for it. Where a row is attributed to the agent, no district position was recorded and the agent decided in its absence.",
+      "blocks": [
+        {
+          "type": "note",
+          "text": "All 8 decisions in this run were recorded by a person."
+        },
+        {
+          "type": "decisions",
+          "rows": [
+            [
+              "service_radius_m",
+              "1000.0 metres",
+              "Jadey",
+              "1000 m  Mayuge already reports against,"
+            ],
+            [
+              "coverage_basis",
+              "walking_time",
+              "Jadey",
+              "walking time : Mayuge walk around water rather than across it"
+            ],
+            [
+              "objective",
+              "max_coverage",
+              "Jadey",
+              "198,832 unserved is too many to spend a small programme on the margins"
+            ],
+            [
+              "budget",
+              "10 facilities",
+              "Jadey",
+              "we have varied budget, we want to find an ideal number"
+            ],
+            [
+              "data_currency_accepted",
+              "yes",
+              "Jadey",
+              "conditional, some will have been repaired and some of the 354 will have failed"
+            ],
+            [
+              "coverage_tolerance",
+              "0.05 share of achievable coverage",
+              "Jadey",
+              "198,832 unserved is too many to spend a small programme on the margins"
+            ],
+            [
+              "review_floor",
+              "6.5 weighted score out of 10",
+              "Jadey",
+              "don't be too strict"
+            ],
+            [
+              "equity_accepted",
+              "unresolved",
+              "not settled at run time",
+              "The measured distribution was reported to the operator and no position was recorded, so the assessment states it as unresolved rather than accepted."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex01",
+      "num": "01",
+      "title": "Rural water point siting register for Mayuge",
+      "supports": "The installed stock and its recorded condition",
+      "captured": "https://data.waterpointdata.org/resource/eqje-vguj.json on 2026-09-04, read from the local cache for this run",
+      "method": "Socrata query below, executed verbatim. Cleaning rules are declared in handbooks/wpdx.yaml and applied in order; each rule reports its own drop count.",
+      "blocks": [
+        {
+          "type": "query",
+          "text": "clean_country_name = 'Uganda' AND clean_adm2 = 'Mayuge'"
+        },
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Records returned",
+              "1,378"
+            ],
+            [
+              "Records after cleaning",
+              "1,251"
+            ],
+            [
+              "Discarded",
+              "127"
+            ]
+          ]
+        },
+        {
+          "type": "drops",
+          "rows": [
+            [
+              "flagged duplicate by WPdx",
+              "127"
+            ]
+          ]
+        },
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Recorded as serving",
+              "354"
+            ],
+            [
+              "Recorded as not serving",
+              "897"
+            ],
+            [
+              "Median record age",
+              "1.9 years"
+            ]
+          ]
+        },
+        {
+          "type": "licence",
+          "text": "CC BY 4.0"
+        }
+      ]
+    },
+    {
+      "id": "Ex02",
+      "num": "02",
+      "title": "Population surface",
+      "supports": "The denominator for every coverage figure in this bundle",
+      "captured": "https://hub.worldpop.org/rest/data/pop/wpgp on 2026-09-03, read from the local cache for this run",
+      "method": "National 100 m grid, read over the area of interest and aggregated into blocks. The aggregation is coarser than the source and finer than the service radius, so it does not bias coverage.",
+      "blocks": [
+        {
+          "type": "query",
+          "text": "UGA ppp 2020, bbox 33.2835 -0.0474 33.7104 0.6061 (WGS 84), aggregated 5x5"
+        },
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Raster cells in window",
+              "15,912"
+            ],
+            [
+              "Aggregated demand cells",
+              "8,992"
+            ],
+            [
+              "Population in the area of interest",
+              "570,781"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "population year 2020; 401,408 source cells at ~100 m read over the window, aggregated 5x5 into 15,912 cells of ~500 m"
+        },
+        {
+          "type": "licence",
+          "text": "CC BY 4.0"
+        }
+      ]
+    },
+    {
+      "id": "Ex03",
+      "num": "03",
+      "title": "Coverage before any intervention",
+      "supports": "The size of the gap the recommendation is trying to close",
+      "captured": "Computed from Ex01 and Ex02",
+      "method": "A demand cell counts as covered when it lies within about 21 minutes of walking over the modelled terrain of a point recorded as serving. Coverage is the union over serving points; a per-point sum would double count every settlement reachable from two of them.",
+      "blocks": [
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Population",
+              "570,781"
+            ],
+            [
+              "Covered today",
+              "371,949  (65.2%)"
+            ],
+            [
+              "Not covered",
+              "198,832  (34.8%)"
+            ]
+          ]
+        },
+        {
+          "type": "image",
+          "path": "map_situation.png",
+          "height": "104mm",
+          "caption": "Serving and non-serving points over the population surface. Warm shading is population beyond the service radius."
+        }
+      ]
+    },
+    {
+      "id": "Ex04",
+      "num": "04",
+      "title": "Candidate sites considered",
+      "supports": "That the recommendation was selected from a stated, reproducible set",
+      "captured": "Constructed from Ex01 and the area of interest",
+      "method": "Two kinds of candidate: an existing point recorded as not serving, which could be rehabilitated, and a regular lattice of greenfield locations. Lattice points already inside an existing service area are removed before selection.",
+      "blocks": [
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Candidates evaluated",
+              "2,095"
+            ],
+            [
+              "Lattice spacing",
+              "750 m"
+            ],
+            [
+              "Minimum spacing between recommendations",
+              "1000 m"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex05",
+      "num": "05",
+      "title": "Selection method and its guarantee",
+      "supports": "That the ranking is reproducible and its optimality is bounded",
+      "captured": "Computed",
+      "method": "Candidates are scored by the population they would newly bring inside the service radius and selected greedily. On a monotone submodular coverage function greedy selection is within a factor of 1 - 1/e, about 63 per cent, of the optimum. The exact integer programme is not used in the loop: it takes minutes at district scale where the heuristic takes seconds, and every planner override triggers a re-solve.",
+      "blocks": [
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Sites selected",
+              "10"
+            ],
+            [
+              "Population newly covered",
+              "60,208"
+            ],
+            [
+              "Coverage after the programme",
+              "75.7%"
+            ],
+            [
+              "Benchmark against an exact solver",
+              "not run (not run)"
+            ]
+          ]
+        },
+        {
+          "type": "curve",
+          "rows": [
+            [
+              "1",
+              "12,365",
+              "384,314",
+              "67.3%"
+            ],
+            [
+              "2",
+              "7,240",
+              "391,554",
+              "68.6%"
+            ],
+            [
+              "3",
+              "6,715",
+              "398,268",
+              "69.8%"
+            ],
+            [
+              "4",
+              "6,100",
+              "404,368",
+              "70.8%"
+            ],
+            [
+              "5",
+              "5,076",
+              "409,444",
+              "71.7%"
+            ],
+            [
+              "6",
+              "4,775",
+              "414,219",
+              "72.6%"
+            ],
+            [
+              "7",
+              "4,609",
+              "418,828",
+              "73.4%"
+            ],
+            [
+              "8",
+              "4,589",
+              "423,417",
+              "74.2%"
+            ],
+            [
+              "9",
+              "4,533",
+              "427,950",
+              "75.0%"
+            ],
+            [
+              "10",
+              "4,207",
+              "432,157",
+              "75.7%"
+            ]
+          ],
+          "caption": "Marginal and cumulative population covered. The first site reaches 12,365 people, the last 4,207."
+        }
+      ]
+    },
+    {
+      "id": "Ex06",
+      "num": "06",
+      "title": "Recommended sites",
+      "supports": "The recommendation itself, in coordinates",
+      "captured": "Computed",
+      "method": "Sites in selection order. Each row's coverage is additional to every row above it, so the programme must be built from the top down. Coordinates are WGS 84.",
+      "blocks": [
+        {
+          "type": "sites",
+          "rows": [
+            [
+              "1",
+              "S-001",
+              "greenfield",
+              "0.5090, 33.3442",
+              "12,365",
+              "2.1 km"
+            ],
+            [
+              "2",
+              "S-002",
+              "greenfield",
+              "0.3258, 33.6677",
+              "7,240",
+              "4.3 km"
+            ],
+            [
+              "3",
+              "S-003",
+              "greenfield",
+              "0.3393, 33.6340",
+              "6,715",
+              "3.5 km"
+            ],
+            [
+              "4",
+              "S-004",
+              "rehabilitate",
+              "0.1889, 33.5601",
+              "6,100",
+              "7.5 km"
+            ],
+            [
+              "5",
+              "S-005",
+              "greenfield",
+              "0.2715, 33.5800",
+              "5,076",
+              "5.4 km"
+            ],
+            [
+              "6",
+              "S-006",
+              "greenfield",
+              "0.2308, 33.6003",
+              "4,775",
+              "8.4 km"
+            ],
+            [
+              "7",
+              "S-007",
+              "greenfield",
+              "0.2172, 33.5194",
+              "4,609",
+              "3.0 km"
+            ],
+            [
+              "8",
+              "S-008",
+              "greenfield",
+              "0.3597, 33.6879",
+              "4,589",
+              "2.8 km"
+            ],
+            [
+              "9",
+              "S-009",
+              "greenfield",
+              "0.2308, 33.5666",
+              "4,533",
+              "4.8 km"
+            ],
+            [
+              "10",
+              "S-010",
+              "greenfield",
+              "0.2647, 33.6070",
+              "4,207",
+              "8.5 km"
+            ]
+          ]
+        },
+        {
+          "type": "image",
+          "path": "map_plan.png",
+          "height": "104mm",
+          "caption": "Recommended sites and their service radii over the unserved population."
+        },
+        {
+          "type": "rationales",
+          "rows": [
+            [
+              "S-001",
+              "New site covering 12,365 people currently beyond the service radius; nearest working point 2.1 km away."
+            ],
+            [
+              "S-002",
+              "New site covering 7,240 people currently beyond the service radius; nearest working point 4.3 km away."
+            ],
+            [
+              "S-003",
+              "New site covering 6,715 people currently beyond the service radius; nearest working point 3.5 km away."
+            ],
+            [
+              "S-004",
+              "Rehabilitate the existing point covering 6,100 people currently beyond the service radius; recorded as non-functional; technology on record: Public Tapstand; nearest working point 7.5 km away."
+            ],
+            [
+              "S-005",
+              "New site covering 5,076 people currently beyond the service radius; nearest working point 5.4 km away."
+            ],
+            [
+              "S-006",
+              "New site covering 4,775 people currently beyond the service radius; nearest working point 8.4 km away."
+            ],
+            [
+              "S-007",
+              "New site covering 4,609 people currently beyond the service radius; nearest working point 3.0 km away."
+            ],
+            [
+              "S-008",
+              "New site covering 4,589 people currently beyond the service radius; nearest working point 2.8 km away."
+            ],
+            [
+              "S-009",
+              "New site covering 4,533 people currently beyond the service radius; nearest working point 4.8 km away."
+            ],
+            [
+              "S-010",
+              "New site covering 4,207 people currently beyond the service radius; nearest working point 8.5 km away."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex07",
+      "num": "07",
+      "title": "Planner overrides and what they cost",
+      "supports": "That the recommendation was reviewed by a person, and where it was overruled",
+      "captured": "overrides YAML, reproduced verbatim below",
+      "method": "Each override was applied on its own and the plan re-solved, so every decision carries its own cost rather than one lumped figure. Overrides are never blocked. A veto removes an area, not a single lattice point, because a planner saying not there means a place.",
+      "blocks": [
+        {
+          "type": "note",
+          "text": "No overrides were applied to this run. The recommendation in Ex06 is the unmodified output of Ex05."
+        }
+      ]
+    },
+    {
+      "id": "Ex07b",
+      "num": "07b",
+      "title": "Safety gate decisions",
+      "supports": "That access, transfer and fallback decisions were taken deliberately",
+      "captured": "Recorded at the point of each decision",
+      "method": "A gate never silently permits. Each row is a point at which the run either proceeded and recorded why that was safe, or refused. A refusal removes a source from the analysis and is stated here rather than left for the reader to infer from a missing figure.",
+      "blocks": [
+        {
+          "type": "gates",
+          "rows": [
+            [
+              "source authorisation",
+              "allowed",
+              "harness",
+              "Water Point Data Exchange Plus (WPdx+) is a public endpoint; no authorisation required"
+            ],
+            [
+              "source authorisation",
+              "allowed",
+              "harness",
+              "WorldPop gridded population is a public endpoint; no authorisation required"
+            ],
+            [
+              "guardrail breach",
+              "allowed",
+              "harness",
+              "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex08",
+      "num": "08",
+      "title": "Independent checks",
+      "supports": "That the plan was checked by a process that did not produce it",
+      "captured": "Computed",
+      "method": "These checks run in a separate process from the one that produced the plan, can reject it, and do not read the override reasons in Ex07. They check the plan against the data, not against the account given of it. A single rejection stops the bundle being produced.",
+      "blocks": [
+        {
+          "type": "checks",
+          "rows": [
+            [
+              "coverage arithmetic",
+              "pass",
+              "union recount matches at 432,157; across the 10 new sites a per-facility sum would report 68,916 against a true union of 68,602, an overcount of 313"
+            ],
+            [
+              "geometry",
+              "pass",
+              "all 10 sites lie inside the area of interest"
+            ],
+            [
+              "budget",
+              "pass",
+              "10 sites within the budget of 10"
+            ],
+            [
+              "coordinate reference system",
+              "pass",
+              "EPSG:32636 (WGS 84 / UTM zone 36N); over 400 sampled pairs the projected distance departs from great-circle by 0.317% at the median and 0.595% at most, or about 6 m on a 1000 m service radius"
+            ],
+            [
+              "data currency",
+              "flag",
+              "median source record is 1.9 years old. The age was put to the accountable officer and accepted: conditional, some will have been repaired and some of the 354 will have failed"
+            ],
+            [
+              "aggregation sensitivity",
+              "pass",
+              "reweighting the demand surface within cells moves the coverage claim from 75.7% to 75.7%, a shift of 0.02%"
+            ],
+            [
+              "boundary effect",
+              "flag",
+              "2 of 10 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated"
+            ],
+            [
+              "equity",
+              "flag",
+              "59% of newly covered people live in the densest quartile of cells, against 42% district-wide; the plan favours dense settlements over remote ones"
+            ],
+            [
+              "provenance",
+              "pass",
+              "4 sources recorded, all figures traceable"
+            ],
+            [
+              "cartographic consistency",
+              "flag",
+              "the rendered figures were not reviewed against the account; run the map-reviewer agent over figures.json and pass its verdict with --figure-review"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex08b",
+      "num": "08b",
+      "title": "Scoring review",
+      "supports": "That the account was scored against a stated floor before issue",
+      "captured": "Computed by a reviewer that reads only this bundle's results file",
+      "method": "The reviewer receives the results file and nothing else: not the solver, not the code path, not the override reasons. It cannot score the intention behind the plan, only the account given of it. Every dimension carries a floor and the weighted average carries a floor; the run is issued only when all are met, or when a person forces it and that is recorded.",
+      "blocks": [
+        {
+          "type": "review",
+          "rows": [
+            [
+              "data adequacy",
+              "8.5",
+              "5.0",
+              "0.25",
+              "met",
+              "median record 1.9 years old, put to the accountable officer and accepted with a recorded reason; 1 semantic anomalies in the register"
+            ],
+            [
+              "method fitness",
+              "7.5",
+              "5.0",
+              "0.20",
+              "met",
+              "On a monotone submodular coverage function greedy selection is within a factor of 1 - 1/e, about 63 per cent, of the optimum.; no exact benchmark (not run); reach measured as walking time from the local friction value at each candidate, not as a least-cost traverse"
+            ],
+            [
+              "spatial rigour",
+              "7.0",
+              "6.0",
+              "0.25",
+              "met",
+              "6 of 6 required diagnostics present; distances in EPSG:32636 (WGS 84 / UTM zone 36N)"
+            ],
+            [
+              "accountability",
+              "9.0",
+              "6.0",
+              "0.20",
+              "met",
+              "every figure resolves to a recorded retrieval; 3 source anomalies disclosed"
+            ],
+            [
+              "actionability",
+              "9.5",
+              "4.0",
+              "0.10",
+              "met",
+              "10 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios"
+            ]
+          ]
+        },
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Weighted score",
+              "8.12"
+            ],
+            [
+              "Floor to issue",
+              "6.50"
+            ],
+            [
+              "Decision",
+              "issue"
+            ],
+            [
+              "Reviewer",
+              "deterministic rules over results.json"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex09",
+      "num": "09",
+      "title": "Sensitivity of the recommendation",
+      "supports": "How far the recommendation depends on assumptions the planner can change",
+      "captured": "Computed",
+      "method": "Each scenario re-solves from the same data with one assumption changed. A recommendation that survives every row is one a planner can defend.",
+      "blocks": [
+        {
+          "type": "sensitivity",
+          "rows": [
+            [
+              "Rehabilitation of existing points only",
+              "398,352",
+              "69.8%",
+              "-33,805"
+            ],
+            [
+              "Half the budget (5 sites)",
+              "409,444",
+              "71.7%",
+              "-22,713"
+            ],
+            [
+              "Double the budget (20 sites)",
+              "469,384",
+              "82.2%",
+              "+37,227"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex10",
+      "num": "10",
+      "title": "Anomalies in the source data, and how they were handled",
+      "supports": "That the source registers were read rather than assumed",
+      "captured": "Observed during retrieval and cleaning",
+      "method": "Every item below is a property of the published data that would change a coverage figure if handled differently. Each is recorded with what was observed, what the agent did, and what a reader must keep in mind. None of these were corrected silently.",
+      "blocks": [
+        {
+          "type": "anomalies",
+          "rows": [
+            [
+              "semantics",
+              "WPdx+",
+              "status_clean is not two-valued in this district. Values present: Non-Functional (891); Functional, needs repair (354); Functional, not in use (6).",
+              "Serving status is read from the status_semantics block in handbooks/wpdx.yaml, which treats Functional and Functional, needs repair as serving and everything else as not serving.",
+              "An equality test against the string Functional would score every point in this district as not serving and inflate the gap."
+            ],
+            [
+              "duplication",
+              "WPdx+",
+              "127 of 1,378 returned records were removed: flagged duplicate by WPdx.",
+              "Removed before any coverage computation, per the cleaning rules declared in the handbook.",
+              "Coverage computed on the raw response would count these records twice or count superseded observations."
+            ],
+            [
+              "method",
+              "MAP friction surface",
+              "Over this area the walking friction surface implies 21 minutes per kilometre at the median and 60 at the 90th percentile, so the chosen 1000 m corresponds to about 21 minutes of walking.",
+              "Coverage is tested as walking time rather than straight-line distance. Reach is computed per candidate from the local friction value rather than by a least-cost accumulation from every candidate, which would be exact but is not tractable at this candidate count.",
+              "Where terrain changes sharply within one facility's reach, the local-friction approximation applies the conditions at the site in every direction, and is conservative rather than optimistic. The surface is modelled at about one kilometre and does not represent local footpaths."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Ex11",
+      "num": "11",
+      "title": "Reproduction record",
+      "supports": "That this bundle can be regenerated from the recorded queries",
+      "captured": "Computed",
+      "method": "The bundle is a function of one results file and the manifest that produced it. Any change to a source query, a cleaning rule or a retrieval date changes the provenance hash.",
+      "blocks": [
+        {
+          "type": "counts",
+          "rows": [
+            [
+              "Run",
+              "mayuge-water-20260904T155905Z"
+            ],
+            [
+              "Generated",
+              "2026-09-04T15:59:05Z"
+            ],
+            [
+              "Provenance hash",
+              "ac15a4eae9de9c52"
+            ]
+          ]
+        },
+        {
+          "type": "command",
+          "text": "python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml"
+        },
+        {
+          "type": "note",
+          "text": "The --out and --decisions paths above have been shortened to be relative to the repository root. This run was produced under sessions/mayuge-20260904T152614Z-6127d5/ and the directory was copied to sample-runs/mayuge-uganda/ for publication. Only the machine-specific path prefix was removed; the manifest hash in manifest.json was recomputed over the shortened command, and nothing else in this record was altered."
+        },
+        {
+          "type": "sources",
+          "rows": [
+            [
+              "Water Point Data Exchange (WPdx+), global water point registry, https://www.waterpointdata.org/",
+              "CC BY 4.0",
+              "2026-09-04"
+            ],
+            [
+              "GADM database of Global Administrative Areas, version 4.1, https://gadm.org",
+              "GADM licence, free for academic and non-commercial use",
+              "2026-09-03"
+            ],
+            [
+              "WorldPop, School of Geography and Environmental Science, University of Southampton, https://www.worldpop.org",
+              "CC BY 4.0",
+              "2026-09-03"
+            ],
+            [
+              "Weiss, D.J. et al. Global maps of travel time to healthcare facilities. Nature Medicine 26, 1835-1838 (2020).",
+              "CC BY 4.0",
+              "2026-09-04"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "review": {
+    "reviewer": "deterministic rules over results.json",
+    "weighted": 8.12,
+    "accept_at": 6.5,
+    "decision": "issue",
+    "why_not_issued": "",
+    "scores": [
+      {
+        "dimension": "data adequacy",
+        "value": 8.5,
+        "weight": 0.25,
+        "floor": 5.0,
+        "basis": "median record 1.9 years old, put to the accountable officer and accepted with a recorded reason; 1 semantic anomalies in the register",
+        "passes": true
+      },
+      {
+        "dimension": "method fitness",
+        "value": 7.5,
+        "weight": 0.2,
+        "floor": 5.0,
+        "basis": "On a monotone submodular coverage function greedy selection is within a factor of 1 - 1/e, about 63 per cent, of the optimum.; no exact benchmark (not run); reach measured as walking time from the local friction value at each candidate, not as a least-cost traverse",
+        "passes": true
+      },
+      {
+        "dimension": "spatial rigour",
+        "value": 7.0,
+        "weight": 0.25,
+        "floor": 6.0,
+        "basis": "6 of 6 required diagnostics present; distances in EPSG:32636 (WGS 84 / UTM zone 36N)",
+        "passes": true
+      },
+      {
+        "dimension": "accountability",
+        "value": 9.0,
+        "weight": 0.2,
+        "floor": 6.0,
+        "basis": "every figure resolves to a recorded retrieval; 3 source anomalies disclosed",
+        "passes": true
+      },
+      {
+        "dimension": "actionability",
+        "value": 9.5,
+        "weight": 0.1,
+        "floor": 4.0,
+        "basis": "10 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios",
+        "passes": true
+      }
+    ],
+    "action_items": [],
+    "dimensions": {
+      "data adequacy": {
+        "weight": 0.25,
+        "floor": 5.0,
+        "asks": "Are the sources authoritative, current enough for the claim, and sufficient in coverage for the area of interest?"
+      },
+      "method fitness": {
+        "weight": 0.2,
+        "floor": 5.0,
+        "asks": "Does the location model answer the question that was asked, and is its optimality bounded and stated?"
+      },
+      "spatial rigour": {
+        "weight": 0.25,
+        "floor": 6.0,
+        "asks": "Projected CRS, union coverage, aggregation sensitivity, boundary exposure, equity: are the required diagnostics present and passing?"
+      },
+      "accountability": {
+        "weight": 0.2,
+        "floor": 6.0,
+        "asks": "Does every figure resolve to a recorded retrieval, is every human override recorded with its reason and its cost, and are source anomalies disclosed rather than resolved silently?"
+      },
+      "actionability": {
+        "weight": 0.1,
+        "floor": 4.0,
+        "asks": "Can an officer act on this: coordinates, a ranking whose order matters, a stated basis per site, and honest limitations?"
+      }
+    }
+  }
+}

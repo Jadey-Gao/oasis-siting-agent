@@ -12,8 +12,8 @@ Built for the OASIS 2026 student challenge at ACM SIGSPATIAL. MIT licensed.
 | Read | For |
 |---|---|
 | `CLAUDE.md` | What the system is and how to run it. Read this first |
-| `sample-runs/masindi-uganda/RUN_RECORD.md` | A whole run in plain text: who decided what, every retrieval, every anomaly, every check |
-| `sample-runs/masindi-uganda/evidence-bundle.pdf` | The same run as a numbered evidence package |
+| `sample-runs/mayuge-uganda/RUN_RECORD.md` | A whole run in plain text: who decided what, every retrieval, every anomaly, every check |
+| `sample-runs/mayuge-uganda/evidence-bundle.pdf` | The same run as a numbered evidence package |
 | `skills/siting-run/SKILL.md` | How an assessment is conducted, as a decision framework rather than a script |
 
 ## Layout
@@ -52,7 +52,7 @@ siting/                        the tools. Read-only during a run
   domains/water.py               the one implemented domain
   report/                        figures, the figure brief, two Typst documents
 
-sample-runs/                   two complete runs, as produced
+sample-runs/mayuge-uganda/     one complete run, as produced
 requirements.txt               dependencies, all MIT / BSD / Apache
 ```
 
@@ -61,8 +61,8 @@ requirements.txt               dependencies, all MIT / BSD / Apache
 ```bash
 pip install -r requirements.txt
 
-python -m siting.cli --country Uganda --adm2 Masindi --iso3 UGA \
-    --decisions decisions/masindi.yaml --format both
+python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA \
+    --decisions decisions/mayuge.yaml --format both
 ```
 
 Running with no decisions file prints the judgements that must be settled first,
@@ -72,38 +72,47 @@ working, not a failure.
 `--mode auto` lets the agent take those judgements so a run can complete
 unattended. Each one it takes is attributed to it in the output.
 
-## A caution about the sample runs
+## A caution about the sample run
 
-The decision records in `decisions/` and the officer attributions inside both
-sample runs are **illustrative and were written by the author of this system**.
-No district officer made any of those decisions, and the reasons given are
-plausible inventions rather than any district's actual position.
+The decision records in `decisions/` and the officer attributions inside the
+sample run were **written by the author of this system**, not by any district.
+`decisions/kiryandongo.yaml`, `masindi.yaml`, `ngara.yaml` and `generic.yaml` are
+plausible inventions. `decisions/mayuge.yaml` and the attributions in
+`sample-runs/mayuge-uganda/` are the author's own words, recorded live through
+the web interview while acting as the officer.
 
-They are marked as such in the YAML, but the attribution is also carried into the
-rendered PDFs and into `RUN_RECORD.md`, where it reads as a real person's
-judgement. Read those documents as a demonstration of the format, not as a record
-of anything a district decided.
+Either way, no district officer made any of those decisions. The attribution is
+carried into the rendered PDFs and into `RUN_RECORD.md`, where it reads as a real
+person's judgement. Read those documents as a demonstration of the format, not as
+a record of anything a district decided.
 
 This is worth stating plainly because attribution is the point of the system. A
 decision record naming someone who did not decide is the exact failure the design
 exists to prevent, and an example is not exempt from that.
 
-## The sample runs
+## The sample run
 
-**`masindi-uganda`** is a complete manual-mode run: six decisions recorded by a
-named officer, walking-time coverage over the Malaria Atlas friction surface, the
-worst-case objective, an administrative boundary verified against the register,
-ten checks, a scoring review, and a figure review that returned revise three
-times before the maps agreed with the account.
+**`mayuge-uganda`** is a complete manual-mode run for Mayuge district, Uganda:
+eight decisions recorded through the interview, walking-time coverage over the
+Malaria Atlas friction surface, the maximum-coverage objective, an administrative
+boundary verified against the register at 1,246 of 1,251 records inside it, ten
+sites raising coverage from 65.2% to 75.7% of 570,781 people, ten independent
+checks of which four returned flags, and a scoring review that issued at 8.12.
 
-**`western-rural-sierra-leone`** is the same pipeline in a second country with no
-code changes, as evidence that the method transfers. Its decisions are marked as
-a transferability test rather than any district's position, and its boundary check
-correctly refused to use a boundary that did not correspond to the register.
+`figure_review.json` holds the map reviewer's verdict on the same figures, which
+was `revise` on both maps and was recorded after the bundle had been compiled.
+The bundle's own cartographic check therefore reads unreviewed, and unreviewed is
+not a pass. It is left that way rather than tidied, because a sample run that
+only shows the clean path is not evidence of anything.
 
-Each contains `results.json`, the single file both documents compile from, so the
+It contains `results.json`, the single file both documents compile from, so the
 two cannot disagree; `manifest.json`, whose replay reproduces the run; and
 `handoff.json`, which lets an interrupted run resume where it stopped.
+
+The same pipeline has been run unchanged for districts in Tanzania and for other
+Ugandan districts. Those runs are not in the repository: they live under
+`sessions/`, which is ignored because a session directory holds the verbatim
+transcript of whoever was interviewed.
 
 ## What is not here
 

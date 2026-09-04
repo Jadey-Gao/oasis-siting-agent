@@ -8,63 +8,138 @@ in population coverage.
 
 Built for the OASIS 2026 student challenge at ACM SIGSPATIAL.
 
-```
-python -m siting.cli --country Uganda --adm2 Kiryandongo --iso3 UGA \
-    --domain water --budget 10 --overrides overrides/kiryandongo.yaml
-```
+## Two ways to run it
 
-## Running the web interview
+Same agent either way — same skill, same four subagents, same refusal to assume
+a value-laden decision. Only where the conversation happens changes.
 
-The interview is a conversation with the agent that ends in a recorded decisions
-file and a run. It is not hosted anywhere: you run it on your own machine
-against your own Anthropic key, because a hosted instance would mean strangers
-spending somebody else's credit on an agent that holds a shell.
+| | In Claude Code | Web interview |
+|---|---|---|
+| For | someone already working in this repo | an officer who doesn't use Claude Code |
+| Writes to | `runs/`, `decisions/*.yaml` | `sessions/<id>/runs/`, `sessions/<id>/decisions.yaml` |
+
+Both sit on top of `python -m siting.cli`, the plain tool with no conversation —
+see `CLAUDE.md` to run that directly once a decisions file exists.
+
+### In Claude Code
 
 ```bash
 git clone https://github.com/Jadey-Gao/oasis-siting-agent.git
 cd oasis-siting-agent
+python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+claude
+```
 
+Then, inside Claude Code:
+
+```
+/siting Uganda Mayuge water
+```
+
+- Manual mode by default — the agent puts every value-laden decision to you
+  with the evidence and priced options. `/siting Uganda Mayuge water, mode auto`
+  lets it decide instead, and attributes each one to itself.
+- To resume a run, tell `/siting` the run id; it reads `handoff.json` and
+  continues from the stage it stopped at.
+- `settings.json` and `harness/hooks/` enforce the rest: `siting/` and
+  `handbooks/` are read-only mid-run, only `decisions/` and `runs/` are writable.
+
+### Web interview
+
+Not hosted anywhere — run it on your own machine, against your own key.
+
+```bash
+git clone https://github.com/Jadey-Gao/oasis-siting-agent.git
+cd oasis-siting-agent
 pip install huggingface_hub
-python scripts/fetch_cache.py --country UGA   # ~120 MB, optional but wanted
-
-export ANTHROPIC_API_KEY=sk-ant-...           # your own key
+python scripts/fetch_cache.py --country UGA   # ~120 MB, optional
+export ANTHROPIC_API_KEY=sk-ant-...
 docker compose up
 ```
 
-Then open **http://localhost:7860**.
+Open **http://localhost:7860**. Run it again after any dependency change with
+`docker compose up --build` — compose reuses the old image otherwise.
 
-The cache step is optional. Without it the first run goes to WorldPop for a
-whole national population raster — 108 MB for Uganda, 462 MB for Tanzania —
-which is slow but not wrong. `python scripts/fetch_cache.py` with no arguments
-takes both countries; any other country is always retrieved live.
-
-`sessions/`, `runs/` and `cache/` are mounted from the working directory, so
-everything a run produces — the decisions file, `RUN_RECORD.md`, `results.json`,
-the compiled PDFs — stays on your disk after the container stops.
-
-Without Docker, the same thing runs directly, given Python 3.12 and Node 20
-(the Agent SDK spawns the Claude Code CLI; set `SITING_WEB_ENGINE=legacy` to do
-without both Node and the subagents):
+Without Docker (Python 3.12, Node 20 for the SDK engine):
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt      # do this before opening the page — see below
 npm install -g @anthropic-ai/claude-code
 uvicorn web.app:app --port 7860
 ```
 
-One run writes one directory under `runs/`:
+
+### Where a run lands
 
 ```
-runs/<run-id>/
+<run-id>/
   evidence-bundle.pdf   the bundle: cover statement, exhibit index, Ex01-Ex11
   assessment.pdf        the chaptered assessment report
-  RUN_RECORD.md         the same record in plain text, for reading in the repo
-  results.json          the single input the bundle is compiled from
+  RUN_RECORD.md         the same record in plain text
+  results.json          the single input both documents compile from
   manifest.json         replay this to regenerate the bundle
+  figure_review.json    the map reviewer's verdict, where it was run
   map_situation.png     Ex03
   map_plan.png          Ex06
-  main.typ / lib.typ    the template as it stood for this run
 ```
+
+Neither `runs/` nor `sessions/` is in the repository — a session holds the
+verbatim transcript of whoever was interviewed. `sample-runs/mayuge-uganda/` is
+one run copied out deliberately, described below.
+
+## The worked example
+
+`sample-runs/mayuge-uganda/` is one complete run as it was produced: **Mayuge
+district, Uganda, ten water points, manual mode.** It is the only compiled
+bundle anyone can read without running the agent themselves.
+
+| | |
+|---|---|
+| Register | 1,378 WPdx+ records, 127 dropped as flagged duplicates, 1,251 kept — 354 serving, 897 not |
+| Population in the area of interest | 570,781 |
+| Covered before | 371,949 (65.2%), reach measured as walking time: about 21 minutes per kilometre at the median friction over this terrain |
+| Covered after ten sites | 432,157 (75.7%), 60,208 newly covered |
+| Distance | EPSG:32636, departing from great-circle by 0.32% at the median — about 6 m on a 1 km radius |
+| Review | issue, weighted 8.12 against the floor of 6.5, with every dimension floor met |
+| Flags raised and printed | data currency, boundary exposure, equity, and the figures unreviewed at issue |
+
+Open `RUN_RECORD.md` first: it carries the whole account in plain text. The two
+PDFs are the same run as an evidence bundle and as a chaptered assessment,
+compiled from the one `results.json` so they cannot disagree.
+
+**Who decided.** Seven of the eight decisions were recorded through the web
+interview by the author of this system, acting as the officer; the interview
+copies a reason verbatim rather than writing one. The eighth — whether the
+measured equity distribution is accepted — was not settled before the run, and
+the assessment carries it as unresolved rather than as agreed. Nobody at Mayuge
+district made any of them. Read the names and reasons in that bundle as a demonstration of the
+format, not as a record of a district's position — a decision record naming
+someone who did not decide is the exact failure this design exists to prevent,
+and an example is not exempt from it. `decisions/mayuge.yaml` is the register
+that interview produced.
+
+**What it does not hide.** Four of the ten independent checks came back as flags,
+and all four are printed in Ex08 rather than resolved out of it. Three are
+properties of this district and this plan: the median record is 1.9 years old,
+two of the ten sites sit within one service radius of the district boundary, and
+59% of the newly covered live in the densest quartile of cells against 42%
+district-wide, so this plan favours dense settlements over remote ones. The
+fourth is the figures. `figure_review.json` holds the map reviewer's verdict on
+them — `revise` on both maps, for a legend that gives the population raster no
+entry, and for service circles drawn as 1 km geometry when the coverage rule is
+a walking time over terrain. It was recorded after the bundle had been compiled,
+so the bundle's own cartographic check reads **unreviewed**, and unreviewed is
+not a pass. It is left that way rather than tidied: an example that only shows
+the clean path is not evidence of anything.
+
+**One thing was edited after the run.** The recorded command carried the absolute
+path of the machine it ran on. That prefix was removed so the paths read relative
+to the repository root, the manifest hash was recomputed over the shortened
+command, and the edit is disclosed in Ex11 and in `RUN_RECORD.md` beside the
+command itself. Nothing else in the bundle was touched, and the provenance hash
+`ac15a4eae9de9c52` is unchanged because it covers the retrievals, not the
+invocation.
 
 ## The deliverable is an evidence bundle, not a report
 
@@ -91,10 +166,15 @@ and by what method.
 Ex10 is the one that matters most. It records properties of the published data
 that would have changed a coverage figure had they been read differently, with
 what was observed, what the agent did, and what a reader must keep in mind. On
-the Kiryandongo run it caught a status value the agent's own handbook did not
-declare, `Abandoned/Decommissioned`, 83 records, and treated them conservatively
-as not serving rather than guessing. That value has since been added to the
-handbook and the detector left in place for the next country.
+the Mayuge run it carries three. `status_clean` is not two-valued in that
+district — 891 `Non-Functional`, 354 `Functional, needs repair`, 6 `Functional,
+not in use` — so the equality test against `Functional` that a reader might
+assume would have scored every point in Mayuge as broken and inflated the gap by
+354 points. 127 of the 1,378 rows WPdx+ returned were flagged duplicates and
+were dropped before any coverage number was computed. And walking-time reach is
+taken from the local friction value at each candidate rather than by a least-cost
+traverse from every one of them, which is conservative rather than optimistic,
+and is stated as a property of the method rather than buried in it.
 
 ## What it does
 
@@ -255,9 +335,18 @@ and the system's job is to make sure the cost of that word is written down.
 ## Install
 
 ```
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pip install git+https://github.com/worldbank/GOSTnetsraster.git   # travel time domains
 ```
+
+That is the whole of it. `requirements.txt` names every package `siting/` and
+`web/` import, including the ones that would otherwise arrive by luck through
+geopandas — a dependency inherited rather than declared is a dependency until
+the package carrying it drops it.
+
+GOSTnetsraster is **not** required, despite `requirements.txt` naming it as an
+install-separately: `sources/friction.py` reaches for `skimage.graph.MCP_Geometric`
+directly and nothing imports GOSTnets. Installing it is harmless and unnecessary.
 
 Typst packages download on first compile. QGIS is optional: `maps.py` renders
 with matplotlib by default and `render_with_qgis()` is the cartographic upgrade,
@@ -265,4 +354,5 @@ run as a subprocess so QGIS's GPL-2.0 licence stays behind a process boundary.
 
 ## Licence
 
-MIT. Every dependency is MIT, MIT-0, BSD-3 or Apache-2.0.
+MIT. Every dependency is MIT, MIT-0, BSD-3, Apache-2.0, or — matplotlib alone —
+the BSD-style matplotlib licence.

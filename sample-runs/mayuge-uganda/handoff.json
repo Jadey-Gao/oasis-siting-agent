@@ -1,0 +1,146 @@
+{
+  "run_id": "mayuge-water-20260904T155905Z",
+  "scope": {
+    "country": "Uganda",
+    "adm2": "Mayuge",
+    "iso3": "UGA",
+    "domain": "water",
+    "budget": null,
+    "overrides": null,
+    "format": "both"
+  },
+  "stage": "evaluate",
+  "completed": [
+    "retrieve",
+    "compile",
+    "solve",
+    "review",
+    "evaluate",
+    "score",
+    "render",
+    "issue"
+  ],
+  "artifacts": {
+    "document_0": "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/evidence-bundle.pdf",
+    "document_1": "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/assessment.pdf"
+  },
+  "generated_at": "2026-09-04T15:59:05Z",
+  "rendered": {
+    "results_hash": "bef3cc55d0bc546e",
+    "formats": [
+      "assessment",
+      "bundle"
+    ]
+  },
+  "review_score": {
+    "reviewer": "deterministic rules over results.json",
+    "weighted": 8.12,
+    "accept_at": 6.5,
+    "decision": "issue",
+    "why_not_issued": "",
+    "scores": [
+      {
+        "dimension": "data adequacy",
+        "value": 8.5,
+        "weight": 0.25,
+        "floor": 5.0,
+        "basis": "median record 1.9 years old, put to the accountable officer and accepted with a recorded reason; 1 semantic anomalies in the register",
+        "passes": true
+      },
+      {
+        "dimension": "method fitness",
+        "value": 7.5,
+        "weight": 0.2,
+        "floor": 5.0,
+        "basis": "On a monotone submodular coverage function greedy selection is within a factor of 1 - 1/e, about 63 per cent, of the optimum.; no exact benchmark (not run); reach measured as walking time from the local friction value at each candidate, not as a least-cost traverse",
+        "passes": true
+      },
+      {
+        "dimension": "spatial rigour",
+        "value": 7.0,
+        "weight": 0.25,
+        "floor": 6.0,
+        "basis": "6 of 6 required diagnostics present; distances in EPSG:32636 (WGS 84 / UTM zone 36N)",
+        "passes": true
+      },
+      {
+        "dimension": "accountability",
+        "value": 9.0,
+        "weight": 0.2,
+        "floor": 6.0,
+        "basis": "every figure resolves to a recorded retrieval; 3 source anomalies disclosed",
+        "passes": true
+      },
+      {
+        "dimension": "actionability",
+        "value": 9.5,
+        "weight": 0.1,
+        "floor": 4.0,
+        "basis": "10 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios",
+        "passes": true
+      }
+    ],
+    "action_items": [],
+    "dimensions": {
+      "data adequacy": {
+        "weight": 0.25,
+        "floor": 5.0,
+        "asks": "Are the sources authoritative, current enough for the claim, and sufficient in coverage for the area of interest?"
+      },
+      "method fitness": {
+        "weight": 0.2,
+        "floor": 5.0,
+        "asks": "Does the location model answer the question that was asked, and is its optimality bounded and stated?"
+      },
+      "spatial rigour": {
+        "weight": 0.25,
+        "floor": 6.0,
+        "asks": "Projected CRS, union coverage, aggregation sensitivity, boundary exposure, equity: are the required diagnostics present and passing?"
+      },
+      "accountability": {
+        "weight": 0.2,
+        "floor": 6.0,
+        "asks": "Does every figure resolve to a recorded retrieval, is every human override recorded with its reason and its cost, and are source anomalies disclosed rather than resolved silently?"
+      },
+      "actionability": {
+        "weight": 0.1,
+        "floor": 4.0,
+        "asks": "Can an officer act on this: coordinates, a ranking whose order matters, a stated basis per site, and honest limitations?"
+      }
+    }
+  },
+  "decisions": [
+    {
+      "checkpoint": "source authorisation",
+      "allowed": true,
+      "reason": "Water Point Data Exchange Plus (WPdx+) is a public endpoint; no authorisation required",
+      "actor": "harness",
+      "ts": "2026-09-04T16:11:57Z"
+    },
+    {
+      "checkpoint": "source authorisation",
+      "allowed": true,
+      "reason": "WorldPop gridded population is a public endpoint; no authorisation required",
+      "actor": "harness",
+      "ts": "2026-09-04T16:11:57Z"
+    },
+    {
+      "checkpoint": "guardrail breach",
+      "allowed": true,
+      "reason": "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run.",
+      "actor": "harness",
+      "ts": "2026-09-04T16:11:59Z"
+    }
+  ],
+  "refusals": [],
+  "token_notes": {},
+  "recovery": {
+    "resume_at": "evaluate",
+    "read_first": [
+      "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/evidence-bundle.pdf",
+      "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/assessment.pdf"
+    ],
+    "note": "stages retrieve, compile, solve, review, evaluate, score, render, issue are complete and must not be re-run"
+  },
+  "updated_at": "2026-09-04T16:11:59Z"
+}

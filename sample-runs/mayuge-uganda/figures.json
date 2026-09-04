@@ -1,0 +1,52 @@
+{
+  "run": "mayuge-water-20260904T155905Z",
+  "context": {
+    "district": "Mayuge, Uganda",
+    "coverage_rule": "within about 21 minutes of walking over the modelled terrain",
+    "objective": "max_coverage",
+    "population": 570781,
+    "covered_before": 371949,
+    "uncovered_before": 198832,
+    "sites": 10,
+    "frame_km": [
+      47.5,
+      72.7
+    ],
+    "boundary": "administrative"
+  },
+  "figures": [
+    {
+      "file": "map_situation.png",
+      "shows": "Recorded facilities and the population beyond the service radius",
+      "assertions": [
+        "The legend lists exactly four entries: population, population beyond the service radius, a serving facility marker, and a non-serving facility marker.",
+        "Two marker styles are distinguishable: 354 serving points drawn as filled circles and 897 non-serving points drawn as crosses. Non-serving points should be the visibly sparser of the two.",
+        "Warm shading marks population beyond the service radius. It should cover a substantial part of the populated area, because 198,832 people of 570,781, 35% of the district, are unserved.",
+        "A scale bar and a north arrow are present and legible.",
+        "The map frame spans roughly 48 km east to west and 73 km north to south. The scale bar should be consistent with that: a bar labelled n km should be about n/48 of the frame's width.",
+        "No element obscures another: the legend must not sit over populated area or over facility markers, and the scale bar must not overlap data."
+      ]
+    },
+    {
+      "file": "map_plan.png",
+      "shows": "The recommended sites and their service radii",
+      "assertions": [
+        "Exactly 10 recommended sites are drawn, each numbered. The numbers should run 1 to 10 with none missing or repeated.",
+        "Each recommended site carries a translucent circle showing its service radius of 1000 m. On a frame about 48 km wide, each circle should be roughly 4.2 per cent of the frame's width across. Circles far larger or smaller than that indicate the radius was drawn in the wrong units.",
+        "Recommended sites should sit in or beside warm-shaded areas, since they were selected to reach unserved population. A site in the middle of an empty or already-served area is a finding.",
+        "The plan's minimum separation is 1000 m, so no two numbered sites should appear closer together than that.",
+        "The legend distinguishes the recommended sites from the existing serving facilities."
+      ]
+    },
+    {
+      "file": "fig_framework.png",
+      "shows": "The four-slot analytical framework",
+      "assertions": [
+        "Four domain boxes on the left feed one problem instance in the middle, which feeds one solver on the right.",
+        "The problem instance lists four slots: demand, candidates, coverage, budget.",
+        "All text is legible at the size shown and no arrow crosses a label."
+      ]
+    }
+  ],
+  "how_to_answer": "For each figure, check every assertion against the image. Report only what you can see. Where an assertion cannot be checked from the image, say so rather than guessing. A figure that is merely plain is not a finding; a figure that contradicts the account is."
+}
