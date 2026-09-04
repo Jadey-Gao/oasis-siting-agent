@@ -1,0 +1,1325 @@
+<!doctype html>
+<!--
+  A clickable mockup of the interview. Nothing here talks to the backend.
+
+  Its purpose is to settle four questions before any of it is built for real:
+
+    1. what the right-hand column is for, and what stays visible in it always
+    2. whether clicking an option submits a decision (it must not) or fills one
+    3. where the two top-bar switches — language, detail — are allowed to reach
+    4. how a refusal looks, given that a refusal here is the design working
+
+  Every figure below is invented. That is stated on the page, in the loudest
+  place available, because a recommendation built on invented data is the one
+  thing this repository refuses to produce. A mockup is allowed to; it is only
+  allowed to while saying so.
+
+  Served at /static/mockup.html once `uvicorn web.app:app` is running.
+-->
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siting Interview Mockup</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@600&display=swap">
+<style>
+  /* Tokens are index.html's, unchanged, plus three the mockup needs:
+     --pend  the "chosen, not yet recorded" state, which must not look like
+             the recorded state or the whole point of the card is lost
+     --dash  the border of an option no run stands behind
+     --deep  the expanded width of the right-hand column */
+  :root{
+    --ground:#F6F7F4; --surface:#FFF; --sunk:#EDF0EA;
+    --ink:#1B211F; --soft:#4A544F; --mute:#78827C;
+    --rule:#DCE1D9; --accent:#0F5F5C; --accent-soft:#E2EFEC;
+    --amber:#9C551A; --amber-soft:#F6EADC; --flag:#8A3324;
+    --pend:#7A5C12; --pend-soft:#F4EFDE; --dash:#C6CDC2;
+    --rail:360px;
+  }
+  :root:not([data-theme="light"]){}
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#121614; --surface:#1A201D; --sunk:#161C19;
+      --ink:#E6E9E4; --soft:#B3BCB6; --mute:#8B958E;
+      --rule:#2C3532; --accent:#5CBDB5; --accent-soft:#17302E;
+      --amber:#D89552; --amber-soft:#2C2318; --flag:#D9765F;
+      --pend:#D6BC72; --pend-soft:#2A2617; --dash:#3B4440;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#121614; --surface:#1A201D; --sunk:#161C19;
+    --ink:#E6E9E4; --soft:#B3BCB6; --mute:#8B958E;
+    --rule:#2C3532; --accent:#5CBDB5; --accent-soft:#17302E;
+    --amber:#D89552; --amber-soft:#2C2318; --flag:#D9765F;
+    --pend:#D6BC72; --pend-soft:#2A2617; --dash:#3B4440;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font:16px/1.65 "Source Sans 3","PingFang SC",-apple-system,BlinkMacSystemFont,sans-serif;
+    display:flex;flex-direction:column;overflow:hidden}
+  h1,h2,h3{font-family:"Zilla Slab","Noto Serif SC",Georgia,serif;text-wrap:balance}
+  button{font:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---------- top bar ---------- */
+  header{border-bottom:1px solid var(--rule);background:var(--surface);flex:none}
+  .bar{max-width:1400px;margin:0 auto;padding:10px 20px;display:flex;gap:14px;
+    align-items:center;flex-wrap:wrap}
+  .who{font-family:"Zilla Slab","Noto Serif SC",Georgia,serif;font-size:17px;font-weight:600}
+  /* An empty slot is shown, not hidden. The strip is the cover of the record,
+     and a reader should see it being written rather than find it already full. */
+  .slot.empty{color:var(--dash);font-weight:400}
+  @keyframes fillin{from{background:var(--pend-soft);box-shadow:0 0 0 4px var(--pend-soft)}
+                    to{background:none;box-shadow:none}}
+  .slot.fill,.chip.fill{animation:fillin 1.1s ease-out}
+  .chip.bound{background:var(--accent-soft);color:var(--accent)}
+  .chip.bound.env{background:var(--amber-soft);color:var(--amber)}
+  .flag.warm{color:var(--accent);border-color:var(--accent)}
+  .ledger .pre{font-size:12.5px;color:var(--mute);line-height:1.6}
+  .sub{font-size:13.5px;color:var(--mute)}
+  .spacer{flex:1}
+  .chip{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.05em;
+    padding:3px 9px;border-radius:11px;background:var(--sunk);color:var(--mute);white-space:nowrap}
+  .chip.on{background:var(--accent-soft);color:var(--accent)}
+
+  /* a switch is two buttons in a trough, not a toggle: the reader should be able
+     to see which of the two states is off as well as which is on */
+  .switch{display:flex;border:1px solid var(--rule);border-radius:13px;overflow:hidden;
+    background:var(--sunk)}
+  .switch button{border:0;background:none;color:var(--mute);padding:4px 11px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.04em}
+  .switch button.on{background:var(--surface);color:var(--accent);font-weight:500;
+    box-shadow:0 0 0 1px var(--rule)}
+  .switch b{display:block;font-weight:inherit}
+  .lbl{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute)}
+  .ghostbtn{border:1px solid var(--rule);background:var(--surface);color:var(--soft);
+    border-radius:6px;padding:4px 10px;font-size:12.5px}
+
+  .banner{background:var(--amber-soft);color:var(--amber);font-size:13px;
+    padding:7px 20px;border-top:1px solid var(--rule)}
+  .banner div{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:baseline}
+  .banner b{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.09em;
+    text-transform:uppercase;flex:none}
+
+  /* ---------- layout ---------- */
+  main{flex:1;min-height:0;max-width:1400px;width:100%;margin:0 auto;padding:0 20px;
+    display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:0}
+  .talk{display:flex;flex-direction:column;min-height:0;padding-right:26px}
+  #thread{flex:1;overflow-y:auto;padding:22px 0 12px;scroll-behavior:smooth}
+  .col{max-width:64ch}
+
+  /* ---------- thread ---------- */
+  .turn{margin-bottom:20px}
+  .turn.u{margin-left:auto;max-width:52ch}
+  .who-label{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .bub{border:1px solid var(--rule);border-radius:7px;padding:14px 17px;background:var(--surface)}
+  .turn.u .bub{background:var(--sunk);border-color:transparent}
+  .bub p{margin:0 0 11px}
+  .bub p:last-child{margin-bottom:0}
+  .verbatim{font-family:"Zilla Slab","Noto Serif SC",Georgia,serif;font-size:16.5px;
+    line-height:1.6}
+  .said-meta{display:flex;gap:8px;align-items:center;margin-top:9px;flex-wrap:wrap}
+  .vchip{font-family:"JetBrains Mono",monospace;font-size:11px;padding:2px 8px;
+    border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+  .tr{font-size:13px;color:var(--mute);font-style:italic;margin-top:8px;
+    padding-left:11px;border-left:2px solid var(--rule)}
+  .tr b{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:9.5px;
+    letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:2px}
+
+  /* the evidence drawer. Closed by default in brief, open in full — the same
+     text either way, never a second version of it */
+  details.basis{margin-top:11px;border-top:1px dashed var(--rule);padding-top:9px}
+  details.basis summary{font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:var(--mute);cursor:pointer;list-style:none;letter-spacing:.04em}
+  details.basis summary::-webkit-details-marker{display:none}
+  details.basis summary::before{content:"▸ ";display:inline-block;transition:transform .12s}
+  details.basis[open] summary::before{content:"▾ "}
+  .call{display:flex;gap:9px;align-items:baseline;font-family:"JetBrains Mono",monospace;
+    font-size:11.5px;color:var(--mute);border-left:2px solid var(--rule);
+    padding:3px 0 3px 10px;margin-top:5px}
+  .call b{font-weight:500;flex:none;color:var(--soft)}
+  .ev{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--mute);
+    background:var(--sunk);border-radius:5px;padding:8px 10px;margin-top:8px;
+    white-space:pre-wrap;overflow-x:auto}
+
+  /* ---------- an event, not a message ---------- */
+  .event{border-left:3px solid var(--accent);background:var(--accent-soft);
+    border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:20px;max-width:56ch}
+  .event .h{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .event .b{font-size:14px;color:var(--soft)}
+  .event .b code{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink)}
+
+  .notice{border:1px solid var(--amber);background:var(--amber-soft);border-radius:7px;
+    padding:13px 16px;margin-bottom:20px;max-width:60ch}
+  .notice .h{font-family:"Zilla Slab","Noto Serif SC",Georgia,serif;font-weight:600;
+    font-size:16px;color:var(--amber);margin-bottom:5px}
+  .notice .b{font-size:14.5px;color:var(--soft)}
+  .notice ul{margin:9px 0 0;padding-left:18px;font-size:14px;color:var(--soft)}
+  .notice li{margin-bottom:3px}
+  .notice li code{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--amber)}
+
+  .thinking{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--mute);
+    padding:4px 0 20px 12px;border-left:2px solid var(--accent-soft)}
+
+  /* ---------- the card ---------- */
+  .card{border:1px solid var(--rule);border-radius:8px;background:var(--surface);
+    margin:0 0 20px;max-width:64ch;overflow:hidden}
+  .card .top{padding:14px 17px 0}
+  .card .pos{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:5px}
+  .card h3{margin:0 0 8px;font-size:19px;line-height:1.35}
+  .card details.why{margin-bottom:13px}
+  .card details.why summary{font-size:14px;color:var(--soft);cursor:pointer;
+    list-style:none}
+  .card details.why summary::-webkit-details-marker{display:none}
+  .card details.why summary i{font-style:normal;color:var(--accent);
+    font-family:"JetBrains Mono",monospace;font-size:11px;white-space:nowrap}
+  .card details.why p{margin:8px 0 0;font-size:14px;color:var(--soft)}
+
+  .opts{display:grid;gap:8px;padding:0 17px 14px}
+  .opt{display:grid;grid-template-columns:14px minmax(0,1fr);gap:11px;text-align:left;
+    border:1px solid var(--rule);border-radius:6px;background:var(--surface);
+    padding:11px 13px;color:var(--ink);transition:border-color .12s,background .12s}
+  .opt:hover{border-color:var(--accent)}
+  .opt .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--dash);
+    margin-top:4px}
+  .opt.sel{border-color:var(--pend);background:var(--pend-soft)}
+  .opt.sel .dot{border-color:var(--pend);background:var(--pend);box-shadow:inset 0 0 0 2.5px var(--pend-soft)}
+  .opt .v{font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:500}
+  .opt .n{font-size:13px;color:var(--mute);margin-left:7px}
+  .opt .c{font-size:13.5px;color:var(--soft);margin-top:3px;font-variant-numeric:tabular-nums}
+  .opt.unprobed{border-style:dashed;border-color:var(--dash);background:none}
+  .opt.unprobed .v{color:var(--soft)}
+  .opt.unprobed .c{color:var(--mute);font-style:italic}
+  .opt .flag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--mute);border:1px solid var(--dash);
+    border-radius:3px;padding:0 4px;margin-left:7px;white-space:nowrap}
+  .opt .ev{margin-top:7px}
+  /* the agent's draft. Deliberately not in the officer's serif: it is a
+     proposal in the agent's own register, and adopting it changes the signature
+     on the row — which the block says before it is adopted, not after */
+  .draft{margin:0 17px 14px;border:1px solid var(--dash);border-left:3px solid var(--mute);
+    border-radius:0 6px 6px 0;background:var(--sunk);padding:11px 13px}
+  .draft .h{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .draft .q{font-size:14.5px;color:var(--soft);line-height:1.6}
+  .draft .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .draft .btns button{border:1px solid var(--rule);background:var(--surface);
+    color:var(--soft);border-radius:6px;padding:5px 12px;font-size:13px}
+  .draft .btns button:hover{border-color:var(--accent);color:var(--accent)}
+  .draft .btns button.on{border-color:var(--amber);background:var(--amber-soft);
+    color:var(--amber);font-weight:600}
+  .draft .cost{font-size:12.5px;color:var(--amber);margin-top:9px}
+  .draft.none .q{font-style:italic;color:var(--mute)}
+  .sigchip{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;
+    padding:2px 6px;border-radius:3px;background:var(--amber-soft);color:var(--amber)}
+  .sel{font:inherit;font-family:"JetBrains Mono",monospace;font-size:11px;
+    padding:3px 7px;border:1px solid var(--rule);border-radius:13px;
+    background:var(--sunk);color:var(--soft)}
+  .wiring td:first-child{color:var(--ink)}
+  .wiring td.src{font-family:"Source Sans 3",sans-serif;font-size:11.5px;color:var(--soft)}
+  .wiring td.ep{color:var(--accent);font-size:10.5px}
+  .wnote{font-size:12.5px;color:var(--soft);line-height:1.65;margin:14px 0 0;
+    padding:10px 12px;background:var(--sunk);border-radius:6px}
+  .wnote b{color:var(--ink)}
+  .wnote.amber{background:var(--amber-soft);color:var(--amber)}
+  .wnote.amber b{color:var(--amber)}
+  .ex00{margin-top:18px;padding-top:13px;border-top:1px solid var(--rule)}
+  .ex00 .cap{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+  .ex00 table{width:100%;border-collapse:collapse;font-size:11px}
+  .ex00 th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:9.5px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:500;
+    border-bottom:1px solid var(--ink);padding:0 7px 4px 0}
+  .ex00 td{border-bottom:1px solid var(--rule);padding:5px 7px 5px 0;vertical-align:top;
+    font-family:"JetBrains Mono",monospace}
+  .ex00 td.sig{color:var(--soft)}
+  .ex00 td.sig.agent{color:var(--amber);font-weight:500}
+  .ex00 td.rs{font-family:"Source Sans 3",sans-serif;font-size:11.5px;color:var(--mute)}
+  /* The scope form is the command line, wearing a shirt. It collects exactly
+     the arguments `python -m siting.cli` takes, and shows the invocation it
+     amounts to, so nobody mistakes it for a step the agent performs. */
+  .scope{border:1px solid var(--rule);border-radius:8px;background:var(--surface);
+    padding:16px 18px;margin-bottom:20px;max-width:64ch}
+  .scope h3{margin:0 0 4px;font-size:18px}
+  .scope .lede{font-size:14px;color:var(--soft);margin:0 0 14px}
+  .scope .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+  .scope label{display:block;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin-bottom:3px}
+  .scope input,.scope select{width:100%;font:inherit;font-size:14.5px;padding:7px 10px;
+    border:1px solid var(--rule);border-radius:6px;background:var(--ground);color:var(--ink)}
+  .scope .wide{grid-column:1 / -1}
+  .scope .cmd{grid-column:1 / -1;font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:var(--mute);background:var(--sunk);border-radius:5px;padding:9px 11px;
+    overflow-x:auto;white-space:pre;line-height:1.6}
+  .scope .go{margin-top:13px}
+  .scope .go button{font-size:15px;font-weight:600;padding:10px 22px;border-radius:7px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff}
+  .scope .go button:disabled{opacity:.35;border-color:var(--rule);background:var(--rule);
+    color:var(--mute);cursor:not-allowed}
+  .scope .note{font-size:12.5px;color:var(--mute);margin:10px 0 0}
+  .custom{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .custom input{font:inherit;font-family:"JetBrains Mono",monospace;font-size:14px;
+    width:120px;padding:5px 9px;border:1px solid var(--rule);border-radius:5px;
+    background:var(--ground);color:var(--ink)}
+  .card .foot{border-top:1px solid var(--rule);background:var(--sunk);padding:9px 17px;
+    font-size:13px;color:var(--mute)}
+  .card .foot b{color:var(--pend);font-weight:600}
+
+  /* ---------- composer ---------- */
+  #composer{flex:none;border-top:1px solid var(--rule);padding:11px 0 16px}
+  .cue{font-size:13px;color:var(--mute);margin:0 0 8px;min-height:20px}
+  .cue.armed{color:var(--pend)}
+  .cue.agentcue{color:var(--amber)}
+  .row{display:flex;gap:10px;align-items:flex-end}
+  #say{flex:1;font:inherit;font-size:15px;padding:10px 13px;border:1px solid var(--rule);
+    border-radius:7px;background:var(--surface);color:var(--ink);resize:none;height:52px}
+  #say:focus{border-color:var(--accent)}
+  #send{font-size:15px;font-weight:600;padding:11px 22px;border-radius:7px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff;flex:none}
+  #send:disabled{opacity:.35;cursor:not-allowed;
+    border-color:var(--rule);background:var(--rule);color:var(--mute)}
+
+  /* ---------- right column ---------- */
+  aside{border-left:1px solid var(--rule);background:var(--surface);display:flex;
+    flex-direction:column;min-height:0}
+  .ledger{flex:none;border-bottom:1px solid var(--rule);padding:12px 14px 10px}
+  .ledger .cap{display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:9px}
+  .ledger .cap span{font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .ledger .cap em{font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:var(--accent)}
+  .lrow{display:grid;grid-template-columns:11px minmax(0,1fr) auto;gap:9px;
+    align-items:baseline;padding:4px 0;font-size:12.5px}
+  .lrow i{width:8px;height:8px;border-radius:50%;background:none;
+    border:1.5px solid var(--dash);margin-top:5px}
+  .lrow.done i{background:var(--accent);border-color:var(--accent)}
+  .lrow.now i{border-color:var(--pend);background:var(--pend-soft);
+    box-shadow:0 0 0 3px var(--pend-soft)}
+  .lrow .k{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--mute);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lrow.done .k{color:var(--soft)}
+  .lrow.now .k{color:var(--pend)}
+  .lrow.agentsig .v{color:var(--amber)}
+  .lrow .v{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lrow.pendingrow .v{color:var(--mute)}
+  .ldef{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+
+  .tabs{display:flex;border-bottom:1px solid var(--rule);flex:none;align-items:stretch}
+  .tabs button{flex:1;background:none;border:none;color:var(--mute);
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;
+    text-transform:uppercase;padding:11px 4px;font-weight:500}
+  .tabs button.on{color:var(--accent);box-shadow:inset 0 -2px 0 var(--accent)}
+  .tabs .grow{flex:none;width:36px;font-size:14px}
+  #panel{flex:1;overflow:auto;padding:14px 16px}
+
+  .empty{font-size:13.5px;color:var(--mute);line-height:1.6}
+  /* the file, set as a file: keys quiet, values solid, the officer's own words
+     in the serif so they read as writing rather than as data */
+  .yaml{font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.75;
+    white-space:pre-wrap;word-break:break-word}
+  .yaml .c{color:var(--mute)}
+  .yaml .k{color:var(--mute)}
+  .yaml .v{color:var(--ink)}
+  .yaml .r{font-family:"Zilla Slab","Noto Serif SC",Georgia,serif;font-size:13.5px;
+    color:var(--soft);display:block;padding-left:4px;border-left:2px solid var(--accent-soft)}
+  .yaml .sep{display:block;height:9px}
+
+  .evrow{border-bottom:1px solid var(--rule);padding:9px 0}
+  .evrow b{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;color:var(--ink)}
+  .evrow small{display:block;font-family:"JetBrains Mono",monospace;font-size:10.5px;
+    color:var(--mute);margin-top:3px;word-break:break-all}
+
+  .recon{font-size:12.5px;padding:8px 10px;border-radius:5px;margin-bottom:11px}
+  .recon.ok{background:var(--accent-soft);color:var(--accent)}
+  .m-svg{width:100%;height:auto;display:block;background:var(--sunk);
+    border:1px solid var(--rule);border-radius:6px;margin-bottom:9px}
+  .m-bound{fill:none;stroke:var(--mute);stroke-width:1;opacity:.75}
+  .m-broken{fill:var(--mute);opacity:.30}
+  .m-working{fill:var(--accent);opacity:.55}
+  .m-halo{fill:var(--accent);opacity:.20}
+  .m-core{fill:var(--accent);stroke:var(--surface);stroke-width:1.2}
+  .m-site text{font-family:"JetBrains Mono",monospace;font-size:9px;fill:var(--accent);font-weight:500}
+  .m-scale line{stroke:var(--mute);stroke-width:1}
+  .m-scale text{font-family:"JetBrains Mono",monospace;font-size:8.5px;fill:var(--mute)}
+  .m-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mute);
+    margin-bottom:12px}
+  .m-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;
+    margin-right:5px;vertical-align:middle;background:var(--accent)}
+  .m-legend i.w{opacity:.55}
+  .m-legend i.b{background:var(--mute);opacity:.35}
+  .sites{width:100%;border-collapse:collapse;font-size:11.5px}
+  .sites th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:9.5px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--mute);
+    border-bottom:1px solid var(--ink);padding:0 8px 4px 0;font-weight:500}
+  .sites td{border-bottom:1px solid var(--rule);padding:6px 8px 6px 0;
+    font-variant-numeric:tabular-nums;vertical-align:top;font-family:"JetBrains Mono",monospace}
+  .sites .why td{font-family:"Source Sans 3",sans-serif;font-size:12px;color:var(--soft);
+    padding-bottom:9px;border-bottom:1px solid var(--rule)}
+
+  /* the two switches, as CSS only. Brief hides what full shows; neither
+     changes a word of what is there */
+  body.brief .full-only{display:none}
+  body.full .brief-only{display:none}
+
+  @media (max-width:1000px){
+    body{overflow:auto}
+    main{grid-template-columns:minmax(0,1fr)}
+    .talk{padding-right:0}
+    aside{border-left:none;border-top:1px solid var(--rule)}
+  }
+</style>
+</head>
+<body class="brief">
+
+<header>
+  <div class="bar">
+    <span class="who slot" id="hdr-place">——</span>
+    <span class="chip" id="hdr-boundary" hidden></span>
+    <span class="sub slot" id="hdr-officer">——</span>
+    <span class="spacer"></span>
+    <span class="chip" id="hdr-progress" hidden></span>
+    <span class="lbl" id="lbl-detail">细节</span>
+    <span class="switch" id="sw-detail">
+      <button data-v="brief" class="on">少</button>
+      <button data-v="full">多</button>
+    </span>
+    <span class="lbl" id="lbl-lang">界面</span>
+    <select class="sel" id="sel-lang"></select>
+    <button class="ghostbtn" id="replay">重放</button>
+  </div>
+  <div class="banner"><div>
+    <b>mockup</b>
+    <span id="banner-text">示意界面。这里所有数字都是编的，没有任何一次真实运行支撑它们 —— 真正的系统拒绝这样做，样稿只有在说明这一点的前提下才可以。</span>
+  </div></div>
+</header>
+
+<main>
+  <section class="talk">
+    <div id="thread"></div>
+    <form id="composer">
+      <p class="cue col" id="cue"></p>
+      <div class="row col">
+        <textarea id="say" rows="2" placeholder="用你自己的话回答…"></textarea>
+        <button id="send" type="submit" disabled>记录</button>
+      </div>
+    </form>
+  </section>
+
+  <aside>
+    <div class="ledger">
+      <div class="cap"><span id="cap-ledger">必须由人做出的判断</span><em id="cap-count">2 / 6</em></div>
+      <div id="ledger"></div>
+    </div>
+    <div class="tabs">
+      <button data-tab="record" class="on" id="tab-record">档案</button>
+      <button data-tab="evidence" id="tab-evidence">依据</button>
+      <button data-tab="plan" id="tab-plan">方案</button>
+      <button data-tab="wiring" id="tab-wiring">接线</button>
+      <button class="grow" id="grow" title="展开">⇤</button>
+    </div>
+    <div id="panel"></div>
+  </aside>
+</main>
+
+<script>
+/* ------------------------------------------------------------------ *
+ *  Everything below is mockup scaffolding. No fetch, no backend.
+ * ------------------------------------------------------------------ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const num = n => n.toLocaleString("en-US");
+
+let LANG = "zh", DETAIL = "brief", TAB = "record", WIDE = false;
+let OFFICER = null, DISTRICT = null, SCOUTED = false, FILL = new Set();
+let PHASE = "scope";
+const SCOPE = {country:"Tanzania", adm2:"Ngara", iso3:"TZA", officer:"", speak:"en"};
+
+/* The interface's own language, and nothing else. What language the agent
+   speaks is an argument of the interview (prompts.system_blocks(extra=...)),
+   not a control on this page. */
+const LOCALES = [
+  {code:"zh", name:"中文",    complete:true},
+  {code:"en", name:"English", complete:true},
+];
+const has = c => (LOCALES.find(l => l.code === c) || {}).complete;
+const S = () => has(LANG) ? LANG : "en";   // the string set actually available
+let STEP = 0, PENDING = null, THREAD = [], EVIDENCE = [], PLAN = null, THINKING = false;
+
+/* ---------- interface strings ---------- */
+const UI = {
+  zh:{place:"恩加拉，坦桑尼亚", officer:"区供水官员 · Grace Mtei",
+      detail:"细节", lang:"界面", brief:"少", full:"多", replay:"重放",
+      ledger:"必须由人做出的判断", record:"档案", evidence:"依据", plan:"方案",
+      progress:n=>`已记录 ${n} / 6`,
+      banner:"示意界面。这里所有数字都是编的，没有任何一次真实运行支撑它们 —— 真正的系统拒绝这样做，样稿只有在说明这一点的前提下才可以。",
+      agent:"agent", deferred:"方案出来之后再问",
+      cue0:"选项定的是数值，理由必须由你写。两者都会进档案。",
+      cue1:v=>`已选 ${v} —— 现在写下为什么。这句话会原样写进 decisions.yaml，并印在评估书上。`,
+      ph0:"用你自己的话回答…", ph1:"为什么选它？",
+      send:"记录", why:"这一条为什么没有默认值",
+      pos:(i,n)=>`第 ${i} 项，共 ${n} 项`,
+      probed:c=>c, unprobed:"没有运行支撑",
+      customLabel:"其他数值", customUnit:"米",
+      basis:"依据与检索",
+      recorded:"记入档案",
+      recordedBody:(k,v)=>`<code>${k} = ${v}</code> 已记录在你名下，理由按原文写入 <code>decisions.yaml</code>。`,
+      trNote:"译文，仅供阅读",
+      thinking:"正在检索…",
+      emptyRecord:"还没有任何记录。你每答一条，这个文件就长一行 —— 评估书读的是这个文件，不是这段对话。",
+      emptyEvidence:"agent 用过的每一个工具都会出现在这里。它一共只有五个。",
+      emptyPlan:"还没有方案。六项判断全部记录之后 agent 才会运行评估，在此之前不会。",
+      recon:n=>`地图与账目一致：图上 ${n} 个推荐点，与表格行数相同。`,
+      thSite:"点位", thCoord:"坐标", thNew:"新增覆盖", thNear:"到最近在用点",
+      legSite:n=>`${n} 个推荐点`, legWork:n=>`${n} 个在用`, legBroke:n=>`${n} 个已损坏`,
+      scopeH:"开始一场评估",
+      scopeLede:"下面这四项是 siting.cli 的参数，本地跑的时候是命令行 flag。收齐了才能建 session —— 因为每一条判断都要记在这个名字下，而 session 的目录用区名命名。",
+      fCountry:"country", fAdm2:"district (adm2)", fIso3:"iso3", fOfficer:"你的姓名和职务",
+      fLang:"agent 说什么语言", scopeGo:"开始",
+      scopeNote:"提交之后浏览器不再做任何决定。它发一次 POST /api/interview，然后发一次空的 /say 让 agent 开口，剩下的全是 agent 的回合。",
+      opened:"session 已建立",
+      openedBody:"<code>POST /api/interview</code> · 目录 <code>sessions/ngara-20260903T0912Z-4a71/</code> · 接着发了一次空的 <code>/say</code>",
+      scouting:"scout 正在读登记册…", resolving:"正在核对边界与登记册…",
+      ledgerPre:"scout 还没有跑。在知道登记册里有什么之前，「六项判断」是一句兑现不了的承诺，所以这里先空着。",
+      boundAdm:"行政边界", boundEnv:"记录包络",
+      warm:"⚡ 已预热 · 即时", cold:"⏱ 每个选项约 30 秒",
+      noTrans:"样稿不翻译你写的字。档案存的是上面那一行原文。",
+      draftH:v=>`agent 的建议是 ${v}，理由它会这样写`,
+      adopt:"用这段话", ownWrite:"我自己写",
+      adoptCost:"一旦原样采用，这一条在评估书 Ex00 的署名栏里印的是 AGENT，不是你的名字。改动过一个字，就算你的。",
+      adoptedNow:"已采用 agent 的原话 · 这一条署名 AGENT",
+      ownNow:"你改写过了 · 这一条署你的名",
+      wiring:"接线", thUi:"界面上的东西", thSrc:"数据来自", thEp:"端点",
+      wRows:[
+        ["顶栏 地区 / 边界依据","scout 返回的 district、boundary、boundary_match","SSE tool_done"],
+        ["判断账目 · N / 6","state.recorded","SSE state"],
+        ["卡片：问题、为什么没有默认值","siting/decisions.py 的 REGISTER，经 questions.py","GET /card"],
+        ["卡片：选项与后果数字","pricing.py 的真实试解","GET /card"],
+        ["agent 的话、建议、草拟的理由","模型这一回合说的话","SSE said"],
+        ["官员的回答","原样发出，一个字不改","POST /say"],
+        ["「记入档案」事件","agent 调了 record_decision 之后","SSE tool_done"],
+        ["右栏 decisions.yaml","state.decisions_yaml","SSE state"],
+        ["拒绝块","run_assessment 返回 issued=false","SSE tool_done"],
+        ["方案表与地图","geo.layers()","GET /geo"],
+        ["Ex00 署名栏","siting/exhibits.py 已有的输出","—"],
+        ["细节 少 / 多","纯 CSS，不发请求","—"],
+        ["界面语言","静态字典","—"],
+        ["agent 说什么语言","prompts.system_blocks(extra=…)","开场参数"]],
+      wNote1:"<b>浏览器记录不了任何东西。</b>它只能说话。写档案的只有 agent 的 record_decision —— 卡片只是把「选了哪个值」和「你写的理由」拼成一句话发出去，跟你自己打字发出去的是同一样东西。",
+      wNote2:"<b>本样稿里唯一超出「显示」的东西：</b>采用 agent 草拟的理由之后要署名 AGENT。需要 Utterance 加一个 adopted 字段，传给 emit.Answer.authored_by_agent —— 下游 siting/exhibits.py:59 已经会把它印成 AGENT。不做这一步就砍掉「用这段话」按钮。",
+      wNote3:"这一栏在真正的实现里不存在。它在这里，是为了让样稿能当交接文档看。",
+      ex00:"评估书 Ex00 · 署名栏", thKey:"判断", thVal:"取值", thSign:"署名", thReason:"理由",
+      yamlHead:["为恩加拉记录的判断。","","理由为官员本人原话时逐字写入；采用 agent 起草的原话时，","该条标记 authored_by_agent: true，评估书署名 AGENT。","","由 siting interview 写出，2026-09-02 14:22 UTC"]},
+  en:{place:"Ngara, Tanzania", officer:"District Water Officer · Grace Mtei",
+      detail:"detail", lang:"interface", brief:"less", full:"more", replay:"replay",
+      ledger:"judgements a person must make", record:"record", evidence:"evidence", plan:"plan",
+      progress:n=>`${n} of 6 recorded`,
+      banner:"Mockup. Every figure on this page is invented; no run stands behind any of them. The real system refuses to do this, and a mockup may only do it while saying so.",
+      agent:"agent", deferred:"asked once a plan exists",
+      cue0:"The option settles the value. The reason has to be yours. Both go into the record.",
+      cue1:v=>`${v} chosen — now say why. Your words go into decisions.yaml verbatim and are printed in the assessment.`,
+      ph0:"Answer in your own words…", ph1:"Why this one?",
+      send:"Record", why:"why this has no default",
+      pos:(i,n)=>`decision ${i} of ${n}`,
+      probed:c=>c, unprobed:"not probed",
+      customLabel:"another value", customUnit:"m",
+      basis:"basis and retrievals",
+      recorded:"written to the record",
+      recordedBody:(k,v)=>`<code>${k} = ${v}</code> recorded against your name, with your reason copied verbatim into <code>decisions.yaml</code>.`,
+      trNote:"display translation",
+      thinking:"retrieving…",
+      emptyRecord:"Nothing recorded yet. Each answer you give is written here as it is made — this file, not the conversation, is what the assessment reads.",
+      emptyEvidence:"Every tool the agent uses appears here. It has five, and no others.",
+      emptyPlan:"No plan yet. The agent runs the assessment once all six judgements are recorded — and not before.",
+      recon:n=>`Map and account reconcile: ${n} sites drawn, ${n} rows in the table.`,
+      thSite:"site", thCoord:"coordinates", thNew:"newly covered", thNear:"to nearest working",
+      legSite:n=>`${n} recommended`, legWork:n=>`${n} serving`, legBroke:n=>`${n} not serving`,
+      scopeH:"Open an assessment",
+      scopeLede:"These four are the arguments siting.cli takes — command-line flags when it is run locally. They have to be complete before a session can exist: every judgement is recorded against the name, and the session directory is named after the district.",
+      fCountry:"country", fAdm2:"district (adm2)", fIso3:"iso3", fOfficer:"your name and role",
+      fLang:"language the agent speaks", scopeGo:"Begin",
+      scopeNote:"After this the browser decides nothing. It sends one POST /api/interview, then one empty /say to let the agent open, and everything after that is the agent's turn.",
+      opened:"session opened",
+      openedBody:"<code>POST /api/interview</code> · directory <code>sessions/ngara-20260903T0912Z-4a71/</code> · followed by one empty <code>/say</code>",
+      scouting:"scout is reading the register…", resolving:"reconciling boundary and register…",
+      ledgerPre:"scout has not run. Until the register is known to hold anything, \u201csix judgements\u201d is a promise that cannot be kept, so this stays empty.",
+      boundAdm:"administrative boundary", boundEnv:"envelope of records",
+      warm:"⚡ warm · instant", cold:"⏱ about 30 s per option",
+      noTrans:"The mockup does not translate what you wrote. The record keeps the line above.",
+      draftH:v=>`the agent recommends ${v}, and would put the reason like this`,
+      adopt:"use these words", ownWrite:"write my own",
+      adoptCost:"Adopted as written, this row's signature column in Ex00 prints AGENT, not your name. Change one word and it is yours.",
+      adoptedNow:"the agent's words, adopted · this row is signed AGENT",
+      ownNow:"you rewrote it · this row is signed in your name",
+      wiring:"wiring", thUi:"on screen", thSrc:"comes from", thEp:"endpoint",
+      wRows:[
+        ["header: district / boundary basis","scout's district, boundary, boundary_match","SSE tool_done"],
+        ["judgement ledger · N of 6","state.recorded","SSE state"],
+        ["card: question, why no default","REGISTER in siting/decisions.py, via questions.py","GET /card"],
+        ["card: options and consequences","real probes from pricing.py","GET /card"],
+        ["the agent's words, recommendation, draft","what the model said this turn","SSE said"],
+        ["the officer's answer","sent verbatim, unaltered","POST /say"],
+        ["\u201cwritten to the record\u201d event","after the agent calls record_decision","SSE tool_done"],
+        ["decisions.yaml panel","state.decisions_yaml","SSE state"],
+        ["refusal block","run_assessment returning issued=false","SSE tool_done"],
+        ["plan table and map","geo.layers()","GET /geo"],
+        ["Ex00 signature column","what siting/exhibits.py already prints","—"],
+        ["detail less / more","pure CSS, no request","—"],
+        ["interface language","static dictionary","—"],
+        ["language the agent speaks","prompts.system_blocks(extra=…)","opening argument"]],
+      wNote1:"<b>The browser cannot record anything.</b> It can only speak. The only thing that writes to the record is the agent's record_decision — the card just composes \u201cwhich value\u201d and \u201cyour reason\u201d into one message, the same message you could have typed yourself.",
+      wNote2:"<b>The one thing here that is more than display:</b> adopting the agent's drafted reason has to sign the row AGENT. That needs an adopted field on Utterance, passed to emit.Answer.authored_by_agent — downstream, siting/exhibits.py:59 already prints AGENT. Without it, drop the \u201cuse these words\u201d button.",
+      wNote3:"This tab does not exist in the real thing. It is here so the mockup can be read as a handoff document.",
+      ex00:"Ex00 · signature column", thKey:"judgement", thVal:"value", thSign:"signed", thReason:"reason",
+      yamlHead:["Decisions recorded for Ngara.","","A reason in the officer's own words is copied verbatim; where the agent's","draft is adopted as written, the row carries authored_by_agent: true and","the assessment signs it AGENT.","","Written by the siting interview, 2026-09-02 14:22 UTC"]}
+};
+const t = () => UI[S()];
+
+/* ---------- the six, in the order the interview asks ---------- */
+const KEYS = ["budget","data_currency_accepted","service_radius_m","objective",
+              "coverage_basis","coverage_tolerance"];
+const DEFERRED_KEY = "equity_accepted";
+
+/* ---------- cards. Question and "why not a default" are the register's own
+     text (siting/decisions.py), translated but never softened ---------- */
+const CARDS = {
+  budget:{
+    pos:1, unitLabel:{zh:"个", en:"facilities"},
+    q:{zh:"这批投资一共资助多少个点？",
+       en:"How many facilities does the programme fund?"},
+    whyBrief:{zh:"它来自资本计划，不来自数据。",
+              en:"This comes from a capital programme, not from the data."},
+    whyFull:{zh:"它来自资本计划，不来自数据。自动模式也不会替你取一个值 —— 别的判断至少还有一个可辩护的默认基准，这一条没有，因为没有任何数据能推出你的预算表。",
+             en:"This comes from a capital programme, not from the data. Automatic mode will not take it either: the other judgements at least have a defensible automatic basis, and this one has none, because nothing in the data implies your budget."},
+    unprobedNote:{zh:"下面三个数字不是登记册给的选项，它们只是已经预热、选中不用等的三个预算。你填任何数都可以，代价只是时间。",
+                  en:"The three numbers below are not options the register offers. They are the budgets that happen to be warm. Any number is allowed; the only cost is time."},
+    options:[
+      {value:"3", label:"3", timing:"warm"},
+      {value:"5", label:"5", timing:"warm"},
+      {value:"10", label:"10", timing:"warm"},
+      {custom:true, unit:"", timing:"cold"}
+    ]},
+  data_currency_accepted:{
+    pos:2,
+    q:{zh:"这份登记册的年龄，够不够用来指导这笔资本支出？",
+       en:"Is the age of the source register acceptable for this decision?"},
+    whyBrief:{zh:"一份这个年纪的调查是否适合指导资本支出，是要为这笔支出负责的人的判断。",
+              en:"Whether a survey of that age is fit to direct capital spending is a judgement for the officer who will answer for the spending."},
+    whyFull:{zh:"登记册的记录年龄中位数在提问之前已经报给你了。一份这个年纪的调查是否适合指导资本支出，是要为这笔支出负责的人的判断，代码里的一个阈值定不了它。",
+             en:"The register's median record age is reported before this is asked. Whether a survey of that age is fit to direct capital spending is a judgement for the officer who will answer for the spending, and it cannot be settled by a threshold in code."},
+    unprobedNote:{zh:"这两个选项都没有试解支撑，也不需要 —— 决定它的是 7.4 年这个数字本身，而那来自 scout，不是来自一次求解。",
+                  en:"Neither option is backed by a probe, and neither needs to be: what decides it is the figure 7.4 years itself, and that came from scout, not from solving anything."},
+    options:[
+      {value:"yes", label:"yes", note:{zh:"接受，并在报告中注明年龄",en:"accepted, with the age stated in the report"}, probed:false,
+       c:{zh:"评估照常进行，7.4 年这个数字印在封面上，结论按「所调查到的状态」读",
+          en:"the assessment proceeds, 7.4 years is printed on the cover, and the finding reads as the surveyed state"}},
+      {value:"no", label:"no", note:{zh:"先重测",en:"commission a resurvey first"}, probed:false,
+       c:{zh:"本轮不出评估，等重测完成",
+          en:"no assessment this cycle; it waits on the resurvey"}}
+    ]},
+  service_radius_m:{
+    pos:3,
+    q:{zh:"多远的距离，或者多长的步行时间，算作已经有服务？",
+       en:"What distance, or what walking time, counts as served?"},
+    whyBrief:{zh:"它决定了评估认为谁已经有服务、谁没有，因此也决定了它报告的缺口有多大。",
+              en:"This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports."},
+    whyFull:{zh:"它决定了评估认为谁已经有服务、谁没有，因此也决定了它报告的缺口有多大。1 公里常被用来代替 JMP 判定“基本服务”所用的 30 分钟，但地形、季节、以及究竟是谁去走这一趟，都会影响这个数字，而这些都不在数据里。",
+             en:"This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports. A 1 km walk is a common stand-in for the 30 minutes the JMP uses for a basic service, but terrain, season and who does the walking all bear on it, and none of that is in the data."},
+    options:[
+      {value:"500", label:"500", unit:"m", note:{zh:"严格",en:"strict"}, probed:true,
+       c:{zh:"现在算作已服务：24,800 人（11%）· 这十口井会新增 18,600 人",
+          en:"already served 24,800 (11%) · the ten sites would add 18,600"},
+       ev:{radius_m:500, covered_today:24800, covered_share:0.113, newly_covered:18600,
+           solved_at_budget:10, run:"ngara-probe-500-a91f"}},
+      {value:"1000", label:"1000", unit:"m", note:{zh:"与 JMP 一致",en:"JMP-aligned"}, probed:true,
+       c:{zh:"现在算作已服务：61,200 人（28%）· 这十口井会新增 34,900 人",
+          en:"already served 61,200 (28%) · the ten sites would add 34,900"},
+       ev:{radius_m:1000, covered_today:61200, covered_share:0.279, newly_covered:34900,
+           solved_at_budget:10, run:"ngara-probe-1000-c4d2"}},
+      {value:"1500", label:"1500", unit:"m", note:{zh:"宽松",en:"permissive"}, probed:true,
+       c:{zh:"现在算作已服务：103,400 人（47%）· 这十口井会新增 41,200 人",
+          en:"already served 103,400 (47%) · the ten sites would add 41,200"},
+       ev:{radius_m:1500, covered_today:103400, covered_share:0.472, newly_covered:41200,
+           solved_at_budget:10, run:"ngara-probe-1500-77b0"}},
+      {custom:true, unit:"m"}
+    ]},
+  objective:{
+    pos:4,
+    q:{zh:"这批投资应该覆盖最多的人，还是覆盖处境最差的人？",
+       en:"Should the programme reach the most people, or the worst-served people?"},
+    whyBrief:{zh:"这是两个不同的目标，会给出不同的答案。",
+              en:"These are different objectives with different answers."},
+    whyFull:{zh:"这是两个不同的目标，会给出不同的答案。覆盖最大化触达的人数最多，但会集中在已经聚居的地方；最小化最坏情况会照顾偏远住户，代价是总数更低。在两者之间取舍是一个分配上的判断，不是一个优化细节。",
+             en:"These are different objectives with different answers. Maximum coverage reaches the largest number and concentrates on settled areas; minimising the worst case reaches remote households at a lower total. Choosing between them is a distributional judgement, not an optimisation detail."},
+    options:[
+      {value:"max_coverage", label:"max_coverage", note:{zh:"贪心 MCLP，距最优不超过 1−1/e",en:"greedy MCLP, within 1−1/e of the optimum"}, probed:true,
+       c:{zh:"新增覆盖 34,900 人 · 最远的住户仍要走 6.8 公里",
+          en:"34,900 newly covered · the worst-served household still walks 6.8 km"},
+       ev:{objective:"max_coverage", newly_covered:34900, worst_case_m:6820,
+           gini_after:0.41, run:"ngara-probe-obj-max-1e08"}},
+      {value:"worst_case", label:"worst_case", note:{zh:"人口加权 p-center",en:"population-weighted p-centre"}, probed:true,
+       c:{zh:"新增覆盖 27,400 人（少 7,500）· 最远的住户走 4.1 公里",
+          en:"27,400 newly covered (7,500 fewer) · the worst-served household walks 4.1 km"},
+       ev:{objective:"worst_case", newly_covered:27400, worst_case_m:4110,
+           gini_after:0.26, run:"ngara-probe-obj-worst-53aa"}}
+    ]},
+  coverage_basis:{
+    pos:5,
+    q:{zh:"覆盖应该按直线距离衡量，还是按翻越地形所需的步行时间衡量？",
+       en:"Should reach be measured as straight-line distance, or as walking time over terrain?"},
+    whyBrief:{zh:"直线距离无视河流、山脊和没有路这件事，因此会高估谁得到了服务。",
+              en:"Straight-line distance ignores rivers, ridges and the absence of a path, and so overstates who is served."},
+    whyFull:{zh:"直线距离无视河流、山脊和根本没有路这件事，因此会高估谁得到了服务。以公开摩擦面计算的步行时间更接近一户人家的真实体验，但那张面的分辨率约为一公里，并不知道村子实际在走的小路。一个区愿意承担哪一种误差，是它自己的判断。",
+             en:"Straight-line distance ignores rivers, ridges and the absence of a path, and so overstates who is served. Walking time over a published friction surface is closer to what a household experiences, but the surface is modelled at about one kilometre and does not know the footpaths a village actually uses. Which error a district prefers to carry is its judgement."},
+    options:[
+      {value:"straight_line", label:"straight_line", note:{zh:"投影坐标系下的欧氏距离",en:"euclidean, in a projected CRS"}, probed:true,
+       c:{zh:"按 1000 米算，现有 61,200 人（28%）已被服务",
+          en:"at 1000 m, 61,200 (28%) already served"},
+       ev:{basis:"straight_line", crs:"EPSG:32736", covered_today:61200,
+           great_circle_departure_m:3.4, run:"ngara-probe-basis-sl-2b71"}},
+      {value:"walking_time", label:"walking_time", note:{zh:"MAP 摩擦面，约 1 公里分辨率",en:"MAP friction surface, ~1 km"}, probed:true,
+       c:{zh:"同样门槛下只有 43,900 人（20%）· 缺口比直线算法大 17,300 人",
+          en:"only 43,900 (20%) at the same threshold · a gap 17,300 people larger"},
+       ev:{basis:"walking_time", surface:"MAP 2019 friction, 30 arcsec",
+           covered_today:43900, threshold_min:30, run:"ngara-probe-basis-wt-9f3c"}}
+    ]},
+  coverage_tolerance:{
+    pos:6,
+    q:{zh:"复核环节最多可以放弃多少覆盖，超过就必须在报告里上报？",
+       en:"How much coverage may reviewing decisions forgo before that is escalated in the report?"},
+    whyBrief:{zh:"否决一个推荐点是要付出覆盖代价的。这条线画在哪里，是一个治理问题。",
+              en:"A veto on a recommended site costs coverage. Where that line sits is a governance question."},
+    whyFull:{zh:"否决一个推荐点是要付出覆盖代价的。什么算是可以接受的地方性判断，什么算是应该向上报告的损失，这条线画在哪里是一个治理问题，不是一个数据问题。",
+             en:"A veto on a recommended site costs coverage. Where the line sits between an acceptable local judgement and a loss that should be flagged upward is a governance question."},
+    unprobedNote:{zh:"这三个选项都没有运行支撑，而且不可能有：它管的是复核发生之后的事，而复核还没有发生。这里给不出数字，只能由你判断。",
+                  en:"None of these three is probed, and none can be: it governs what happens after a review, and no review has happened. There is no figure to offer here — only your judgement."},
+    options:[
+      {value:"0.02", label:"0.02", note:{zh:"紧",en:"tight"}, probed:false,
+       c:{zh:"以本方案计，约相当于 700 人",en:"about 700 people, against this plan"}},
+      {value:"0.05", label:"0.05", note:{zh:"",en:""}, probed:false,
+       c:{zh:"约 1,750 人",en:"about 1,750 people"}},
+      {value:"0.10", label:"0.10", note:{zh:"松",en:"loose"}, probed:false,
+       c:{zh:"约 3,500 人",en:"about 3,500 people"}}
+    ]},
+  equity_accepted:{
+    pos:7, deferred:true,
+    q:{zh:"方案在密集人口与偏远人口之间的分布已经量出来了。是否接受？",
+       en:"The plan's distribution between dense and remote population has been measured. Is it accepted?"},
+    whyBrief:{zh:"覆盖最大化在构造上就偏向密集地区。这样的分布是否可以接受，是一个政策立场。",
+              en:"Coverage maximisation favours density by construction. Whether the resulting distribution is acceptable is a policy position."},
+    whyFull:{zh:"覆盖最大化在构造上就偏向密集地区。由此产生的分布是否可以接受，是一个政策立场，评估书会记录下采取了哪一个立场。",
+             en:"Coverage maximisation favours density by construction. Whether the resulting distribution is acceptable is a policy position, and the assessment records which position was taken."},
+    options:[
+      {value:"yes", label:"yes", note:{zh:"接受，并在报告中列出所测分布",en:"accepted, with the measured distribution stated"}, probed:true,
+       c:{zh:"最密集的五分之一人口拿到 10 个点中的 6 个 · 基尼系数 0.41",
+          en:"the densest population quintile takes 6 of the 10 sites · Gini 0.41"},
+       ev:{quintile_top_sites:6, gini:0.41, remote_pop_uncovered:31200,
+           run:"ngara-20260902T1422Z-8c1d"}},
+      {value:"no", label:"no", note:{zh:"改用 worst_case 目标重跑",en:"re-run with the worst_case objective"}, probed:true,
+       c:{zh:"重跑会少覆盖 7,500 人，但最远住户从 6.8 公里降到 4.1 公里",
+          en:"re-running covers 7,500 fewer people, but the worst-served walk falls from 6.8 km to 4.1 km"},
+       ev:{objective:"worst_case", newly_covered:27400, worst_case_m:4110, gini:0.26}}
+    ]}
+};
+
+/* ---------- what the agent says, beat by beat ---------- */
+const BEATS = [
+  { card:"budget",
+    tools:[["scout","842 records · median 7.4 yr · boundary matched at GADM level 2"]],
+    brief:{zh:"恩加拉，坦桑尼亚（TZA）。\n\n登记册里 842 个取水点，其中 118 个标为不在使用；记录年龄中位数 7.4 年；区内人口约 219,000。边界在 GADM 第 2 层匹配到 Ngara，装下了登记册 97% 的点——用的是行政边界，不是记录包络。\n\n顶上那一栏现在填好了。先定预算，因为后面每一个选项都是按这个预算解出来的。这一条我不给建议，也不替你起草理由——它来自资本计划，数据里推不出来。",
+           en:"Ngara, Tanzania (TZA).\n\nThe register holds 842 water points, 118 of them flagged as not serving; the median record is 7.4 years old; the population is about 219,000. The boundary matched Ngara at GADM level 2, which contains 97% of the register — the administrative boundary, not an envelope around the records.\n\nThe strip at the top is filled in now. Budget first, because every option after this is solved at it. I offer no recommendation and no drafted reason here: it comes from a capital programme, and nothing in the data implies it."},
+    full:{zh:"恩加拉，坦桑尼亚（TZA）。\n\n登记册里 842 个取水点，其中 118 个标为不在使用，另有 31 条坐标落在区界之外、被清洗规则剔除；记录年龄中位数 7.4 年，最旧的一条是 2009 年；区内人口约 219,000。\n\n第 3 层也有一个叫 Ngara 的单位，只装下登记册 11% 的点。选中第 2 层是因为它装得最多，97%——由对应关系决定，不由层级编号决定。所以用的是行政边界，不是记录包络，这一点会写进评估书。\n\n顶上那一栏现在填好了。先定预算，因为后面每一个选项都是按这个预算解出来的。这一条我不给建议，也不替你起草理由——它来自资本计划，数据里推不出来。",
+          en:"Ngara, Tanzania (TZA).\n\nThe register holds 842 water points, 118 flagged as not serving, and a further 31 whose coordinates fall outside the boundary and were dropped by the cleaning rules; the median record is 7.4 years old, the oldest from 2009; the population is about 219,000.\n\nA unit named Ngara also exists at level 3, containing 11% of the register. Level 2 was chosen because it contains the most, 97% — correspondence decides, not numbering. So this runs on the administrative boundary rather than an envelope around the records, and the assessment says so.\n\nThe strip at the top is filled in now. Budget first, because every option after this is solved at it. I offer no recommendation and no drafted reason here: it comes from a capital programme, and nothing in the data implies it."} },
+
+  { card:"data_currency_accepted",
+    rec:{value:"yes", draft:{zh:"7.4 年偏旧，但雨季前重测来不及。按现有登记册推进，报告里必须把年龄写在显眼处。", en:"7.4 years is old, but there is no time to resurvey before the rains. Proceed on the register as it stands, with the age stated prominently."}},
+    tools:[],
+    brief:{zh:"记下了。\n\n下一条是关于这份登记册本身。中位年龄 7.4 年，最旧的一条是 2009 年的——数字我已经给你了，接下来是你的判断，不是我的。",
+           en:"Recorded.\n\nThe next one is about the register itself. Median age 7.4 years, the oldest record from 2009 — I have given you the figure; the judgement after it is yours, not mine."},
+    full:{zh:"记下了。\n\n下一条是关于这份登记册本身。中位年龄 7.4 年，最旧的一条是 2009 年的——数字我已经给你了，接下来是你的判断，不是我的。\n\n注意这一条我没有试解可以给你看。别的问题我可以把每个选项各跑一遍再报数字；这一条决定它的就是 7.4 这个数本身。",
+          en:"Recorded.\n\nThe next one is about the register itself. Median age 7.4 years, the oldest record from 2009 — I have given you the figure; the judgement after it is yours, not mine.\n\nNote that I have no probe to show you here. On the other questions I can solve once per option and report what came back; on this one, what decides it is the figure itself."} },
+
+  { card:"service_radius_m",
+    rec:{value:"1000", draft:{zh:"1 公里对应 JMP 判定基本服务所用的 30 分钟，便于与其他区的数字对照；恩加拉旱季的主要取水路径大致可通行。", en:"1 km stands in for the 30 minutes the JMP uses for a basic service, which keeps this district comparable with others, and Ngara's main dry-season routes are broadly passable."}},
+    tools:[["price_options","3 options priced on real runs"]],
+    brief:{zh:"接受，记下了。\n\n下面这个问题决定了整份评估的缺口有多大，所以我按你给的预算，把三个门槛在你自己的数据上各解了一遍。",
+           en:"Accepted and recorded.\n\nThe next question sets how large the gap in this whole assessment turns out to be, so I have solved your own data once at each of the three thresholds, at the budget you gave."},
+    full:{zh:"接受，记下了；7.4 年这个数字会印在评估书封面上，结论按「所调查到的状态」而不是「现在的状态」来读。\n\n下面这个问题决定了整份评估的缺口有多大，所以我按你给的预算，把三个门槛在你自己的数据上各解了一遍。三行数字都来自真实运行，不是我估的。",
+          en:"Accepted and recorded; 7.4 years will be printed on the assessment's cover, and the finding reads as the surveyed state of the network rather than its present state.\n\nThe next question sets how large the gap in this whole assessment turns out to be, so I have solved your own data once at each of the three thresholds, at the budget you gave. All three lines come from real runs; none is my estimate."} },
+
+  { card:"objective",
+    rec:{value:"max_coverage", draft:{zh:"这一轮资本有限，先让尽可能多的人拿到水；分布问题在下一条单独回答。", en:"With this round's capital limited, the priority is the largest number of people reached; distribution is answered separately below."}},
+    tools:[["price_options","2 options priced on real runs"]],
+    brief:{zh:"1000 米记下了。按这个门槛，恩加拉现在有 61,200 人算作已被服务，缺口是 158,000 人。\n\n接下来这一条不是技术选择：十口井放在哪里，取决于你要的是覆盖最多的人，还是照顾最难的人。",
+           en:"1000 m is recorded. At that threshold 61,200 people in Ngara count as served today, and the gap is 158,000.\n\nThe next one is not a technical choice: where the ten sites go depends on whether you want to reach the most people or the hardest-to-reach."},
+    full:{zh:"1000 米记下了。按这个门槛，恩加拉现在有 61,200 人算作已被服务（占 28%），缺口是 158,000 人。这个缺口是在 1000 米这个前提下的说法，报告里会一直这样写。\n\n接下来这一条不是技术选择：十口井放在哪里，取决于你要的是覆盖最多的人，还是照顾最难的人。两个目标我都按你的预算解了一遍，代价写在下面。",
+          en:"1000 m is recorded. At that threshold 61,200 people (28%) count as served today and the gap is 158,000. That gap is a statement conditional on 1000 m, and the report will say so throughout.\n\nThe next one is not a technical choice: where the ten sites go depends on whether you want to reach the most people or the hardest-to-reach. I have solved both at your budget; the trade is below."} },
+
+  { card:"coverage_basis", refusal:true,
+    rec:{value:"straight_line", draft:{zh:"直线距离与既往报告口径衔接，也不引入一张没有在本区校准过的摩擦面。", en:"Straight-line keeps this comparable with previous reports and introduces no friction surface that has never been calibrated here."}},
+    tools:[["run_assessment","not issued: 2 decisions have not been recorded"],
+           ["price_options","2 options priced on real runs"]],
+    brief:{zh:"我试着直接出方案，它拒绝了 —— 见上。还差两条。\n\n第一条是距离怎么算。",
+           en:"I tried to produce the plan and it refused — above. Two are outstanding.\n\nThe first is how distance is measured."},
+    full:{zh:"我试着直接出方案，它拒绝了 —— 见上。这不是我绕过去的东西：下游任何一处都不会为这两条取默认值，缺一条就整份不出。\n\n还差两条，第一条是距离怎么算。两种算法我都跑了。",
+          en:"I tried to produce the plan and it refused — above. This is not something I can route around: nothing downstream reads a default for these two, and one missing means nothing is issued.\n\nTwo are outstanding. The first is how distance is measured; I have run both."} },
+
+  { card:"coverage_tolerance",
+    tools:[],
+    brief:{zh:"直线距离记下了。最后一条我给不出数字，也不替你起草理由——它是治理判断。",
+           en:"Straight-line is recorded. On the last one I have no figure to give you and no reason to draft: it is a governance judgement."},
+    full:{zh:"直线距离记下了；报告会写明这一选择高估了多少人被服务，以及步行时间算法下的对照数字（43,900 人）。\n\n最后一条我给不出数字，原因写在卡片里。",
+          en:"Straight-line is recorded; the report will state how many people that choice overstates as served, and carry the walking-time comparison (43,900) beside it.\n\nOn the last one I have no figure to give you, and the card says why."} },
+
+  { card:"equity_accepted", plan:true,
+    rec:{value:"yes", draft:{zh:"接受当前分布，同时在报告中列明最密集的五分之一拿到 10 个点中的 6 个，供上级审阅。", en:"The distribution is accepted, with the report stating that the densest quintile takes 6 of the 10 sites, for review above."}},
+    tools:[["run_assessment","10 sites, 34,900 newly covered"]],
+    brief:{zh:"六条齐了，评估跑完了 —— 右边是方案。十个点新增覆盖 34,900 人，把恩加拉的服务率从 28% 抬到 44%。\n\n还有一条，只有在方案存在之后才成立。",
+           en:"All six are recorded and the assessment has run — the plan is on the right. Ten sites add 34,900 people, taking Ngara from 28% served to 44%.\n\nOne question is left, and it only becomes real now that a plan exists."},
+    full:{zh:"六条齐了，评估跑完了 —— 右边是方案，评审给到 7.4 分，在出具门槛之上。十个点新增覆盖 34,900 人，把恩加拉的服务率从 28% 抬到 44%。覆盖是十个点的并集，评估器另算了一遍：按每个点分别相加会得到 41,600，多报 6,700 人，这个差额印在报告里。\n\n还有一条，只有在方案存在之后才成立。",
+          en:"All six are recorded and the assessment has run — the plan is on the right, reviewed at 7.4, above the issue floor. Ten sites add 34,900 people, taking Ngara from 28% served to 44%. Coverage is the union over the ten; the evaluator recomputed it independently, and a per-site sum would have claimed 41,600 — 6,700 more. That difference is printed in the report."} },
+
+  { card:null, issued:true,
+    tools:[],
+    brief:{zh:"接受，记下了。评估已出具。\n\n六条判断全部由你记录，理由都是你自己的原话。右边的档案和评估书从同一个 results.json 编译，所以它们不可能互相矛盾。",
+           en:"Accepted and recorded. The assessment is issued.\n\nAll six judgements were recorded by you, each with your own words as the reason. The record on the right and the assessment compile from the same results.json, so they cannot disagree."},
+    full:{zh:"接受，记下了 —— 连同你给的理由，以及所测的分布本身（最密集的五分之一人口拿到 10 个点中的 6 个，基尼 0.41）。评估已出具。\n\n六条判断全部由你记录，理由都是你自己的原话。右边的档案和评估书从同一个 results.json 编译，所以它们不可能互相矛盾。整份账目在 RUN_RECORD.md 里：谁决定了什么、每一次检索、每一处异常、每一个否决和它的代价。",
+          en:"Accepted and recorded — with your reason, and with the measured distribution itself (the densest quintile takes 6 of the 10 sites, Gini 0.41). The assessment is issued.\n\nAll six judgements were recorded by you, each with your own words as the reason. The record on the right and the assessment compile from the same results.json, so they cannot disagree. The whole account is in RUN_RECORD.md: who decided what, every retrieval, every anomaly, every override and what it cost."} }
+];
+
+let RECORDED = {};
+
+/* ================= rendering ================= */
+
+function optHTML(card, o, i){
+  const T = t();
+  if (o.custom){
+    const on = PENDING && PENDING.custom;
+    return `<button type="button" class="opt unprobed${on?" sel":""}" data-i="${i}">
+      <span class="dot"></span>
+      <span>
+        <span class="v">${esc(T.customLabel)}</span>
+        <span class="flag">${esc(o.timing === "cold" ? T.cold : T.unprobed)}</span>
+      </span></button>`;
+  }
+  const sel = PENDING && !PENDING.custom && PENDING.value === o.value;
+  const note = o.note && o.note[S()] ? `<span class="n">${esc(o.note[S()])}</span>` : "";
+  // three states, not two: priced by a run, unpriced, or not a claim at all —
+  // a warm budget says something about waiting, nothing about consequence
+  const flag = o.timing ? `<span class="flag warm">${esc(t().warm)}</span>`
+             : o.probed ? "" : `<span class="flag">${esc(t().unprobed)}</span>`;
+  const ev = o.ev ? `<div class="ev full-only">${esc(JSON.stringify(o.ev, null, 1))}</div>` : "";
+  return `<button type="button" class="opt${o.probed?"":" unprobed"}${sel?" sel":""} " data-i="${i}">
+    <span class="dot"></span>
+    <span>
+      <span class="v">${esc(o.label)}${o.unit?`<span class="n">${esc(o.unit)}</span>`:""}</span>${note}${flag}
+      ${o.c ? `<span class="c">${esc(o.c[S()])}</span>` : ""}
+      ${ev}
+    </span></button>`;
+}
+
+function cardHTML(key){
+  const c = CARDS[key], T = t();
+  const why = `<details class="why"${DETAIL==="full"?" open":""}>
+      <summary><i>${esc(T.why)} ▾</i></summary>
+      <p class="brief-only">${esc(c.whyBrief[S()])}</p>
+      <p class="full-only">${esc(c.whyFull[S()])}</p>
+    </details>`;
+  const unpn = c.unprobedNote
+    ? `<p class="c" style="font-size:13.5px;color:var(--mute);margin:0 0 11px">${esc(c.unprobedNote[S()])}</p>` : "";
+  return `<div class="card" data-key="${key}">
+    <div class="top">
+      <div class="pos">${esc(T.pos(c.pos, 7))}${c.deferred?" · "+esc(T.deferred):""}</div>
+      <h3>${esc(c.q[S()])}</h3>
+      ${why}${unpn}
+    </div>
+    <div class="opts">${c.options.map((o,i)=>optHTML(c,o,i)).join("")}</div>
+    ${PENDING && PENDING.key===key && PENDING.custom
+      ? `<div class="custom" style="padding:0 17px 14px"><input id="cust" type="number"
+           step="${c.unitLabel ? 1 : 50}" value="${esc(PENDING.value||"")}"
+           placeholder="${c.unitLabel ? 7 : 750}"
+           ><span class="n">${esc((c.unitLabel||{})[S()] || T.customUnit)}</span></div>` : ""}
+    <div class="foot">${PENDING && PENDING.key===key
+        ? `<b>${esc(String(PENDING.value||"—"))}</b> · ${esc(T.cue1(PENDING.value||"—"))}`
+        : esc(T.cue0)}</div>
+  </div>`;
+}
+
+/* The skill tells the agent to prepare the choice and recommend one. So the
+   recommendation, and the reason the agent would give for it, belong in the
+   agent's own turn — not in a block the interface invented. Taking it verbatim
+   is allowed and is not free: the row is then signed AGENT. */
+const recOf = () => {
+  for (let i = THREAD.length - 1; i >= 0; i--)
+    if (THREAD[i].type === "agent") return THREAD[i].rec || null;
+  return null;
+};
+const draftActive = () => {
+  const r = recOf();
+  return (r && PENDING && PENDING.value === r.value) ? r.draft[S()] : null;
+};
+const adopted = () => {
+  const d = draftActive();
+  return !!d && $("say").value.trim() === d.trim();
+};
+
+function recHTML(it){
+  if (!it.rec) return "";
+  const T = t();
+  return `<div class="draft"><div class="h">${esc(T.draftH(it.rec.value))}</div>
+    <div class="q">\u201c${esc(it.rec.draft[S()])}\u201d</div>
+    <div class="btns">
+      <button type="button" class="dbtn" data-m="adopt">${esc(T.adopt)}</button>
+      <button type="button" class="dbtn" data-m="own">${esc(T.ownWrite)}</button>
+    </div>
+    <div class="cost">${esc(T.adoptCost)}</div></div>`;
+}
+
+function itemHTML(it){
+  const T = t();
+  if (it.type === "agent"){
+    const body = (DETAIL==="full" ? it.full[S()] : it.brief[S()])
+      .split("\n\n").map(p=>`<p>${esc(p)}</p>`).join("");
+    const tools = (it.tools||[]).length
+      ? `<details class="basis"${DETAIL==="full"?" open":""}>
+           <summary>${esc(T.basis)} · ${it.tools.length}</summary>
+           ${it.tools.map(([n,s])=>`<div class="call"><b>✓ ${esc(n)}</b><span>${esc(s)}</span></div>`).join("")}
+         </details>` : "";
+    return `<div class="turn col a"><div class="who-label">${esc(T.agent)}</div>
+      <div class="bub">${body}${recHTML(it)}${tools}</div></div>`;
+  }
+  if (it.type === "officer"){
+    const meta = it.key
+      ? `<div class="said-meta"><span class="vchip">${esc(it.key)} = ${esc(it.value)}</span>
+         ${it.authored ? `<span class="sigchip">signed AGENT</span>`
+                       : `<span class="lbl">verbatim · ${esc(it.lang)}</span>`}</div>` : "";
+    const tr = it.key && !it.authored && it.lang !== LANG
+      ? `<div class="tr"><b>${esc(T.trNote)}</b>${esc(T.noTrans)}</div>` : "";
+    return `<div class="turn u"><div class="who-label">${esc(OFFICER || "")}</div>
+      <div class="bub"><div class="verbatim">${esc(it.text)}</div>${meta}${tr}</div></div>`;
+  }
+  if (it.type === "record")
+    return `<div class="event"><div class="h">✎ ${esc(T.recorded)}</div>
+      <div class="b">${T.recordedBody(esc(it.key), esc(it.value))}</div></div>`;
+  if (it.type === "opened"){
+    const T = t();
+    return `<div class="event"><div class="h">${esc(T.opened)}</div>
+      <div class="b">${T.openedBody}</div></div>`;
+  }
+  if (it.type === "note")
+    return `<div class="notice" style="border-color:var(--dash)">
+      <div class="b">${esc(it.text)}</div></div>`;
+  if (it.type === "refusal"){
+    const R = {zh:{h:"这不是错误 —— 这正是系统在按设计工作",
+                   b:"评估没有出具。还有两项判断没有记录，而下游任何一处都不会替它们取默认值。",
+                   l:["<code>coverage_basis</code> —— 覆盖按什么衡量","<code>coverage_tolerance</code> —— 复核可以放弃多少覆盖"]},
+               en:{h:"This is not an error — it is the design working",
+                   b:"Not issued. Two judgements have not been recorded, and nothing downstream reads a default for them.",
+                   l:["<code>coverage_basis</code> — what reach is measured as","<code>coverage_tolerance</code> — how much coverage a review may forgo"]}}[S()];
+    return `<div class="notice"><div class="h">${esc(R.h)}</div>
+      <div class="b">${esc(R.b)}</div><ul>${R.l.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+  }
+  if (it.type === "issued"){
+    const I = {zh:{h:"✓ 评估已出具",b:"<code>runs/ngara-20260902T1422Z-8c1d/</code> · 评审 7.4，在门槛之上 · 6 项判断全部由人记录"},
+               en:{h:"✓ assessment issued",b:"<code>runs/ngara-20260902T1422Z-8c1d/</code> · reviewed 7.4, above the floor · all 6 judgements recorded by a person"}}[S()];
+    return `<div class="event"><div class="h">${esc(I.h)}</div><div class="b">${I.b}</div></div>`;
+  }
+  return "";
+}
+
+function renderThread(){
+  if (PHASE === "scope"){ $("thread").innerHTML = scopeHTML(); return; }
+  const cur = THREAD.length && THREAD[THREAD.length-1].card;
+  $("thread").innerHTML = THREAD.map(itemHTML).join("")
+    + (cur ? cardHTML(cur) : "")
+    + (THINKING ? `<div class="thinking">${esc(
+         THINKING === true ? t().thinking : t()[THINKING])}</div>` : "");
+  $("thread").scrollTop = $("thread").scrollHeight;
+}
+
+function renderLedger(){
+  const T = t(), n = KEYS.filter(k=>RECORDED[k]).length;
+  if (!SCOUTED){                       // six judgements is not yet a promise
+    $("ledger").innerHTML = `<div class="pre">${esc(T.ledgerPre)}</div>`;
+    $("cap-count").textContent = "—";
+    return;
+  }
+  const cur = THREAD.length ? THREAD[THREAD.length-1].card : null;
+  const row = k => {
+    const r = RECORDED[k];
+    const cls = (r ? "done" : (k===cur ? "now" : "pendingrow"))
+              + (r && r.authored ? " agentsig" : "");
+    const v = r ? esc(r.label[S()] || r.value) : "—";
+    return `<div class="lrow ${cls}"><i></i><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  };
+  $("ledger").innerHTML = KEYS.map(row).join("")
+    + `<div class="ldef">${row(DEFERRED_KEY)}</div>`;
+  $("cap-count").textContent = `${n} / 6`;
+}
+
+/* ---------- the right-hand panel ---------- */
+function yamlHTML(){
+  const T = t();
+  if (!Object.keys(RECORDED).length) return `<p class="empty">${esc(T.emptyRecord)}</p>`;
+  const head = T.yamlHead.map(l=>`<span class="c"># ${esc(l)}</span>`).join("\n");
+  const body = [...KEYS, DEFERRED_KEY].filter(k=>RECORDED[k]).map(k=>{
+    const r = RECORDED[k];
+    let s = `<span class="k">- key:</span> <span class="v">${esc(k)}</span>\n`
+          + `<span class="k">  value:</span> <span class="v">${esc(r.yamlValue||r.value)}</span>\n`
+          + `<span class="k">  decided_by:</span> <span class="v">${esc(OFFICER||"")}</span>\n`
+          + `<span class="k">  reason:</span> <span class="c">|</span>\n`
+          + `<span class="r">    ${esc(r.reason)}</span>`;
+    if (r.lang) s += `\n<span class="k">  language:</span> <span class="v">${esc(r.lang)}</span>`;
+    if (r.authored) s += `\n<span class="k">  authored_by_agent:</span> <span class="v">true</span>`;
+    return s;
+  }).join(`<span class="sep"></span>`);
+  return `<div class="yaml">${head}\n\n${body}</div>` + ex00HTML();
+}
+
+/* What siting/exhibits.py already prints, shown while it can still be changed.
+   The signature column is the whole point of the drafting feature: adopting the
+   agent's words is allowed, and it is not free. */
+function ex00HTML(){
+  const T = t();
+  const rows = [...KEYS, DEFERRED_KEY].filter(k=>RECORDED[k]).map(k=>{
+    const r = RECORDED[k];
+    return `<tr><td>${esc(k)}</td><td>${esc(r.value)}</td>
+      <td class="sig${r.authored?" agent":""}">${r.authored ? "AGENT"
+        : esc((OFFICER||"").split(/[,·]/)[0].trim())}</td>
+      <td class="rs">${esc(r.reason.slice(0,46))}${r.reason.length>46?"…":""}</td></tr>`;
+  }).join("");
+  return `<div class="ex00"><div class="cap">${esc(T.ex00)}</div>
+    <table><thead><tr><th>${esc(T.thKey)}</th><th>${esc(T.thVal)}</th>
+    <th>${esc(T.thSign)}</th><th>${esc(T.thReason)}</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function evidenceHTML(){
+  if (!EVIDENCE.length) return `<p class="empty">${esc(t().emptyEvidence)}</p>`;
+  return EVIDENCE.map(([n,s])=>`<div class="evrow"><b>✓ ${esc(n)}</b><small>${esc(s)}</small></div>`).join("");
+}
+
+/* deterministic pseudo-geography, so the map is the same on every replay */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function buildPlan(){
+  const rnd = mulberry32(20260902);
+  const cx = 30.66, cy = -2.48, R = 0.36;
+  const ring = [];
+  for (let i=0;i<72;i++){
+    const a = i/72*Math.PI*2;
+    const r = R*(0.72+0.28*(0.5+0.5*Math.sin(a*3+1.1))*(0.75+0.5*rnd()));
+    ring.push([cx+Math.cos(a)*r*1.12, cy+Math.sin(a)*r*0.86]);
+  }
+  const inside = () => {
+    for(;;){
+      const a = rnd()*Math.PI*2, q = Math.sqrt(rnd())*R*0.82;
+      const p = [cx+Math.cos(a)*q*1.12, cy+Math.sin(a)*q*0.86];
+      return p;
+    }
+  };
+  const working = [], broken = [];
+  for (let i=0;i<724;i++) working.push(inside());
+  for (let i=0;i<118;i++) broken.push(inside());
+  const adds = [6420,5180,4390,3760,3310,2980,2640,2310,2050,1860];
+  const near = [7.4,6.1,8.8,5.2,9.6,4.7,6.9,5.5,7.8,4.1];
+  const why = {
+    zh:["西部走廊，最近的在用水点在 7.4 公里外","三个已损坏点之间，人口密度最高的空档",
+        "河东岸，雨季有六周过不去","集市所在地，周边四个村共用",
+        "北部最偏远的聚居点，本方案里唯一为它设的点","学校与诊所之间，两者都无自有水源",
+        "旧点已干涸，登记册仍标为在用","主路沿线，最容易维护",
+        "两个乡交界，任何一边单独都排不上","最后一个点，边际收益已明显下降"],
+    en:["western corridor; nearest working point is 7.4 km away","the densest gap between three broken points",
+        "east bank; unreachable for six weeks in the rains","the market site, shared by four villages",
+        "the most remote settlement in the north, the only site serving it","between the school and the clinic, neither with its own source",
+        "the old point has dried; the register still shows it serving","on the main road, the cheapest to maintain",
+        "on a ward boundary; neither ward would rank it alone","the tenth site, where marginal return has clearly fallen"]};
+  const sites = adds.map((a,i)=>{
+    const p = inside();
+    return {id:`NG-${String(i+1).padStart(2,"0")}`, rank:i+1, lon:p[0], lat:p[1],
+            add:a, near:near[i], why:{zh:why.zh[i], en:why.en[i]}};
+  });
+  const xs = ring.map(p=>p[0]), ys = ring.map(p=>p[1]);
+  return {ring, working, broken, sites,
+          bbox:[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)]};
+}
+
+function mapHTML(g, W, H){
+  const PAD = 8, [w,s,e,n] = g.bbox;
+  const midLat = (s+n)/2*Math.PI/180;
+  const dx = (e-w)*Math.cos(midLat), dy = n-s;
+  const k = Math.min((W-2*PAD)/dx, (H-2*PAD)/dy);
+  const offX = (W-dx*k)/2, offY = (H-dy*k)/2;
+  const X = lon => (offX+(lon-w)*Math.cos(midLat)*k).toFixed(1);
+  const Y = lat => (offY+(n-lat)*k).toFixed(1);
+  const dots = (a,c) => a.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="1.4" class="${c}"/>`).join("");
+  const sites = g.sites.map(f=>`<g class="m-site">
+      <circle cx="${X(f.lon)}" cy="${Y(f.lat)}" r="7" class="m-halo"/>
+      <circle cx="${X(f.lon)}" cy="${Y(f.lat)}" r="3.6" class="m-core"/>
+      <text x="${+X(f.lon)+9}" y="${+Y(f.lat)+3.5}">${f.rank}</text>
+      <title>${f.id} · rank ${f.rank} · ${num(f.add)}</title></g>`).join("");
+  const kmDeg = 1/(111.32*Math.cos(midLat));
+  let bar = 10;
+  while (kmDeg*bar*Math.cos(midLat)*k > (W-2*PAD)*0.4) bar /= 2;
+  while (kmDeg*bar*Math.cos(midLat)*k < (W-2*PAD)*0.15) bar *= 2;
+  const px = kmDeg*bar*Math.cos(midLat)*k;
+  return `<svg viewBox="0 0 ${W} ${H}" class="m-svg" role="img"
+    aria-label="${g.sites.length} recommended sites in Ngara">
+    <polygon points="${g.ring.map(p=>X(p[0])+","+Y(p[1])).join(" ")}" class="m-bound"/>
+    ${dots(g.broken,"m-broken")}${dots(g.working,"m-working")}${sites}
+    <g class="m-scale"><line x1="${PAD}" y1="${H-PAD}" x2="${PAD+px}" y2="${H-PAD}"/>
+      <line x1="${PAD}" y1="${H-PAD-3}" x2="${PAD}" y2="${H-PAD+3}"/>
+      <line x1="${PAD+px}" y1="${H-PAD-3}" x2="${PAD+px}" y2="${H-PAD+3}"/>
+      <text x="${PAD+px+5}" y="${H-PAD+3}">${bar} km</text></g></svg>`;
+}
+
+function planHTML(){
+  const T = t();
+  if (!PLAN) return `<p class="empty">${esc(T.emptyPlan)}</p>`;
+  const w = WIDE ? 580 : 306;
+  const rows = PLAN.sites.map(f=>`<tr>
+      <td><b>${f.id}</b></td><td>${f.lat.toFixed(4)}<br>${f.lon.toFixed(4)}</td>
+      <td>${num(f.add)}</td><td>${f.near.toFixed(1)} km</td></tr>
+    <tr class="why full-only"><td colspan="4">${esc(f.why[S()])}</td></tr>`).join("");
+  return `<div class="recon ok">${esc(T.recon(PLAN.sites.length))}</div>
+    <div class="m-legend"><span><i></i>${esc(T.legSite(PLAN.sites.length))}</span>
+      <span><i class="w"></i>${esc(T.legWork(PLAN.working.length))}</span>
+      <span><i class="b"></i>${esc(T.legBroke(PLAN.broken.length))}</span></div>
+    ${mapHTML(PLAN, w, WIDE ? 380 : 240)}
+    <div style="overflow-x:auto"><table class="sites"><thead><tr>
+      <th>${esc(T.thSite)}</th><th>${esc(T.thCoord)}</th>
+      <th>${esc(T.thNew)}</th><th>${esc(T.thNear)}</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+}
+
+/* What each thing on this page would be wired to. Not a feature — a note to
+   whoever builds the real one. */
+function wiringHTML(){
+  const T = t();
+  const rows = T.wRows.map(([a,b,c]) =>
+    `<tr><td>${esc(a)}</td><td class="src">${esc(b)}</td><td class="ep">${esc(c)}</td></tr>`).join("");
+  return `<div class="ex00 wiring" style="margin-top:0;padding-top:0;border-top:none">
+      <table><thead><tr><th>${esc(T.thUi)}</th><th>${esc(T.thSrc)}</th>
+      <th>${esc(T.thEp)}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="wnote">${T.wNote1}</p>
+    <p class="wnote amber">${T.wNote2}</p>
+    <p class="wnote">${T.wNote3}</p>`;
+}
+
+function renderPanel(){
+  $("panel").innerHTML = TAB==="record" ? yamlHTML()
+                       : TAB==="evidence" ? evidenceHTML()
+                       : TAB==="plan" ? planHTML() : wiringHTML();
+}
+
+function renderChrome(){
+  const T = t();
+  document.documentElement.lang = LANG;
+  document.body.className = DETAIL;   // brief/full is a CSS state, not a re-request
+  const n = KEYS.filter(k=>RECORDED[k]).length;
+  const place = $("hdr-place");
+  place.textContent = SCOUTED ? T.place : (DISTRICT || "——");
+  place.className = "who slot" + (SCOUTED || DISTRICT ? "" : " empty");
+  const bd = $("hdr-boundary");
+  bd.hidden = !SCOUTED;
+  bd.className = "chip bound"; bd.textContent = T.boundAdm;
+  const off = $("hdr-officer");
+  off.textContent = OFFICER || "——";
+  off.className = "sub slot" + (OFFICER ? "" : " empty");
+  const pr = $("hdr-progress");
+  pr.hidden = !SCOUTED;
+  pr.className = "chip" + (n ? " on" : "");
+  pr.textContent = T.progress(n);
+  $("banner-text").textContent = T.banner;
+  $("lbl-detail").textContent = T.detail;
+  $("lbl-lang").textContent = T.lang;
+  $("sw-detail").children[0].textContent = T.brief;
+  $("sw-detail").children[1].textContent = T.full;
+  $("replay").textContent = T.replay;
+  $("cap-ledger").textContent = T.ledger;
+  $("tab-record").textContent = T.record;
+  $("tab-evidence").textContent = T.evidence;
+  $("tab-plan").textContent = T.plan;
+  $("tab-wiring").textContent = T.wiring;
+  $("send").textContent = T.send;
+  const sel = $("sel-lang");
+  if (!sel.options.length)
+    sel.innerHTML = LOCALES.map(l =>
+      `<option value="${l.code}">${l.name}</option>`).join("");
+  sel.value = LANG;
+  $("composer").hidden = PHASE === "scope";
+  $("grow").textContent = WIDE ? "⇥" : "⇤";
+  FILL.forEach(id => { const el = $(id);
+    if (el){ el.classList.remove("fill"); void el.offsetWidth; el.classList.add("fill"); } });
+  FILL.clear();
+  updateCue();
+}
+
+function render(){ renderChrome(); renderThread(); renderLedger(); renderPanel(); }
+
+/* ================= flow ================= */
+
+function pushBeat(){
+  const b = BEATS[STEP];
+  if (!b) return;
+  if (b.refusal) THREAD.push({type:"refusal"});
+  if (b.plan){ PLAN = buildPlan(); }
+  THREAD.push({type:"agent", brief:b.brief, full:b.full, tools:b.tools,
+               card:b.card, rec:b.rec});
+  if (b.issued) THREAD.push({type:"issued"});
+  EVIDENCE.push(...(b.tools||[]));
+  STEP++;
+}
+
+function pick(i){
+  const key = THREAD[THREAD.length-1].card;
+  const c = CARDS[key], o = c.options[i];
+  PENDING = o.custom ? {key, custom:true, value:""} : {key, value:o.value, label:o.note};
+  $("say").value = "";
+  render();
+  if (o.custom){ const c = $("cust"); if (c){ c.focus();
+    c.oninput = () => { PENDING.value = c.value;
+                        $("cue").textContent = t().cue1(c.value||"—"); gate(); }; } }
+  else $("say").focus();
+  gate();
+}
+
+function gate(){
+  const txt = $("say").value.trim();
+  $("send").disabled = !(PENDING && PENDING.value && txt);
+  const ab = document.querySelector('.dbtn[data-m="adopt"]');
+  if (ab) ab.classList.toggle("on", adopted());
+  updateCue();
+}
+
+function updateCue(){
+  const T = t(), txt = $("say").value.trim();
+  let msg = T.cue0, cls = "cue col";
+  if (PENDING){
+    if (adopted()){ msg = T.adoptedNow; cls += " agentcue"; }
+    else if (txt && draftActive()){ msg = T.ownNow; cls += " armed"; }
+    else { msg = T.cue1(PENDING.value || "—"); cls += " armed"; }
+  }
+  $("cue").textContent = msg;
+  $("cue").className = cls;
+  $("say").placeholder = PENDING ? T.ph1 : T.ph0;
+}
+
+function send(){
+  if (!PENDING || !PENDING.value || !$("say").value.trim()) return;
+  const key = PENDING.key, value = PENDING.value, text = $("say").value.trim();
+  const card = CARDS[key];
+  const opt = card.options.find(o => o.value === value);
+  const authored = adopted();
+  RECORDED[key] = {value, label: opt ? {zh:opt.label, en:opt.label} : {zh:value, en:value},
+                   yamlValue: value, reason: text, lang: LANG, authored};
+  THREAD[THREAD.length-1].card = null;
+  THREAD.push({type:"officer", text, key, value, lang:LANG, authored});
+  THREAD.push({type:"record", key, value});
+  EVIDENCE.push(["record_decision",
+    `${key} = ${value}; ${KEYS.filter(k=>RECORDED[k]).length} of 6 recorded`
+    + (authored ? "; reason authored by agent, signed AGENT" : "")]);
+  PENDING = null; $("say").value = ""; gate();
+  THINKING = true; render();
+  setTimeout(() => { THINKING = false; pushBeat(); render();
+    if (THREAD[THREAD.length-1].card) $("say").focus(); }, 750);
+}
+
+function open_(){
+  PHASE = "interview";
+  OFFICER = SCOPE.officer.trim(); DISTRICT = SCOPE.adm2;
+  FILL.add("hdr-officer"); FILL.add("hdr-place");
+  THREAD.push({type:"opened"});
+  THINKING = "scouting";
+  render();
+  setTimeout(() => {
+    THINKING = false; SCOUTED = true;
+    FILL.add("hdr-place"); FILL.add("hdr-boundary"); FILL.add("hdr-progress");
+    pushBeat(); render(); $("say").focus();
+  }, 1900);
+}
+
+function start(){
+  STEP = 0; THREAD = []; EVIDENCE = []; PLAN = null; PENDING = null; THINKING = false;
+  RECORDED = {};
+  OFFICER = null; DISTRICT = null; SCOUTED = false; FILL.clear();
+  PHASE = "scope"; SCOPE.officer = "";
+  $("say").value = "";
+  render();
+}
+
+/* ---------- wiring ---------- */
+$("thread").addEventListener("input", e => {
+  const f = e.target.dataset.f;
+  if (!f) return;
+  SCOPE[f] = e.target.value;
+  const ok = SCOPE.country && SCOPE.adm2 && SCOPE.iso3 && SCOPE.officer.trim();
+  const go = $("scope-go"); if (go) go.disabled = !ok;
+  const cmd = document.querySelector(".scope .cmd");
+  if (cmd) cmd.textContent = `python -m siting.cli \\\n  --country ${SCOPE.country||"…"} `
+    + `--adm2 ${SCOPE.adm2||"…"} --iso3 ${SCOPE.iso3||"…"} \\\n`
+    + `  --decisions sessions/<id>/decisions.yaml --format both`;
+});
+$("thread").addEventListener("change", e => {
+  if (e.target.dataset.f) SCOPE[e.target.dataset.f] = e.target.value;
+});
+$("thread").addEventListener("click", e => {
+  if (e.target.id === "scope-go"){ open_(); return; }
+  const d = e.target.closest(".dbtn");
+  if (d){
+    const r = recOf();
+    if (d.dataset.m === "own"){ $("say").value = ""; }
+    else if (r){
+      // taking the agent's words also takes the option they are a reason for
+      const key = THREAD[THREAD.length-1].card;
+      const i = CARDS[key].options.findIndex(o => o.value === r.value);
+      if (i >= 0) pick(i);
+      $("say").value = r.draft[S()];
+    }
+    gate(); renderThread(); $("say").focus();
+    return;
+  }
+  const b = e.target.closest(".opt");
+  if (b) pick(+b.dataset.i);
+});
+$("say").addEventListener("input", gate);
+$("say").addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+});
+$("composer").addEventListener("submit", e => { e.preventDefault(); send(); });
+
+$("sw-detail").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  DETAIL = b.dataset.v;
+  [...$("sw-detail").children].forEach(x => x.classList.toggle("on", x === b));
+  document.body.className = DETAIL;
+  render();
+});
+$("sel-lang").addEventListener("change", e => {
+  LANG = e.target.value;
+  render();
+});
+document.querySelectorAll(".tabs button[data-tab]").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tabs button[data-tab]").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); TAB = b.dataset.tab; renderPanel();
+});
+$("grow").onclick = () => {
+  WIDE = !WIDE;
+  document.documentElement.style.setProperty("--rail", WIDE ? "620px" : "360px");
+  renderChrome(); renderPanel();
+};
+$("replay").onclick = start;
+
+start();
+</script>
+</body>
+</html>

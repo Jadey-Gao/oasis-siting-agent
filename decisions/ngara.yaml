@@ -1,0 +1,139 @@
+# Decisions for the Ngara (Kagera, Tanzania) water siting assessment.
+#
+# Each of these is a judgement about values, not a technical parameter. The
+# analysis refuses to run without them rather than assuming one, because
+# assuming one would move the decision from the officer accountable for it to
+# whoever wrote the code.
+#
+# Every entry needs a name and a reason. Both are printed in the assessment
+# beside the figure they produced.
+#
+# Recorded 2026-08-28, manual mode. Evidence: data-scout report on the WPdx+
+# Ngara holdings, and spatial-analyst pricing of each option against the
+# district's own data at a budget of 3.
+
+decisions:
+  - key: service_radius_m
+    value: 1000
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      One kilometre corresponds to the 30 minute round trip the JMP uses as a
+      basic drinking water service threshold, and to the figure used in existing
+      reporting. In pre-run pricing the analyst compared radii by solving for
+      maximum coverage on a finer 500 m lattice using straight-line distance,
+      and reported 13,830 newly covered at 1,000 m against 8,134 at 500 m and
+      10,106 at 1,500 m. Those figures come from a different objective, lattice
+      and coverage basis than this run and are cited only as the radius
+      comparison they were made for; they are not this plan's figures, which are
+      recorded in the results. Adopted in the knowledge that the radius choice
+      is larger than the siting choice here: across the range tested the
+      reported gap moves by roughly 110,000 people, many times what a
+      three-facility programme can achieve.
+
+  - key: coverage_basis
+    value: walking_time
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Reach is measured as walking time over the Malaria Atlas Project
+      walking-only friction surface, at a 12 minute threshold derived from the
+      window's median friction of 12.0 minutes per kilometre. This costs 4,478
+      people of claimed coverage at 1,000 m relative to straight-line distance.
+      Accepted because the error carried by walking time understates reach,
+      while the error carried by straight-line distance overstates it, and
+      overstating who is already served is the more damaging error for a
+      district deciding who still needs a water point. The surface is modelled
+      at roughly 928 m and does not know local footpaths; that limitation is
+      accepted in preference to ignoring terrain altogether.
+
+  - key: objective
+    value: worst_case
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Reducing the worst-served distance is the objective, accepting a
+      substantially lower total covered than maximum coverage would reach. The
+      analyst reported the trade as 12,469 people of forgone coverage against a
+      fall in the worst-served distance from 33.6 km to 16.4 km, a 51 per cent
+      reduction, with 11,191 people brought inside 10 km of a working point.
+      The decisive evidence was that maximum coverage at this budget places all
+      three sites in the Ngara Mjini cluster and leaves the worst-served
+      distance, p99 and p95 identical to doing nothing, with none of the newly
+      covered population in the furthest distance quartile.
+
+  - key: budget
+    value: 3
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Three facilities, specified by the operator on 2026-08-28. No capital
+      programme or allocation was named, so this figure is recorded without
+      provenance and is not a district commitment. A reader should treat the
+      programme size as given rather than as funded.
+
+  - key: data_currency_accepted
+    value: yes
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Every one of the 838 retained records carries the same report date,
+      2007-12-15, making the register uniformly 18.6 years old measured to the
+      source snapshot date, and 18.7 years measured to the date of this run,
+      with zero dispersion. It could not be established from the data whether this is a
+      single survey sweep loaded under one stamp or a placeholder date. There is
+      no recent subset to lean on and no way to distinguish a well-surveyed ward
+      from a stale one. Accepted as the best available basis on the condition
+      that the assessment states the age prominently and describes its findings
+      as the surveyed state of the network in December 2007 rather than its
+      present state. The demand surface is WorldPop 2020, so every coverage
+      figure joins a 2007 supply picture to a 2020 demand picture.
+
+  - key: coverage_tolerance
+    value: 0.02
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Two per cent is recorded in preference to the five per cent used by other
+      districts because the guardrail divides people forgone by total covered,
+      which includes the 74,006 already served in this run. On that denominator
+      two per cent of 75,334 is 1,507 people and five per cent is 3,767.
+      It must be recorded plainly that on this run's numbers the tolerance
+      cannot be breached by any override whatever: the plan's entire gain is
+      1,328 people, so even an override destroying all of it forgoes 1.76 per
+      cent, below the two per cent threshold. The guardrail is therefore inert
+      here, and its passing verdict should be read as carrying no information
+      rather than as evidence that overrides were modest. Two per cent is
+      recorded as the district's position on escalation to the District Water
+      and Sanitation Coordination Committee, not as an operative check on this
+      plan.
+
+  - key: review_floor
+    value: 6.5
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Six and a half out of ten, the figure this system carried as a constant
+      before the decision was moved to the register. Retained rather than chosen:
+      the district has no prior position on how complete an account must be
+      before it will act, and adopting the previous behaviour keeps this run
+      comparable with the assessments that preceded it. It is recorded here so
+      that the next officer can move it knowingly. Note that this run is expected
+      to sit close to the line on data adequacy, the register being 18.6 years
+      old, and that the age has been accepted separately above.
+
+  # Deferred until the plan existed, because the question only becomes real then.
+  # Recorded 2026-08-28 after the equity check ran on the worst_case plan.
+  - key: equity_accepted
+    value: "yes"
+    decided_by: District Water Officer, Ngara
+    reason: >-
+      Accepted. The run's equity check flagged the plan, reporting 74 per cent of
+      newly covered people in the densest quartile of cells against 58 per cent
+      district-wide, marginally past the 15 point threshold. The distribution is
+      accepted because that check measures cell population density, whereas the
+      plan was chosen on distance from service. The evidence for remoteness that
+      this run actually records is the distance from each recommended site to the
+      nearest working point: 11.9 km, 24.8 km and 7.3 km. A distance-quartile
+      distribution of the newly covered population was reported by the analyst
+      before the run, under a different coverage basis and lattice, and is NOT
+      recomputed in this run's checks; it is therefore not relied on here and
+      should not be read as verified. Within the remote areas the objective
+      targets, the solver selects the more populated cells because the p-centre
+      weights the worst cell by the square root of its population, so a very
+      small settlement does not outrank a large one at the same distance. The
+      flag remains recorded in the assessment and is accepted over, not
+      refuted by, this reasoning.

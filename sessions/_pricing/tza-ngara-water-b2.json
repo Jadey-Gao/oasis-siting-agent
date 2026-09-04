@@ -1,0 +1,63 @@
+{
+  "scope": {
+    "where": "ngara",
+    "domain": "water",
+    "country": "Tanzania",
+    "adm2": "Ngara",
+    "iso3": "TZA"
+  },
+  "budget": 2,
+  "tables": {
+    "service_radius_m": {
+      "key": "service_radius_m",
+      "question": "What distance, or what walking time, counts as served?",
+      "why_not_a_default": "This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports. A 1 km walk is a common stand-in for the 30 minutes the JMP uses for a basic service, but terrain, season and who does the walking all bear on it, and none of that is in the data.",
+      "unit": "metres",
+      "options_hint": "500 (strict) | 1000 (JMP-aligned) | 1500 (permissive)",
+      "priced": [
+        {
+          "value": 500.0,
+          "label": "500 m",
+          "covered_today": 23229,
+          "covered_share": 0.0627,
+          "newly_covered": 7575,
+          "evidence": {
+            "uncovered": 347428,
+            "rule": "within about 6 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T102557Z"
+        },
+        {
+          "value": 1000.0,
+          "label": "1000 m",
+          "covered_today": 74006,
+          "covered_share": 0.1997,
+          "newly_covered": 11428,
+          "evidence": {
+            "uncovered": 296651,
+            "rule": "within about 12 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T102604Z"
+        },
+        {
+          "value": 1500.0,
+          "label": "1500 m",
+          "covered_today": 128166,
+          "covered_share": 0.3458,
+          "newly_covered": 10599,
+          "evidence": {
+            "uncovered": 242491,
+            "rule": "within about 18 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T102608Z"
+        }
+      ],
+      "unpriceable": null,
+      "degenerate": null,
+      "caveat": "These are probe runs. In each one, every decision except the one being compared was taken by the agent, so the figures show what this choice changes — they are not this district's plan."
+    }
+  }
+}

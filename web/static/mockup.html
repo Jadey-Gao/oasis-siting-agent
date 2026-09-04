@@ -1,0 +1,1225 @@
+<!doctype html>
+<!--
+  A clickable mockup of the interview. Nothing here talks to the backend.
+
+  v2. The first version asked four questions and answered them; this one is what
+  came out of that, minus everything the answers made unnecessary.
+
+  What changed, and why:
+
+    - The right column is fixed width and has no tabs. It does one job: show the
+      record being written, and the assessments already on disk. Everything that
+      used to be a tab was either a second copy of something already on screen
+      (the tool calls, which sit beside each turn) or too wide to read in 360px
+      (the plan, the scorecard).
+
+    - The plan arrives IN the conversation, at the full column width, because
+      the agent produced it. A link opens the full result on its own page.
+
+    - There is one version of each agent turn, not a brief and a full one. The
+      real agent speaks once. "More" opens what is already there — the evidence
+      behind an option, the long form of why a decision has no default, the
+      per-site rationale — and never a second wording of the same paragraph.
+
+    - Choosing an option does not gate the send button, and neither does the
+      absence of a reason. The requirement that a decision carry a reason lives
+      in the agent's own tool, which cannot record without pointing at something
+      the officer said. Send a value with no reason and the agent asks for one.
+      That exchange is the design working and is worth seeing.
+
+    - The opening asks for three things, none of which has to be spelt the way
+      the register spells it. A place name is resolved against the register
+      itself — which is what siting/sources/gadm.py already does, matching across
+      administrative levels and choosing the one that contains the most records
+      rather than the one numbered lowest. What it resolved is reported before
+      anything is run. Only the officer's name is structurally required, because
+      the session cannot exist without something to record decisions against.
+
+  Every figure below is invented. That is stated on the page, in the loudest
+  place available, because a recommendation built on invented data is the one
+  thing this repository refuses to produce. A mockup is allowed to; it is only
+  allowed to while saying so.
+
+  Served at /static/mockup.html once `uvicorn web.app:app` is running.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siting Interview Mockup</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Tokens are index.html's, plus two the mockup needs:
+     --pend  "chosen, not yet sent", which must not look like the recorded state
+     --dash  the border of an option no run stands behind */
+  :root{
+    --ground:#F6F7F4; --surface:#FFF; --sunk:#EDF0EA;
+    --ink:#1B211F; --soft:#4A544F; --mute:#78827C;
+    --rule:#DCE1D9; --accent:#0F5F5C; --accent-soft:#E2EFEC;
+    --amber:#9C551A; --amber-soft:#F6EADC; --flag:#8A3324;
+    --pend:#7A5C12; --pend-soft:#F4EFDE; --dash:#C6CDC2;
+    --rail:360px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#121614; --surface:#1A201D; --sunk:#161C19;
+      --ink:#E6E9E4; --soft:#B3BCB6; --mute:#8B958E;
+      --rule:#2C3532; --accent:#5CBDB5; --accent-soft:#17302E;
+      --amber:#D89552; --amber-soft:#2C2318; --flag:#D9765F;
+      --pend:#D6BC72; --pend-soft:#2A2617; --dash:#3B4440;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#121614; --surface:#1A201D; --sunk:#161C19;
+    --ink:#E6E9E4; --soft:#B3BCB6; --mute:#8B958E;
+    --rule:#2C3532; --accent:#5CBDB5; --accent-soft:#17302E;
+    --amber:#D89552; --amber-soft:#2C2318; --flag:#D9765F;
+    --pend:#D6BC72; --pend-soft:#2A2617; --dash:#3B4440;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font:16px/1.65 "Source Sans 3",-apple-system,BlinkMacSystemFont,sans-serif;
+    display:flex;flex-direction:column;overflow:hidden}
+  h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;text-wrap:balance}
+  button{font:inherit;cursor:pointer}
+  a{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  .mono{font-family:"JetBrains Mono",monospace}
+  .lbl{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute)}
+
+  /* ---------- top bar ---------- */
+  header{border-bottom:1px solid var(--rule);background:var(--surface);flex:none}
+  .bar{max-width:1400px;margin:0 auto;padding:10px 20px;display:flex;gap:14px;
+    align-items:center;flex-wrap:wrap}
+  .who{font-family:"Zilla Slab",Georgia,serif;font-size:17px;font-weight:600}
+  .sub{font-size:13.5px;color:var(--mute)}
+  .spacer{flex:1}
+  /* An empty slot is shown, not hidden. The strip is the cover of the record,
+     and a reader should see it being written rather than find it already full. */
+  .slot.empty{color:var(--dash);font-weight:400}
+  @keyframes fillin{from{background:var(--pend-soft);box-shadow:0 0 0 4px var(--pend-soft)}
+                    to{background:none;box-shadow:none}}
+  .slot.fill,.chip.fill{animation:fillin 1.1s ease-out}
+  .chip{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.05em;
+    padding:3px 9px;border-radius:11px;background:var(--sunk);color:var(--mute);white-space:nowrap}
+  .chip.on{background:var(--accent-soft);color:var(--accent)}
+  .chip.bound{background:var(--accent-soft);color:var(--accent)}
+
+  /* a switch is two buttons in a trough, not a toggle: the reader should see
+     which of the two states is off as well as which is on */
+  .switch{display:flex;border:1px solid var(--rule);border-radius:13px;overflow:hidden;
+    background:var(--sunk)}
+  .switch button{border:0;background:none;color:var(--mute);padding:4px 11px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.04em}
+  .switch button.on{background:var(--surface);color:var(--accent);font-weight:500;
+    box-shadow:0 0 0 1px var(--rule)}
+  .ghostbtn{border:1px solid var(--rule);background:var(--surface);color:var(--soft);
+    border-radius:6px;padding:4px 10px;font-size:12.5px}
+
+  .banner{background:var(--amber-soft);color:var(--amber);font-size:13px;
+    padding:7px 20px;border-top:1px solid var(--rule)}
+  .banner div{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:baseline}
+  .banner b{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.09em;
+    text-transform:uppercase;flex:none}
+
+  /* ---------- layout ---------- */
+  main{flex:1;min-height:0;max-width:1400px;width:100%;margin:0 auto;padding:0 20px;
+    display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:0}
+  .talk{display:flex;flex-direction:column;min-height:0;padding-right:26px}
+  #thread{flex:1;overflow-y:auto;padding:22px 0 12px;scroll-behavior:smooth}
+  .col{max-width:64ch}
+
+  /* ---------- thread ---------- */
+  .turn{margin-bottom:20px}
+  .turn.u{margin-left:auto;max-width:52ch}
+  .who-label{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .bub{border:1px solid var(--rule);border-radius:7px;padding:14px 17px;background:var(--surface)}
+  .turn.u .bub{background:var(--sunk);border-color:transparent}
+  .bub p{margin:0 0 11px}
+  .bub p:last-child{margin-bottom:0}
+  .verbatim{font-family:"Zilla Slab",Georgia,serif;font-size:16.5px;line-height:1.6}
+  .said-meta{display:flex;gap:8px;align-items:center;margin-top:9px;flex-wrap:wrap}
+  .vchip{font-family:"JetBrains Mono",monospace;font-size:11px;padding:2px 8px;
+    border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+
+  /* the tool drawer. Closed in "less", open in "more" — the same calls either
+     way, never a second account of them */
+  details.basis{margin-top:11px;border-top:1px dashed var(--rule);padding-top:9px}
+  details.basis summary{font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:var(--mute);cursor:pointer;list-style:none;letter-spacing:.04em}
+  details.basis summary::-webkit-details-marker{display:none}
+  details.basis summary::before{content:"▸ "}
+  details.basis[open] summary::before{content:"▾ "}
+  .call{display:flex;gap:9px;align-items:baseline;font-family:"JetBrains Mono",monospace;
+    font-size:11.5px;color:var(--mute);border-left:2px solid var(--rule);
+    padding:3px 0 3px 10px;margin-top:5px}
+  .call b{font-weight:500;flex:none;color:var(--soft)}
+  .call.bad b{color:var(--flag)}
+  .ev{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--mute);
+    background:var(--sunk);border-radius:5px;padding:8px 10px;margin-top:8px;
+    white-space:pre-wrap;overflow-x:auto}
+  .ev a{text-decoration:none;border-bottom:1px dotted var(--accent)}
+
+  /* ---------- an event, not a message ---------- */
+  .event{border-left:3px solid var(--accent);background:var(--accent-soft);
+    border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:20px;max-width:56ch}
+  .event .h{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .event .b{font-size:14px;color:var(--soft)}
+  .event .b code{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink)}
+
+  .notice{border:1px solid var(--amber);background:var(--amber-soft);border-radius:7px;
+    padding:13px 16px;margin-bottom:20px;max-width:60ch}
+  .notice .h{font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:16px;
+    color:var(--amber);margin-bottom:5px}
+  .notice .b{font-size:14.5px;color:var(--soft)}
+  .notice ul{margin:9px 0 0;padding-left:18px;font-size:14px;color:var(--soft)}
+  .notice li{margin-bottom:3px}
+  .notice li code{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--amber)}
+
+  .thinking{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--mute);
+    padding:4px 0 20px 12px;border-left:2px solid var(--accent-soft)}
+
+  /* ---------- the card ---------- */
+  .card{border:1px solid var(--rule);border-radius:8px;background:var(--surface);
+    margin:0 0 20px;max-width:64ch;overflow:hidden}
+  .card .top{padding:14px 17px 0}
+  .card .pos{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:5px}
+  .card h3{margin:0 0 8px;font-size:19px;line-height:1.35}
+  .card details.why{margin-bottom:13px}
+  .card details.why summary{font-size:14px;color:var(--soft);cursor:pointer;list-style:none}
+  .card details.why summary::-webkit-details-marker{display:none}
+  .card details.why summary i{font-style:normal;color:var(--accent);
+    font-family:"JetBrains Mono",monospace;font-size:11px;white-space:nowrap}
+  .card details.why p{margin:8px 0 0;font-size:14px;color:var(--soft)}
+  .card .note{font-size:13.5px;color:var(--mute);margin:0 0 11px}
+
+  .opts{display:grid;gap:8px;padding:0 17px 14px}
+  .opt{display:grid;grid-template-columns:14px minmax(0,1fr);gap:11px;text-align:left;
+    border:1px solid var(--rule);border-radius:6px;background:var(--surface);
+    padding:11px 13px;color:var(--ink);transition:border-color .12s,background .12s}
+  .opt:hover{border-color:var(--accent)}
+  .opt .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--dash);margin-top:4px}
+  .opt.sel{border-color:var(--pend);background:var(--pend-soft)}
+  .opt.sel .dot{border-color:var(--pend);background:var(--pend);
+    box-shadow:inset 0 0 0 2.5px var(--pend-soft)}
+  .opt .v{font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:500}
+  .opt .n{font-size:13px;color:var(--mute);margin-left:7px}
+  .opt .c{font-size:13.5px;color:var(--soft);margin-top:3px;font-variant-numeric:tabular-nums}
+  .opt.unprobed{border-style:dashed;border-color:var(--dash);background:none}
+  .opt.unprobed .v{color:var(--soft)}
+  .opt.unprobed .c{color:var(--mute);font-style:italic}
+  .opt .flag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--mute);border:1px solid var(--dash);
+    border-radius:3px;padding:0 4px;margin-left:7px;white-space:nowrap}
+  .custom{display:flex;gap:8px;align-items:center;padding:0 17px 14px}
+  .custom input{font:inherit;font-family:"JetBrains Mono",monospace;font-size:14px;
+    width:130px;padding:6px 10px;border:1px solid var(--rule);border-radius:5px;
+    background:var(--ground);color:var(--ink)}
+  .card .foot{border-top:1px solid var(--rule);background:var(--sunk);padding:9px 17px;
+    font-size:13px;color:var(--mute)}
+  .card .foot b{color:var(--pend);font-weight:600}
+
+  /* ---------- the plan, in the thread ---------- *
+     It arrives here, at the width of the conversation, because the agent
+     produced it. 360px on the right was never going to hold a ten-row table. */
+  .plan{border:1px solid var(--accent);border-radius:8px;background:var(--surface);
+    margin:0 0 20px;max-width:64ch;overflow:hidden}
+  .plan .hd{background:var(--accent-soft);padding:12px 17px;border-bottom:1px solid var(--rule)}
+  .plan .hd .h{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .plan .hd .big{font-family:"Zilla Slab",Georgia,serif;font-size:20px;font-weight:600;
+    line-height:1.4;color:var(--ink)}
+  .plan .hd .sub{font-size:13px;color:var(--soft);margin-top:4px}
+  .plan .body{padding:14px 17px}
+  .recon{font-size:12.5px;padding:7px 10px;border-radius:5px;margin-bottom:12px;
+    background:var(--accent-soft);color:var(--accent)}
+  .m-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--mute);
+    margin-bottom:10px}
+  .m-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;
+    margin-right:5px;vertical-align:middle;background:var(--accent)}
+  .m-legend i.w{opacity:.55}
+  .m-legend i.b{background:var(--mute);opacity:.35}
+  .m-svg{width:100%;height:auto;display:block;background:var(--sunk);
+    border:1px solid var(--rule);border-radius:6px;margin-bottom:12px}
+  .m-bound{fill:none;stroke:var(--mute);stroke-width:1;opacity:.75}
+  .m-broken{fill:var(--mute);opacity:.30}
+  .m-working{fill:var(--accent);opacity:.55}
+  .m-halo{fill:var(--accent);opacity:.20}
+  .m-core{fill:var(--accent);stroke:var(--surface);stroke-width:1.2}
+  .m-site text{font-family:"JetBrains Mono",monospace;font-size:9px;fill:var(--accent);
+    font-weight:500}
+  .m-scale line{stroke:var(--mute);stroke-width:1}
+  .m-scale text{font-family:"JetBrains Mono",monospace;font-size:8.5px;fill:var(--mute)}
+  .sites{width:100%;border-collapse:collapse;font-size:12px}
+  .sites th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:9.5px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:500;
+    border-bottom:1px solid var(--ink);padding:0 8px 4px 0}
+  .sites td{border-bottom:1px solid var(--rule);padding:6px 8px 6px 0;
+    font-variant-numeric:tabular-nums;vertical-align:top;
+    font-family:"JetBrains Mono",monospace}
+  .sites .why td{font-family:"Source Sans 3",sans-serif;font-size:12px;color:var(--soft);
+    padding-bottom:9px}
+  .plan .out{border-top:1px solid var(--rule);background:var(--sunk);padding:11px 17px;
+    display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px}
+  .plan .out a{text-decoration:none}
+  .plan .out a b{font-weight:600}
+  .plan .out .hint{font-size:12px;color:var(--mute);width:100%;margin-top:2px}
+
+  /* what a rough place name was resolved to, reported before anything runs */
+  .resolved{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--soft);
+    background:var(--sunk);border-radius:5px;padding:9px 11px;margin:2px 0 11px;
+    line-height:1.9;overflow-x:auto;white-space:pre}
+  .resolved b{color:var(--accent);font-weight:500}
+  .alts{font-size:13px;color:var(--mute);margin-top:9px}
+  .alts u{text-decoration:none;border-bottom:1px dotted var(--mute);cursor:pointer}
+  .alts u:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* ---------- the scope form ---------- *
+     The command line, wearing a shirt. It collects exactly the arguments
+     `python -m siting.cli` takes and shows the invocation it amounts to. */
+  .scope{border:1px solid var(--rule);border-radius:8px;background:var(--surface);
+    padding:16px 18px;margin-bottom:20px;max-width:64ch}
+  .scope h3{margin:0 0 4px;font-size:18px}
+  .scope .lede{font-size:14px;color:var(--soft);margin:0 0 14px}
+  .scope .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+  .scope label{display:block;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin-bottom:3px}
+  .scope input,.scope select{width:100%;font:inherit;font-size:14.5px;padding:7px 10px;
+    border:1px solid var(--rule);border-radius:6px;background:var(--ground);color:var(--ink)}
+  .scope .wide{grid-column:1 / -1}
+  .scope .cmd{grid-column:1 / -1;font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:var(--mute);background:var(--sunk);border-radius:5px;padding:9px 11px;
+    overflow-x:auto;white-space:pre;line-height:1.6}
+  .scope .go{margin-top:13px}
+  .scope .go button{font-size:15px;font-weight:600;padding:10px 22px;border-radius:7px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff}
+  .scope .go button:disabled{opacity:.35;border-color:var(--rule);background:var(--rule);
+    color:var(--mute);cursor:not-allowed}
+  .scope .note{font-size:12.5px;color:var(--mute);margin:10px 0 0}
+  .scope .hint{font-size:12.5px;color:var(--mute);margin:-2px 0 2px;line-height:1.6}
+  .scope .hint code{font-size:11.5px;color:var(--soft)}
+
+  /* ---------- composer ---------- */
+  #composer{flex:none;border-top:1px solid var(--rule);padding:11px 0 16px}
+  .cue{font-size:13px;color:var(--mute);margin:0 0 8px;min-height:20px}
+  .cue.armed{color:var(--pend)}
+  .row{display:flex;gap:10px;align-items:flex-end}
+  #say{flex:1;font:inherit;font-size:15px;padding:10px 13px;border:1px solid var(--rule);
+    border-radius:7px;background:var(--surface);color:var(--ink);resize:none;height:52px}
+  #say:focus{border-color:var(--accent)}
+  #send{font-size:15px;font-weight:600;padding:11px 22px;border-radius:7px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff;flex:none}
+  #send:disabled{opacity:.35;cursor:not-allowed;border-color:var(--rule);
+    background:var(--rule);color:var(--mute)}
+
+  /* ---------- right column ---------- *
+     Fixed width, no tabs. It shows the record being written, and the
+     assessments already on disk. Nothing else. */
+  aside{border-left:1px solid var(--rule);background:var(--surface);display:flex;
+    flex-direction:column;min-height:0}
+  .sect{display:flex;flex-direction:column;min-height:0}
+  .sect > .cap{display:flex;justify-content:space-between;align-items:baseline;
+    padding:12px 14px 9px;flex:none}
+  .sect > .cap span{font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .sect > .cap em{font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:var(--accent)}
+  /* Two independent scrollers. `flex:1; min-height:0` on the scroller is what
+     makes it scroll inside its section rather than push the section taller —
+     without min-height:0 a flex item refuses to shrink below its content. */
+  #s-record{flex:1;min-height:0;border-bottom:1px solid var(--rule)}
+  #s-history{flex:none;min-height:0;max-height:38%}
+  .scroll{flex:1;min-height:0;overflow-y:auto;padding:0 14px 14px}
+  /* the ledger is pinned: it is the thing that should always be visible, and
+     the file underneath it is the thing that gets long */
+  .pinned{flex:none;padding:0 14px 10px}
+  .pinned:empty{display:none}
+
+  .pre{font-size:12.5px;color:var(--mute);line-height:1.6}
+  .lrow{display:grid;grid-template-columns:11px minmax(0,1fr) auto;gap:9px;
+    align-items:baseline;padding:4px 0;font-size:12.5px}
+  .lrow i{width:8px;height:8px;border-radius:50%;background:none;
+    border:1.5px solid var(--dash);margin-top:5px}
+  .lrow.done i{background:var(--accent);border-color:var(--accent)}
+  .lrow.now i{border-color:var(--pend);background:var(--pend-soft);
+    box-shadow:0 0 0 3px var(--pend-soft)}
+  .lrow .k{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--mute);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lrow.done .k{color:var(--soft)}
+  .lrow.now .k{color:var(--pend)}
+  .lrow .v{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lrow.pendingrow .v{color:var(--mute)}
+  .ldef{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+  /* the verdict joins the ledger when there is one: the last thing to settle */
+  .lrow.verdict{margin-top:8px;padding-top:9px;border-top:1px solid var(--rule)}
+  .lrow.verdict i{border-color:var(--accent);background:var(--accent)}
+  .lrow.verdict .k{color:var(--accent)}
+  .lrow.verdict .v{color:var(--accent);font-weight:500}
+
+  .subcap{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);margin:0 0 7px;
+    padding-top:11px;border-top:1px solid var(--rule);
+    position:sticky;top:0;background:var(--surface);z-index:1}
+  /* the file, set as a file: keys quiet, values solid, the officer's own words
+     in the serif so they read as writing rather than as data */
+  .yaml{font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.75;
+    white-space:pre-wrap;word-break:break-word}
+  .yaml .c{color:var(--mute)}
+  .yaml .k{color:var(--mute)}
+  .yaml .v{color:var(--ink)}
+  .yaml .r{font-family:"Zilla Slab",Georgia,serif;font-size:13.5px;color:var(--soft);
+    display:block;padding-left:6px;border-left:2px solid var(--accent-soft)}
+  .empty{font-size:13px;color:var(--mute);line-height:1.6}
+
+  .hrow{display:block;text-decoration:none;color:inherit;padding:8px 0;
+    border-bottom:1px solid var(--rule)}
+  .hrow:hover .hd{color:var(--accent)}
+  .hrow .hd{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .hrow .meta{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--mute);
+    margin-top:2px;display:flex;gap:7px;flex-wrap:wrap;align-items:baseline}
+  .hrow .ok{color:var(--accent)}
+  .hrow .no{color:var(--flag)}
+  .hrow .tag{border:1px solid var(--dash);border-radius:3px;padding:0 4px;font-size:9.5px;
+    letter-spacing:.06em;text-transform:uppercase}
+  .hrow.fresh{animation:fillin 1.4s ease-out}
+
+  /* "more" opens what is already there. It never reveals a second wording. */
+  body.brief .full-only{display:none}
+
+  @media (max-width:1000px){
+    body{overflow:auto}
+    main{grid-template-columns:minmax(0,1fr)}
+    .talk{padding-right:0}
+    aside{border-left:none;border-top:1px solid var(--rule)}
+    #s-history{max-height:none}
+  }
+</style>
+</head>
+<body class="brief">
+
+<header>
+  <div class="bar">
+    <span class="who slot empty" id="hdr-place">——</span>
+    <span class="chip slot" id="hdr-iso" hidden></span>
+    <span class="chip bound" id="hdr-boundary" hidden></span>
+    <span class="sub slot empty" id="hdr-officer">——</span>
+    <span class="spacer"></span>
+    <span class="chip" id="hdr-progress" hidden></span>
+    <span class="lbl">detail</span>
+    <span class="switch" id="sw-detail">
+      <button data-v="brief" class="on">less</button>
+      <button data-v="full">more</button>
+    </span>
+    <button class="ghostbtn" id="replay">replay</button>
+  </div>
+  <div class="banner"><div>
+    <b>mockup</b>
+    <span>Every figure on this page is invented; no run stands behind any of
+      them. The real system refuses to do this, and a mockup may only do it
+      while saying so.</span>
+  </div></div>
+</header>
+
+<main>
+  <section class="talk">
+    <div id="thread"></div>
+    <form id="composer" hidden>
+      <p class="cue col" id="cue"></p>
+      <div class="row col">
+        <textarea id="say" rows="2" placeholder="Answer in your own words…"></textarea>
+        <button id="send" type="submit" disabled>Send</button>
+      </div>
+    </form>
+  </section>
+
+  <aside>
+    <section class="sect" id="s-record">
+      <div class="cap"><span>the record</span><em id="cap-count">—</em></div>
+      <div class="pinned" id="ledger"></div>
+      <div class="scroll" id="record"></div>
+    </section>
+    <section class="sect" id="s-history">
+      <div class="cap"><span>assessments on disk</span><em id="cap-hist"></em></div>
+      <div class="scroll" id="history"></div>
+    </section>
+  </aside>
+</main>
+
+<script>
+/* ------------------------------------------------------------------ *
+ *  Mockup scaffolding. No fetch, no backend.
+ * ------------------------------------------------------------------ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const num = n => n.toLocaleString("en-US");
+
+let DETAIL = "brief", PHASE = "scope";
+let OFFICER = null, DISTRICT = null, SCOUTED = false;
+let STEP = 0, PENDING = null, THREAD = [], PLAN = null, THINKING = false;
+let RECORDED = {}, VERDICT = null, FILL = new Set();
+
+/* Two fields plus a domain, because that is what a person can be sure of. The
+   register resolves the rest and says what it resolved. */
+const SCOPE = {where:"", domain:"water", officer:""};
+let RESOLVED = null;
+
+/* What can be sited. In the real thing this list is the backend reading
+   `siting.cli.DOMAINS` and each module's `META["title"]` — one entry per module
+   in siting/domains/. Today that is exactly one.
+
+   The list is NOT written here, and no unimplemented domain is named. A greyed
+   "coming soon" row would be the web layer announcing a roadmap that nothing in
+   the repository backs, and a screenshot turns it into a promise. When a module
+   lands, this dropdown grows on its own. */
+const DOMAINS = [
+  {key:"water", title:"Rural water point siting"},
+];
+
+/* ---------- the six, in the order the interview asks ---------- */
+const KEYS = ["budget","data_currency_accepted","service_radius_m","objective",
+              "coverage_basis","coverage_tolerance"];
+const DEFERRED_KEY = "equity_accepted";
+
+/* ---------- assessments already on disk ----------
+   From GET /api/runs, which lists run directories. Probe runs under
+   sessions/_pricing/ and scout runs under sessions/<id>/scouting/ are excluded:
+   in a probe every decision except the one being compared was taken by the
+   agent, so it prices a choice — it is not a district's plan. */
+const SEED_HISTORY = [
+  {district:"Masindi, Uganda",   date:"2026-09-03", sites:3,  score:7.92, issued:true},
+  {district:"Ngara, Tanzania",   date:"2026-08-28", sites:null, score:null, issued:false,
+   why:"decisions outstanding"},
+  {district:"Masindi, Uganda",   date:"2026-08-14", sites:5,  score:7.1,  issued:true, sample:true},
+  {district:"Western Rural, Sierra Leone", date:"2026-08-09", sites:8, score:6.8,
+   issued:true, sample:true},
+];
+let HISTORY = SEED_HISTORY.slice();
+
+/* ---------- cards ----------
+   In the real thing these come from GET /api/interview/<id>/card/<key>, which
+   assembles them from siting/decisions.py (the question, the unit, the reason
+   the decision has no default) and web/pricing.py (what each option did to this
+   district's own numbers). Nothing about a decision is written in the browser. */
+const CARDS = {
+  budget:{
+    pos:1, numeric:true, unit:"facilities", step:1, placeholder:"7",
+    q:"How many facilities does the programme fund?",
+    whyBrief:"This comes from a capital programme, not from the data.",
+    whyFull:"This comes from a capital programme, not from the data. Automatic mode will not take it either: the other judgements at least have a defensible automatic basis, and this one has none, because nothing in the data implies your budget.",
+    note:"The register offers no options here — a budget is a number, and these three are only shortcuts to typing one. Any number is allowed.",
+    options:[
+      {value:"3",  label:"3"},
+      {value:"5",  label:"5"},
+      {value:"10", label:"10"},
+      {custom:true}
+    ]},
+
+  data_currency_accepted:{
+    pos:2,
+    q:"Is the age of the source register acceptable for this decision?",
+    whyBrief:"Whether a survey of that age is fit to direct capital spending is a judgement for the officer who will answer for the spending.",
+    whyFull:"The register's median record age is reported before this is asked. Whether a survey of that age is fit to direct capital spending is a judgement for the officer who will answer for the spending, and it cannot be settled by a threshold in code.",
+    note:"Neither option is backed by a probe, and neither needs to be: what decides it is the figure 7.4 years itself, and that came from scout, not from solving anything.",
+    options:[
+      {value:"yes", label:"yes", note:"accepted, with the age stated in the report", probed:false,
+       c:"the assessment proceeds, 7.4 years is printed on the cover, and the finding reads as the surveyed state"},
+      {value:"no",  label:"no",  note:"commission a resurvey first", probed:false,
+       c:"no assessment this cycle; it waits on the resurvey"}
+    ]},
+
+  service_radius_m:{
+    pos:3, unit:"m", step:50, placeholder:"750",
+    q:"What distance, or what walking time, counts as served?",
+    whyBrief:"This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports.",
+    whyFull:"This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports. A 1 km walk is a common stand-in for the 30 minutes the JMP uses for a basic service, but terrain, season and who does the walking all bear on it, and none of that is in the data.",
+    options:[
+      {value:"500", label:"500", unit:"m", note:"strict", probed:true,
+       c:"already served 24,800 (11%) · the ten sites would add 18,600",
+       ev:{radius_m:500, covered_today:24800, covered_share:0.113, newly_covered:18600,
+           solved_at_budget:10, run:"ngara-water-20260903T013720Z"}},
+      {value:"1000", label:"1000", unit:"m", note:"JMP-aligned", probed:true,
+       c:"already served 61,200 (28%) · the ten sites would add 34,900",
+       ev:{radius_m:1000, covered_today:61200, covered_share:0.279, newly_covered:34900,
+           solved_at_budget:10, run:"ngara-water-20260903T013729Z"}},
+      {value:"1500", label:"1500", unit:"m", note:"permissive", probed:true,
+       c:"already served 103,400 (47%) · the ten sites would add 41,200",
+       ev:{radius_m:1500, covered_today:103400, covered_share:0.472, newly_covered:41200,
+           solved_at_budget:10, run:"ngara-water-20260903T013733Z"}},
+      {custom:true}
+    ]},
+
+  objective:{
+    pos:4,
+    q:"Should the programme reach the most people, or the worst-served people?",
+    whyBrief:"These are different objectives with different answers.",
+    whyFull:"These are different objectives with different answers. Maximum coverage reaches the largest number and concentrates on settled areas; minimising the worst case reaches remote households at a lower total. Choosing between them is a distributional judgement, not an optimisation detail.",
+    options:[
+      {value:"max_coverage", label:"max_coverage", note:"greedy MCLP, within 1−1/e of the optimum",
+       probed:true,
+       c:"34,900 newly covered · the worst-served household still walks 6.8 km",
+       ev:{objective:"max_coverage", newly_covered:34900, worst_case_m:6820,
+           run:"ngara-water-20260903T013743Z"}},
+      {value:"worst_case", label:"worst_case", note:"population-weighted p-centre", probed:true,
+       c:"27,400 newly covered (7,500 fewer) · the worst-served household walks 4.1 km",
+       ev:{objective:"worst_case", newly_covered:27400, worst_case_m:4110,
+           run:"ngara-water-20260903T013747Z"}}
+    ]},
+
+  coverage_basis:{
+    pos:5,
+    q:"Should reach be measured as straight-line distance, or as walking time over terrain?",
+    whyBrief:"Straight-line distance ignores rivers, ridges and the absence of a path, and so overstates who is served.",
+    whyFull:"Straight-line distance ignores rivers, ridges and the absence of a path, and so overstates who is served. Walking time over a published friction surface is closer to what a household experiences, but the surface is modelled at about one kilometre and does not know the footpaths a village actually uses. Which error a district prefers to carry is its judgement.",
+    options:[
+      {value:"straight_line", label:"straight_line", note:"euclidean, in a projected CRS",
+       probed:true,
+       c:"at 1000 m, 61,200 (28%) already served",
+       ev:{basis:"straight_line", crs:"EPSG:32736", covered_today:61200,
+           great_circle_departure_m:3.4, run:"ngara-water-20260903T013736Z"}},
+      {value:"walking_time", label:"walking_time", note:"MAP friction surface, ~1 km",
+       probed:true,
+       c:"only 43,900 (20%) at the same threshold · a gap 17,300 people larger",
+       ev:{basis:"walking_time", surface:"MAP 2019 friction, 30 arcsec",
+           covered_today:43900, threshold_min:30, run:"ngara-water-20260903T013740Z"}}
+    ]},
+
+  coverage_tolerance:{
+    pos:6,
+    q:"How much coverage may reviewing decisions forgo before that is escalated?",
+    whyBrief:"A veto on a recommended site costs coverage. Where that line sits is a governance question.",
+    whyFull:"A veto on a recommended site costs coverage. Where the line sits between an acceptable local judgement and a loss that should be flagged upward is a governance question, not a data question.",
+    note:"None of these three is probed, and none can be: it governs what happens after a review, and no review has happened. There is no figure to offer here — only your judgement.",
+    options:[
+      {value:"0.02", label:"0.02", note:"tight", probed:false, c:"about 700 people, against this plan"},
+      {value:"0.05", label:"0.05", note:"", probed:false, c:"about 1,750 people"},
+      {value:"0.10", label:"0.10", note:"loose", probed:false, c:"about 3,500 people"}
+    ]},
+
+  equity_accepted:{
+    pos:7, deferred:true,
+    q:"The plan's distribution between dense and remote population has been measured. Is it accepted?",
+    whyBrief:"Coverage maximisation favours density by construction. Whether the resulting distribution is acceptable is a policy position.",
+    whyFull:"Coverage maximisation favours density by construction. Whether the resulting distribution is acceptable is a policy position, and the assessment records which position was taken.",
+    options:[
+      {value:"yes", label:"yes", note:"accepted, with the measured distribution stated", probed:true,
+       c:"the densest population quintile takes 6 of the 10 sites · Gini 0.41",
+       ev:{quintile_top_sites:6, gini:0.41, remote_pop_uncovered:31200,
+           run:"ngara-water-20260903T031422Z"}},
+      {value:"no", label:"no", note:"re-run with the worst_case objective", probed:true,
+       c:"re-running covers 7,500 fewer people, but the worst-served walk falls from 6.8 km to 4.1 km",
+       ev:{objective:"worst_case", newly_covered:27400, worst_case_m:4110, gini:0.26}}
+    ]}
+};
+
+/* ---------- what the agent says, beat by beat ----------
+   One text per turn, not two. The real agent speaks once; "more" opens the
+   evidence that is already beside it, never a second wording of the paragraph. */
+const BEATS = [
+  { card:"budget",
+    tools:[["scout","842 records, 724 serving, median 7.4 years old"]],
+    said:"The register holds 842 water points for Ngara, 118 flagged as not serving, and a further 31 whose coordinates fall outside the boundary and were dropped by the cleaning rules. The median record is 7.4 years old, the oldest from 2009. The population is about 219,000.\n\n97% of those records fall inside the boundary I matched, so this runs on the administrative boundary rather than an envelope drawn around the records — and the assessment states which was used.\n\nBudget first, because every option after this is solved at it. I have no recommendation to offer here: it comes from a capital programme, and nothing in the data implies it." },
+
+  { card:"data_currency_accepted",
+    tools:[],
+    said:"Recorded.\n\nThe next one is about the register itself. Median age 7.4 years, the oldest record from 2009 — I have given you the figure; the judgement after it is yours.\n\nNote that I have no probe to show you here. On the other questions I can solve once per option and report what came back. On this one, what decides it is the figure itself." },
+
+  { card:"service_radius_m",
+    tools:[["price_options","3 options priced on real runs"]],
+    said:"Accepted and recorded; 7.4 years will be printed on the assessment's cover, and the finding will read as the surveyed state of the network rather than its present state.\n\nThe next question sets how large the gap in this whole assessment turns out to be, so I have solved your own data once at each of the three thresholds, at the budget you gave. All three lines come from real runs; none is my estimate." },
+
+  { card:"objective",
+    tools:[["price_options","2 options priced on real runs"]],
+    said:"1000 m is recorded. At that threshold 61,200 people (28%) count as served today and the gap is 158,000. That gap is a statement conditional on 1000 m, and the report will say so throughout.\n\nThe next one is not a technical choice: where the ten sites go depends on whether you want to reach the most people or the hardest-to-reach. I have solved both at your budget; the trade is below." },
+
+  { card:"coverage_basis", refusal:true,
+    tools:[["run_assessment","not issued: decisions_outstanding", false],
+           ["price_options","2 options priced on real runs"]],
+    said:"I tried to produce the plan and it refused — above. This is not something I can route around: nothing downstream reads a default for these two, and one missing means nothing is issued.\n\nTwo are outstanding. The first is how distance is measured; I have run both." },
+
+  { card:"coverage_tolerance",
+    tools:[],
+    said:"Straight-line is recorded; the report will state how many people that choice overstates as served, and carry the walking-time comparison (43,900) beside it.\n\nOn the last one I have no figure to give you, and the card says why." },
+
+  { card:"equity_accepted", plan:true,
+    tools:[["run_assessment","10 sites, 34,900 newly covered"]],
+    said:"All six are recorded and the assessment has run — the plan is above. Reviewed at 7.4, above the issue floor of 6.5.\n\nTen sites add 34,900 people, taking Ngara from 28% served to 44%. Coverage is the union over the ten; the evaluator recomputed it independently, and a per-site sum would have claimed 41,600 — 6,700 more. That difference is printed in the report.\n\nOne question is left, and it only becomes real now that a plan exists." },
+
+  { card:null, issued:true,
+    tools:[],
+    said:"Accepted and recorded — with your reason, and with the measured distribution itself. The assessment is issued.\n\nAll six judgements were recorded by you, each with your own words as the reason. The record on the right and the assessment compile from the same results.json, so they cannot disagree. The whole account is in RUN_RECORD.md: who decided what, every retrieval, every anomaly, every override and what it cost." }
+];
+
+/* ================= rendering ================= */
+
+function optHTML(o, i){
+  if (o.custom){
+    const on = PENDING && PENDING.custom;
+    return `<button type="button" class="opt unprobed${on?" sel":""}" data-i="${i}">
+      <span class="dot"></span><span>
+        <span class="v">another value</span>
+        <span class="flag">not probed</span>
+      </span></button>`;
+  }
+  const sel = PENDING && !PENDING.custom && PENDING.value === o.value;
+  const note = o.note ? `<span class="n">${esc(o.note)}</span>` : "";
+  // Two states, not three: a run stands behind this option, or none does. How
+  // long an unpriced one would take to probe is the deployment's business; a
+  // badge saying one answer is cheaper nudges a judgement it must not touch.
+  const flag = o.probed ? "" : `<span class="flag">not probed</span>`;
+  // the probe's run id is a link: every figure resolves to a run you can open
+  const ev = o.ev ? `<div class="ev full-only">${
+      Object.entries(o.ev).map(([k,v]) => k === "run"
+        ? `${k}: <a href="/run/${v}" onclick="event.preventDefault()">${esc(v)}</a>`
+        : `${k}: ${esc(JSON.stringify(v))}`).join("\n")}</div>` : "";
+  return `<button type="button" class="opt${o.probed?"":" unprobed"}${sel?" sel":""}" data-i="${i}">
+    <span class="dot"></span><span>
+      <span class="v">${esc(o.label)}${o.unit?`<span class="n">${esc(o.unit)}</span>`:""}</span>${note}${flag}
+      ${o.c ? `<span class="c">${esc(o.c)}</span>` : ""}${ev}
+    </span></button>`;
+}
+
+function cardHTML(key){
+  const c = CARDS[key];
+  const picked = PENDING && PENDING.key === key ? PENDING.value : null;
+  return `<div class="card" data-key="${key}">
+    <div class="top">
+      <div class="pos">decision ${c.pos} of 7${c.deferred?" · asked once a plan exists":""}</div>
+      <h3>${esc(c.q)}</h3>
+      <details class="why"${DETAIL==="full"?" open":""}>
+        <summary><i>why this has no default ▾</i></summary>
+        <p class="brief-only">${esc(c.whyBrief)}</p>
+        <p class="full-only">${esc(c.whyFull)}</p>
+      </details>
+      ${c.note ? `<p class="note">${esc(c.note)}</p>` : ""}
+    </div>
+    <div class="opts">${c.options.map(optHTML).join("")}</div>
+    ${PENDING && PENDING.key === key && PENDING.custom
+      ? `<div class="custom"><input id="cust" type="number" step="${c.step||50}"
+           value="${esc(PENDING.value||"")}" placeholder="${c.placeholder||""}"
+           ><span class="n">${esc(c.unit||"")}</span></div>` : ""}
+    <div class="foot">${picked
+      ? `<b>${esc(key)} = ${esc(String(picked))}</b> — add a reason, or send as it
+         is and the agent will ask for one.`
+      : `The option settles the value. What you write is the reason, and it goes
+         into the record verbatim.`}</div>
+  </div>`;
+}
+
+/* ---------- the plan, in the thread ---------- */
+function planHTML(){
+  const g = PLAN;
+  const rows = g.sites.map(f => `<tr>
+      <td>${f.rank}</td><td><b>${f.id}</b></td>
+      <td>${f.lat.toFixed(4)}<br>${f.lon.toFixed(4)}</td>
+      <td>${num(f.add)}</td><td>${f.near.toFixed(1)} km</td></tr>
+    <tr class="why full-only"><td></td><td colspan="4">${esc(f.why)}</td></tr>`).join("");
+  return `<div class="plan">
+    <div class="hd">
+      <div class="h">✓ assessment issued</div>
+      <div class="big">10 sites · 34,900 newly covered · 28% → 44% served</div>
+      <div class="sub">reviewed 7.4, above the floor of 6.5 · all 6 judgements
+        recorded by a person · <code class="mono">ngara-water-20260903T031422Z</code></div>
+    </div>
+    <div class="body">
+      <div class="recon">Map and account reconcile: 10 sites drawn, 10 rows in the table.</div>
+      <div class="m-legend">
+        <span><i></i>10 recommended</span>
+        <span><i class="w"></i>724 serving</span>
+        <span><i class="b"></i>118 not serving</span></div>
+      ${mapSVG(g, 640, 300)}
+      <table class="sites"><thead><tr>
+        <th>#</th><th>site</th><th>coordinates</th><th>newly covered</th>
+        <th>to nearest working</th></tr></thead><tbody>${rows}</tbody></table>
+    </div>
+    <div class="out">
+      <a href="/run/ngara-water-20260903T031422Z" onclick="event.preventDefault()">
+        <b>Open full result ↗</b></a>
+      <a href="#" onclick="event.preventDefault()">Assessment PDF ↗</a>
+      <a href="#" onclick="event.preventDefault()">Evidence bundle ↗</a>
+      <a href="#" onclick="event.preventDefault()">Run record ↗</a>
+      <span class="hint">The full result carries every site, the five review
+        dimensions, the ten checks, the anomalies and every retrieval. Open the
+        run record before the PDF.</span>
+    </div>
+  </div>`;
+}
+
+function itemHTML(it){
+  if (it.type === "agent"){
+    const body = it.said.split("\n\n").map(p => `<p>${esc(p)}</p>`).join("");
+    const tools = (it.tools||[]).length
+      ? `<details class="basis"${DETAIL==="full"?" open":""}>
+           <summary>tools used · ${it.tools.length}</summary>
+           ${it.tools.map(([n,s,ok]) => `<div class="call${ok===false?" bad":""}">
+              <b>${ok===false?"✗":"✓"} ${esc(n)}</b><span>${esc(s)}</span></div>`).join("")}
+         </details>` : "";
+    return `<div class="turn col"><div class="who-label">agent</div>
+      <div class="bub">${body}${tools}</div></div>`;
+  }
+  if (it.type === "officer"){
+    const meta = it.pick
+      ? `<div class="said-meta"><span class="vchip">${esc(it.pick.key)} = ${esc(it.pick.value)}</span>
+         <span class="lbl">selected in the interface</span></div>` : "";
+    return `<div class="turn u"><div class="who-label">${esc(OFFICER||"")}</div>
+      <div class="bub"><div class="verbatim">${esc(it.text) || "<em style='color:var(--mute)'>(no reason given)</em>"}</div>${meta}</div></div>`;
+  }
+  if (it.type === "record")
+    return `<div class="event"><div class="h">✎ written to the record</div>
+      <div class="b"><code>${esc(it.key)} = ${esc(it.value)}</code> recorded against
+      your name, with your reason copied verbatim into <code>decisions.yaml</code>.</div></div>`;
+  if (it.type === "opened")
+    return `<div class="event"><div class="h">session opened</div>
+      <div class="b"><code>POST /api/interview</code> · directory
+      <code>sessions/ngara-20260903T0912Z-4a71/</code> · followed by one empty
+      <code>/say</code> so the agent opens</div></div>`;
+  if (it.type === "resolve")
+    return `<div class="turn col"><div class="who-label">agent</div><div class="bub">
+      <p>I read <em>“${esc(it.typed)}”</em> as this:</p>
+      <div class="resolved">--country <b>Tanzania</b>   --adm2 <b>Ngara</b>   --iso3 <b>TZA</b>   --domain <b>water</b></div>
+      <p>Matched at GADM level 2. A unit named Ngara also exists at level 3 and
+      holds 11% of the register against this one's 97%, so this is the district
+      rather than the town — correspondence decides, not the level number.</p>
+      <div class="alts">Not what you meant? <u>Ngara Mjini</u> · <u>Ngara Mjini
+      Kaskazini</u> · or just tell me in the box below. Nothing has been fetched
+      yet.</div></div></div>`;
+  if (it.type === "refusal")
+    return `<div class="notice"><div class="h">This is not an error — it is the design working</div>
+      <div class="b">Not issued. Two judgements have not been recorded, and nothing
+      downstream reads a default for them.</div>
+      <ul><li><code>coverage_basis</code> — what reach is measured as</li>
+          <li><code>coverage_tolerance</code> — how much coverage a review may forgo</li></ul></div>`;
+  if (it.type === "plan") return planHTML();
+  return "";
+}
+
+function renderThread(){
+  if (PHASE === "scope"){ $("thread").innerHTML = scopeHTML(); return; }
+  const cur = THREAD.length && THREAD[THREAD.length-1].card;
+  $("thread").innerHTML = THREAD.map(itemHTML).join("")
+    + (cur ? cardHTML(cur) : "")
+    + (THINKING ? `<div class="thinking">${esc(THINKING)}</div>` : "");
+  $("thread").scrollTop = $("thread").scrollHeight;
+}
+
+/* ---------- right column · the record ---------- */
+function ledgerHTML(){
+  if (!SCOUTED)
+    // six judgements is not yet a promise that can be kept
+    return `<p class="pre">scout has not run. Until the register is known to hold
+      anything, “six judgements” is a promise that cannot be kept, so this stays
+      empty.</p>`;
+
+  const cur = THREAD.length ? THREAD[THREAD.length-1].card : null;
+  const row = k => {
+    const r = RECORDED[k];
+    const cls = r ? "done" : (k === cur ? "now" : "pendingrow");
+    return `<div class="lrow ${cls}"><i></i><span class="k">${k}</span>
+      <span class="v">${r ? esc(r.value) : "—"}</span></div>`;
+  };
+  const verdict = VERDICT
+    ? `<div class="lrow verdict"><i></i><span class="k">review</span>
+       <span class="v">${esc(VERDICT)}</span></div>` : "";
+
+  return KEYS.map(row).join("")
+    + `<div class="ldef">${row(DEFERRED_KEY)}</div>` + verdict;
+}
+
+function recordHTML(){
+  if (!SCOUTED) return "";
+  return `<div class="subcap">decisions.yaml</div>` + yamlHTML();
+}
+
+/* The panel shows the FILE, not a reconstruction of it.
+
+   In the real thing this string is `state.decisions_yaml`, which is
+   `sessions/<id>/decisions.yaml` read straight off disk — header comments,
+   quoting, literal blocks and all. That matters: the panel exists to show the
+   file the run will read, and a second renderer built from `state.recorded`
+   would be free to drift from what is actually written. So colouring is applied
+   to the text and is a pure function of it; nothing here rebuilds the file.
+
+   `yamlText()` below only exists because a mockup has no disk. Replace it with
+   the string from the API and the tinting is unchanged. */
+function yamlText(){
+  const keys = [...KEYS, DEFERRED_KEY].filter(k => RECORDED[k]);
+  if (!keys.length) return "";
+  const head =
+`# Decisions for the Ngara siting assessment.
+#
+# Each of these is a judgement about values, not a technical parameter.
+# Every entry carries the name of whoever made it and their reason, and
+# both are printed in the assessment beside the figure they produced.
+# The reason is the officer's own words, recorded verbatim.
+#
+# Written by the siting interview, 2026-09-03 09:24 UTC.
+decisions:`;
+  // yaml.dump writes a reason as a literal block only when it would wrap;
+  // short ones stay inline. emit.py never folds, because folding re-flows
+  // line breaks into spaces, and that is a change to what was said.
+  const body = keys.map(k => {
+    const r = RECORDED[k];
+    const v = /^(yes|no|true|false|on|off)$/i.test(r.value) ? `'${r.value}'` : r.value;
+    const reason = r.reason.length > 72 ? `|-\n    ${r.reason}` : r.reason;
+    return `- key: ${k}\n  value: ${v}\n  decided_by: ${OFFICER||""}\n  reason: ${reason}`;
+  }).join("\n");
+  return head + "\n" + body + "\n";
+}
+
+/* Colouring, applied to whatever text arrived. Keys quiet, values solid, the
+   officer's own words in the serif so they read as writing rather than data. */
+function tint(text){
+  return esc(text).split("\n").map(line => {
+    if (/^\s*#/.test(line)) return `<span class="c">${line}</span>`;
+    const m = line.match(/^(\s*-?\s*)([a-z_]+):(.*)$/);
+    if (m) return `${m[1]}<span class="k">${m[2]}:</span><span class="v">${m[3]}</span>`;
+    if (/^\s{4}\S/.test(line)) return `<span class="r">${line.trim()}</span>`;
+    return line;
+  }).join("\n");
+}
+
+function yamlHTML(){
+  const text = yamlText();
+  if (!text)
+    return `<p class="empty">Nothing recorded yet. Each answer is written here as
+      it is made — this file, not the conversation, is what the assessment reads.</p>`;
+  return `<div class="yaml">${tint(text)}</div>`;
+}
+
+/* ---------- right column · history ---------- */
+function historyHTML(){
+  return HISTORY.map(h => `<a class="hrow${h.fresh?" fresh":""}" href="#"
+      onclick="event.preventDefault()">
+    <div class="hd">${esc(h.district)}</div>
+    <div class="meta">
+      <span>${esc(h.date)}</span>
+      ${h.sites != null ? `<span>${h.sites} sites</span>` : ""}
+      ${h.issued ? `<span class="ok">✓ ${h.score}</span>`
+                 : `<span class="no">not issued</span>`}
+      ${h.why ? `<span>${esc(h.why)}</span>` : ""}
+      ${h.sample ? `<span class="tag">sample</span>` : ""}
+    </div></a>`).join("");
+}
+
+/* ---------- chrome ---------- */
+function renderChrome(){
+  document.body.className = DETAIL;      // less/more is a CSS state, not a request
+  const n = KEYS.filter(k => RECORDED[k]).length;
+
+  const place = $("hdr-place");
+  place.textContent = DISTRICT || "——";
+  place.className = "who slot" + (DISTRICT ? "" : " empty");
+
+  const iso = $("hdr-iso");
+  iso.hidden = !RESOLVED;
+  iso.textContent = "TZA";
+
+  const bd = $("hdr-boundary");
+  bd.hidden = !SCOUTED;
+  bd.textContent = "administrative boundary";
+
+  const off = $("hdr-officer");
+  off.textContent = OFFICER || "——";
+  off.className = "sub slot" + (OFFICER ? "" : " empty");
+
+  const pr = $("hdr-progress");
+  pr.hidden = !SCOUTED;
+  pr.className = "chip" + (n ? " on" : "");
+  pr.textContent = `${n} of 6 recorded`;
+
+  $("cap-count").textContent = SCOUTED ? `${n} / 6` : "—";
+  $("cap-hist").textContent = `${HISTORY.length}`;
+  $("composer").hidden = PHASE === "scope";
+
+  FILL.forEach(id => { const el = $(id);
+    if (el){ el.classList.remove("fill"); void el.offsetWidth; el.classList.add("fill"); } });
+  FILL.clear();
+  updateCue();
+}
+
+function render(){
+  renderChrome(); renderThread();
+  $("ledger").innerHTML = ledgerHTML();
+  $("record").innerHTML = recordHTML();
+  $("history").innerHTML = historyHTML();
+}
+
+/* ================= the scope form ================= */
+function scopeHTML(){
+  const ok = SCOPE.where.trim() && SCOPE.officer.trim();
+  return `<div class="scope">
+    <h3>Open an assessment</h3>
+    <p class="lede">Three things. The place does not have to match how the
+      register spells it — it is resolved against the register itself, across
+      administrative levels, and you will see what it resolved before anything
+      runs.</p>
+    <div class="grid">
+      <div class="wide"><label>where</label>
+        <input data-f="where" value="${esc(SCOPE.where)}"
+               placeholder="Ngara, Tanzania — or just the district"></div>
+      <div><label>what is being sited</label>
+        <select data-f="domain">${DOMAINS.map(d =>
+          `<option value="${d.key}"${d.key===SCOPE.domain?" selected":""}>${esc(d.title)}</option>`
+        ).join("")}</select></div>
+      <div><label>your name and role</label>
+        <input data-f="officer" value="${esc(SCOPE.officer)}"
+               placeholder="District Water Officer, Ngara"></div>
+      <p class="hint wide">Water is what is implemented. The framework does not
+        know anything about water in particular — a domain is a module under
+        <code class="mono">siting/domains/</code> declaring its own sources,
+        demand surface and unit, and this list is that directory, read at
+        startup.</p>
+      <div class="cmd">python -m siting.cli \\
+  --country &lt;resolved&gt; --adm2 &lt;resolved&gt; --iso3 &lt;resolved&gt; \\
+  --domain ${esc(SCOPE.domain)} \\
+  --decisions sessions/&lt;id&gt;/decisions.yaml --format both</div>
+    </div>
+    <div class="go"><button id="scope-go"${ok?"":" disabled"}>Begin</button></div>
+    <p class="note">Your name is the one thing that has to be here: every
+      judgement is recorded against it, and the session cannot exist without
+      something to record them against. If the place comes back wrong, say so
+      and it is changed — that is a sentence, not a form.</p>
+  </div>`;
+}
+
+/* ================= flow ================= */
+function pushBeat(){
+  const b = BEATS[STEP];
+  if (!b) return;
+  if (b.refusal) THREAD.push({type:"refusal"});
+  if (b.plan){ PLAN = buildPlan(); THREAD.push({type:"plan"}); VERDICT = "7.4 · issued"; }
+  THREAD.push({type:"agent", said:b.said, tools:b.tools, card:b.card});
+  if (b.issued){
+    HISTORY = [{district:"Ngara, Tanzania", date:"2026-09-03", sites:10, score:7.4,
+                issued:true, fresh:true}, ...HISTORY];
+  }
+  STEP++;
+}
+
+function pick(i){
+  const key = THREAD[THREAD.length-1].card;
+  const o = CARDS[key].options[i];
+  PENDING = o.custom ? {key, custom:true, value:""} : {key, value:o.value};
+  render();
+  if (o.custom){
+    const el = $("cust");
+    if (el){ el.focus();
+      el.oninput = () => { PENDING.value = el.value; renderThread(); gate(); }; }
+  } else $("say").focus();
+  gate();
+}
+
+/* The send button is enabled by having something to send — a value, a reason,
+   or both. It is NOT a gate on the decision being complete. `record_decision`
+   cannot write without pointing at something the officer said, so a value with
+   no reason simply makes the agent ask for one, and that exchange is worth
+   seeing rather than preventing. */
+function gate(){
+  $("send").disabled = !($("say").value.trim() || (PENDING && PENDING.value));
+  updateCue();
+}
+
+function updateCue(){
+  const txt = $("say").value.trim();
+  let msg, cls = "cue col";
+  if (PENDING && PENDING.value && txt){
+    msg = `${PENDING.key} = ${PENDING.value}, with your words as the reason. Both go into the record.`;
+    cls += " armed";
+  } else if (PENDING && PENDING.value){
+    msg = `${PENDING.key} = ${PENDING.value} selected, with no reason yet. Send it and the agent will ask for one.`;
+    cls += " armed";
+  } else if (txt){
+    msg = "Sent verbatim. Nothing you write is edited, summarised or translated before it is recorded.";
+  } else {
+    msg = "Pick an option, write in your own words, or both.";
+  }
+  $("cue").textContent = msg;
+  $("cue").className = cls;
+}
+
+function send(){
+  const text = $("say").value.trim();
+  if (!text && !(PENDING && PENDING.value)) return;
+  const pick_ = PENDING && PENDING.value ? {key:PENDING.key, value:PENDING.value} : null;
+  const cur = THREAD[THREAD.length-1].card;          // the card on screen, if any
+
+  // The utterance is the officer's words and nothing else. What they clicked
+  // travels beside it, never inside it — otherwise "1000 — " would be copied
+  // into decisions.yaml as part of the reason.
+  THREAD.push({type:"officer", text, pick:pick_});
+
+  const complete = cur && pick_ && text;
+  if (complete){
+    RECORDED[pick_.key] = {value:pick_.value, reason:text};
+    THREAD[THREAD.length-2].card = null;             // the card is answered
+    THREAD.push({type:"record", key:pick_.key, value:pick_.value});
+  }
+
+  PENDING = null; $("say").value = ""; gate();
+  THINKING = "thinking…"; render();
+
+  // Half an answer is not a failure state the interface has to prevent. The
+  // agent's own tool cannot record without both halves, so it asks — and the
+  // asking is the guarantee made visible.
+  setTimeout(() => {
+    THINKING = false;
+    if (complete || !cur){
+      pushBeat();
+    } else {
+      THREAD[THREAD.length-2].card = null;   // moves to the turn that re-asks
+      THREAD.push({type:"agent", card:cur, tools:[], said: pick_
+        ? "I have the value but not the reason. `record_decision` takes the id of something you actually said and copies it into the record verbatim — I cannot write one on your behalf. Tell me why, in whatever words you would use, and I will record that."
+        : "I have your reason but not the value. Pick one of the options, or give me a number, and I will record both together."});
+    }
+    render();
+    $("say").focus();
+  }, 750);
+}
+
+function open_(){
+  PHASE = "interview";
+  OFFICER = SCOPE.officer.trim();
+  FILL.add("hdr-officer");
+  THREAD.push({type:"opened"});
+  // Resolution happens before anything is fetched, and is reported. It is not a
+  // validation step the person has to pass; it is the machine saying what it
+  // understood, early enough to be corrected in a sentence.
+  THINKING = "resolving the place against the register…";
+  render();
+  setTimeout(() => {
+    THINKING = false; RESOLVED = true; DISTRICT = "Ngara, Tanzania";
+    FILL.add("hdr-place"); FILL.add("hdr-iso");
+    THREAD.push({type:"resolve", typed:SCOPE.where.trim()});
+    THINKING = "scout is reading the register…";
+    render();
+    setTimeout(() => {
+      THINKING = false; SCOUTED = true;
+      FILL.add("hdr-boundary");
+      pushBeat(); render(); $("say").focus();
+    }, 1500);
+  }, 1200);
+}
+
+function start(){
+  STEP = 0; THREAD = []; PLAN = null; PENDING = null; THINKING = false;
+  RECORDED = {}; VERDICT = null; HISTORY = SEED_HISTORY.slice();
+  OFFICER = null; DISTRICT = null; SCOUTED = false; FILL.clear();
+  RESOLVED = null;
+  PHASE = "scope"; SCOPE.where = ""; SCOPE.officer = ""; SCOPE.domain = "water";
+  $("say").value = "";
+  render();
+}
+
+/* ================= deterministic pseudo-geography ================= */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+function buildPlan(){
+  const rnd = mulberry32(20260903);
+  const cx = 30.66, cy = -2.48, R = 0.36;
+  const ring = [];
+  for (let i=0;i<72;i++){
+    const a = i/72*Math.PI*2;
+    const r = R*(0.72+0.28*(0.5+0.5*Math.sin(a*3+1.1))*(0.75+0.5*rnd()));
+    ring.push([cx+Math.cos(a)*r*1.12, cy+Math.sin(a)*r*0.86]);
+  }
+  const inside = () => { const a = rnd()*Math.PI*2, q = Math.sqrt(rnd())*R*0.82;
+    return [cx+Math.cos(a)*q*1.12, cy+Math.sin(a)*q*0.86]; };
+  const working = [], broken = [];
+  for (let i=0;i<724;i++) working.push(inside());
+  for (let i=0;i<118;i++) broken.push(inside());
+  const adds = [6420,5180,4390,3760,3310,2980,2640,2310,2050,1860];
+  const near = [7.4,6.1,8.8,5.2,9.6,4.7,6.9,5.5,7.8,4.1];
+  const why = [
+    "western corridor; nearest working point is 7.4 km away",
+    "the densest gap between three broken points",
+    "east bank; unreachable for six weeks in the rains",
+    "the market site, shared by four villages",
+    "the most remote settlement in the north, the only site serving it",
+    "between the school and the clinic, neither with its own source",
+    "the old point has dried; the register still shows it serving",
+    "on the main road, the cheapest to maintain",
+    "on a ward boundary; neither ward would rank it alone",
+    "the tenth site, where marginal return has clearly fallen"];
+  const sites = adds.map((a,i) => {
+    const p = inside();
+    return {id:`NG-${String(i+1).padStart(2,"0")}`, rank:i+1, lon:p[0], lat:p[1],
+            add:a, near:near[i], why:why[i]};
+  });
+  const xs = ring.map(p=>p[0]), ys = ring.map(p=>p[1]);
+  return {ring, working, broken, sites,
+          bbox:[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)]};
+}
+
+function mapSVG(g, W, H){
+  const PAD = 8, [w,s,e,n] = g.bbox;
+  const midLat = (s+n)/2*Math.PI/180;
+  const dx = (e-w)*Math.cos(midLat), dy = n-s;
+  const k = Math.min((W-2*PAD)/dx, (H-2*PAD)/dy);
+  const offX = (W-dx*k)/2, offY = (H-dy*k)/2;
+  const X = lon => (offX+(lon-w)*Math.cos(midLat)*k).toFixed(1);
+  const Y = lat => (offY+(n-lat)*k).toFixed(1);
+  const dots = (a,c) => a.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="1.4" class="${c}"/>`).join("");
+  const sites = g.sites.map(f => `<g class="m-site">
+      <circle cx="${X(f.lon)}" cy="${Y(f.lat)}" r="8" class="m-halo"/>
+      <circle cx="${X(f.lon)}" cy="${Y(f.lat)}" r="4" class="m-core"/>
+      <text x="${+X(f.lon)+10}" y="${+Y(f.lat)+4}">${f.rank}</text>
+      <title>${f.id} · rank ${f.rank} · ${num(f.add)} newly covered</title></g>`).join("");
+  const kmDeg = 1/(111.32*Math.cos(midLat));
+  let bar = 10;
+  while (kmDeg*bar*Math.cos(midLat)*k > (W-2*PAD)*0.4) bar /= 2;
+  while (kmDeg*bar*Math.cos(midLat)*k < (W-2*PAD)*0.15) bar *= 2;
+  const px = kmDeg*bar*Math.cos(midLat)*k;
+  return `<svg viewBox="0 0 ${W} ${H}" class="m-svg" role="img"
+    aria-label="${g.sites.length} recommended sites in Ngara">
+    <polygon points="${g.ring.map(p=>X(p[0])+","+Y(p[1])).join(" ")}" class="m-bound"/>
+    ${dots(g.broken,"m-broken")}${dots(g.working,"m-working")}${sites}
+    <g class="m-scale"><line x1="${PAD}" y1="${H-PAD}" x2="${PAD+px}" y2="${H-PAD}"/>
+      <line x1="${PAD}" y1="${H-PAD-3}" x2="${PAD}" y2="${H-PAD+3}"/>
+      <line x1="${PAD+px}" y1="${H-PAD-3}" x2="${PAD+px}" y2="${H-PAD+3}"/>
+      <text x="${PAD+px+5}" y="${H-PAD+3}">${bar} km</text></g></svg>`;
+}
+
+/* ================= wiring ================= */
+$("thread").addEventListener("change", e => {
+  if (e.target.dataset.f === "domain"){ SCOPE.domain = e.target.value; renderThread(); }
+});
+$("thread").addEventListener("input", e => {
+  const f = e.target.dataset.f;
+  if (!f) return;
+  SCOPE[f] = e.target.value;
+  const go = $("scope-go");
+  if (go) go.disabled = !(SCOPE.where.trim() && SCOPE.officer.trim());
+});
+$("thread").addEventListener("click", e => {
+  if (e.target.id === "scope-go"){ open_(); return; }
+  const b = e.target.closest(".opt");
+  if (b) pick(+b.dataset.i);
+});
+$("say").addEventListener("input", gate);
+$("say").addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){ e.preventDefault(); send(); }
+});
+$("composer").addEventListener("submit", e => { e.preventDefault(); send(); });
+
+$("sw-detail").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  DETAIL = b.dataset.v;
+  [...$("sw-detail").children].forEach(x => x.classList.toggle("on", x === b));
+  render();
+});
+$("replay").onclick = start;
+
+start();
+</script>
+</body>
+</html>

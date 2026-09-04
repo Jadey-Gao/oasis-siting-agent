@@ -1,0 +1,47 @@
+# A minimal decision set for a transferability test. The reasons record that
+# these are a test's assumptions and not any district's position.
+decisions:
+  - key: service_radius_m
+    value: 1000
+    decided_by: transferability test
+    reason: >-
+      One kilometre, for comparability with the Uganda runs. Not a position held
+      by any district in this country.
+  - key: coverage_basis
+    value: straight_line
+    decided_by: transferability test
+    reason: >-
+      Straight-line, to isolate whether retrieval and boundary matching transfer
+      across countries without the friction surface as a second variable.
+  - key: objective
+    value: max_coverage
+    decided_by: transferability test
+    reason: >-
+      Maximum coverage, for comparability. Not a distributional position.
+  - key: budget
+    value: 10
+    decided_by: transferability test
+    reason: >-
+      Ten, for comparability with the Uganda runs.
+  - key: data_currency_accepted
+    value: unresolved
+    decided_by: transferability test
+    reason: >-
+      This run exists to check that the pipeline transfers, not to direct any
+      spending. The register's age has not been assessed by anyone accountable.
+  - key: coverage_tolerance
+    value: 0.05
+    decided_by: transferability test
+    reason: >-
+      Five per cent, for comparability.
+  - key: review_floor
+    value: 6.5
+    decided_by: transferability test
+    reason: >-
+      Six and a half, for comparability with the other runs. Not a position held
+      by any district in this country.
+  - key: equity_accepted
+    value: unresolved
+    decided_by: transferability test
+    reason: >-
+      No policy position is taken in a transferability test.

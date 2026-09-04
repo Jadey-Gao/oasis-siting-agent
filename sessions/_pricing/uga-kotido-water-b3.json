@@ -1,0 +1,63 @@
+{
+  "scope": {
+    "where": "hebei, china",
+    "domain": "water",
+    "country": "Uganda",
+    "adm2": "Kotido",
+    "iso3": "UGA"
+  },
+  "budget": 3,
+  "tables": {
+    "service_radius_m": {
+      "key": "service_radius_m",
+      "question": "What distance, or what walking time, counts as served?",
+      "why_not_a_default": "This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports. A 1 km walk is a common stand-in for the 30 minutes the JMP uses for a basic service, but terrain, season and who does the walking all bear on it, and none of that is in the data.",
+      "unit": "metres",
+      "options_hint": "500 (strict) | 1000 (JMP-aligned) | 1500 (permissive)",
+      "priced": [
+        {
+          "value": 500.0,
+          "label": "500 m",
+          "covered_today": 31568,
+          "covered_share": 0.0619,
+          "newly_covered": 4888,
+          "evidence": {
+            "uncovered": 478439,
+            "rule": "within about 7 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 8 decisions were recorded by a person. The remaining 6 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, review_floor, equity_accepted.",
+          "run_id": "kotido-water-20260904T021506Z"
+        },
+        {
+          "value": 1000.0,
+          "label": "1000 m",
+          "covered_today": 72861,
+          "covered_share": 0.1429,
+          "newly_covered": 11605,
+          "evidence": {
+            "uncovered": 437145,
+            "rule": "within about 15 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 8 decisions were recorded by a person. The remaining 6 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, review_floor, equity_accepted.",
+          "run_id": "kotido-water-20260904T021750Z"
+        },
+        {
+          "value": 1500.0,
+          "label": "1500 m",
+          "covered_today": 100095,
+          "covered_share": 0.1963,
+          "newly_covered": 19048,
+          "evidence": {
+            "uncovered": 409912,
+            "rule": "within about 22 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 8 decisions were recorded by a person. The remaining 6 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, review_floor, equity_accepted.",
+          "run_id": "kotido-water-20260904T021823Z"
+        }
+      ],
+      "unpriceable": null,
+      "degenerate": null,
+      "caveat": "These are probe runs. In each one, every decision except the one being compared was taken by the agent, so the figures show what this choice changes — they are not this district's plan."
+    }
+  }
+}

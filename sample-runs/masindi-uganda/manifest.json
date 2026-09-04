@@ -1,0 +1,124 @@
+{
+  "run_id": "masindi-water-20260827T030535Z",
+  "generated_at": "2026-08-27T03:06:57Z",
+  "command": [
+    "python",
+    "-m",
+    "siting.cli",
+    "--country",
+    "Uganda",
+    "--adm2",
+    "Masindi",
+    "--iso3",
+    "UGA",
+    "--decisions",
+    "decisions/masindi.yaml",
+    "--format",
+    "bundle"
+  ],
+  "scope": {
+    "country": "Uganda",
+    "adm2": "Masindi",
+    "iso3": "UGA",
+    "radius_m": 1000.0,
+    "coverage_basis": "walking_time",
+    "coverage_minutes": 13.6,
+    "friction_calibration": {
+      "median_minutes_per_km": 13.560150146484375,
+      "p90_minutes_per_km": 42.226097106933594,
+      "radius_m": 1000.0,
+      "median_minutes_at_radius": 13.560150146484375,
+      "p90_minutes_at_radius": 42.226097106933594
+    },
+    "grid_m": 750.0,
+    "min_separation_m": 1000.0,
+    "bounds": [
+      31.3199,
+      1.326,
+      32.3629,
+      2.3721
+    ],
+    "points_total": 2178,
+    "points_working": 1752,
+    "points_broken": 426,
+    "points_at_risk": 578,
+    "boundary": "administrative",
+    "boundary_match": {
+      "requested": "Masindi",
+      "matched": "Masindi",
+      "how": "exact",
+      "level": 1,
+      "gid": "UGA.36_1",
+      "within": "",
+      "levels_tried": [
+        "level 2: not found among 166 units",
+        "level 3: not found among 965 units"
+      ],
+      "levels_matched": [
+        1
+      ],
+      "chosen_by": "share of register records contained",
+      "agreement": {
+        "share_inside": 0.9927,
+        "inside": 2162,
+        "total": 2178,
+        "corresponds": true,
+        "threshold": 0.8,
+        "verdict": "2,162 of 2,178 records (99%) fall inside the matched boundary, at or above the 80% required for the two to be treated as the same unit."
+      }
+    },
+    "boundary_agreement": {
+      "share_inside": 0.9927,
+      "inside": 2162,
+      "total": 2178,
+      "corresponds": true,
+      "threshold": 0.8,
+      "verdict": "2,162 of 2,178 records (99%) fall inside the matched boundary, at or above the 80% required for the two to be treated as the same unit."
+    },
+    "population_outside_boundary": 466865,
+    "median_record_age_years": 4.5,
+    "grid_fraction": 0.75,
+    "crs": "EPSG:32636 (WGS 84 / UTM zone 36N)",
+    "crs_rationale": "Area of interest spans 1.04 degrees of longitude and is centred at 1.849, 31.841, which falls in UTM zone 36N. UTM is conformal and preserves local distance to about one part in 2,500 within a zone, which is well inside the tolerance of a service-radius analysis.",
+    "crs_check": {
+      "pairs": 400,
+      "max_relative_error": 0.005830712302722395,
+      "median_relative_error": 0.002898123727418776
+    },
+    "domain": "water",
+    "domain_title": "Rural water point siting",
+    "unit": "water point",
+    "budget": 10,
+    "coverage_rule": "within about 14 minutes of walking over the modelled terrain",
+    "objective": ""
+  },
+  "overrides_file": null,
+  "provenance_hash": "0e193d1063ade2ac",
+  "sources": [
+    {
+      "source": "WPdx+",
+      "query": "clean_country_name = 'Uganda' AND clean_adm2 = 'Masindi'",
+      "fetched_at": "2026-08-27T03:05:35Z",
+      "rows_clean": 2178
+    },
+    {
+      "source": "GADM",
+      "query": "UGA administrative level 1",
+      "fetched_at": "2026-08-27T03:05:35Z",
+      "rows_clean": 58
+    },
+    {
+      "source": "WorldPop",
+      "query": "UGA ppp 2020, bbox 31.3199 1.3260 32.3629 2.3721 (WGS 84), aggregated 5x5",
+      "fetched_at": "2026-08-27T03:05:37Z",
+      "rows_clean": 60638
+    },
+    {
+      "source": "MAP friction surface",
+      "query": "Accessibility__202001_Global_Walking_Only_Friction_Surface, bbox 31.2699 1.2760 32.4129 2.4221 (WGS 84)",
+      "fetched_at": "2026-08-27T03:05:37Z",
+      "rows_clean": 19044
+    }
+  ],
+  "manifest_hash": "b8a961281acc1dc7"
+}

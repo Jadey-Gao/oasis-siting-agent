@@ -1,0 +1,24 @@
+title: WorldPop gridded population
+endpoint: https://hub.worldpop.org/rest/data/pop/wpgp
+auth: none
+licence: CC BY 4.0
+spatial: raster, ~100 m at the equator, WGS84 (EPSG:4326)
+citation: "WorldPop, School of Geography and Environmental Science, University of Southampton, https://www.worldpop.org"
+
+fields:
+  value: estimated persons per grid cell
+
+cleaning:
+  - rule: nodata_to_zero
+    reason: raster nodata treated as zero population
+  - rule: clip_negative
+    reason: negative population values
+
+query:
+  client: requests
+  rest: "https://hub.worldpop.org/rest/data/pop/wpgp?iso3={iso3}"
+
+notes: |
+  The REST index returns one entry per year; pick the most recent popyear and
+  read its GeoTIFF. Read a window for the area of interest rather than the whole
+  national raster: a national 100 m grid is large and only the AOI is needed.

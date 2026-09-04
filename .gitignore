@@ -1,0 +1,21 @@
+# The retrieval cache is not in this repository. 580 MB of Git LFS would take a
+# free account's entire quota — 1 GB stored, 1 GB transferred a month — and the
+# second person to clone would be refused. It is published as a Hugging Face
+# dataset and fetched by `python scripts/fetch_cache.py`. See deploy/README.md.
+cache/
+
+runs/
+harness/logs/
+memory/SESSION.md
+__pycache__/
+*.pyc
+.playwright-mcp/
+*.pdf
+# ...except the two worked examples. They are the only compiled bundles anyone
+# can read without running the agent themselves.
+!sample-runs/**/*.pdf
+.DS_Store
+~$*
+
+# Grants made on one machine, to one operator. Not what anyone else should run.
+.claude/settings.local.json

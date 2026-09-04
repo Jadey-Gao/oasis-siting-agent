@@ -1,0 +1,85 @@
+title: Water Point Data Exchange Plus (WPdx+)
+endpoint: https://data.waterpointdata.org/resource/eqje-vguj.json
+auth: none
+licence: CC BY 4.0
+spatial: point, WGS84 (EPSG:4326)
+citation: "Water Point Data Exchange (WPdx+), global water point registry, https://www.waterpointdata.org/"
+
+fields:
+  lat_deg: latitude, decimal degrees
+  lon_deg: longitude, decimal degrees
+  status_clean: "Functional | Non-Functional | Unknown"
+  clean_country_name: country, harmonised
+  clean_adm1: first-level admin unit
+  clean_adm2: second-level admin unit
+  clean_adm3: third-level admin unit
+  water_tech_clean: technology, harmonised
+  is_urban: boolean urban flag, used for the equity check
+  is_latest: true when this row supersedes earlier observations of the same point
+  is_duplicate: true when the row duplicates another record
+  staleness_score: 0-10, higher means the observation is older
+  days_since_report: integer
+  report_date: ISO date of the observation
+  distance_to_city: metres to the nearest city
+
+cleaning:
+  - rule: require_fields
+    fields: [lat_deg, lon_deg, status_clean]
+    reason: missing coordinates or status
+  - rule: drop_where
+    field: is_duplicate
+    equals: true
+    reason: flagged duplicate by WPdx
+  - rule: keep_where
+    field: is_latest
+    equals: true
+    reason: superseded by a later observation
+  - rule: numeric_range
+    field: lat_deg
+    min: -90
+    max: 90
+    reason: latitude out of range
+  - rule: numeric_range
+    field: lon_deg
+    min: -180
+    max: 180
+    reason: longitude out of range
+  - rule: drop_null_island
+    reason: coordinates at (0, 0)
+  - rule: max_staleness
+    field: days_since_report
+    max: 9131
+    reason: observation older than 25 years
+
+query:
+  client: sodapy
+  domain: data.waterpointdata.org
+  dataset: eqje-vguj
+  where_template: "clean_country_name = '{country}'"
+  adm2_filter: "clean_adm2 = '{adm2}'"
+  page_size: 50000
+
+status_semantics:
+  serving:     ["Functional", "Functional, needs repair"]
+  not_serving: ["Non-Functional", "Functional, not in use",
+                "Abandoned/Decommissioned", "Unknown"]
+
+notes: |
+  Three traps. WPdx+ ships duplicate rows and superseded observations in the same
+  dataset, so is_duplicate and is_latest must both be applied before any coverage
+  number is believable. The dataset id eqje-vguj is WPdx+; jfkt-jmqa is the older
+  Basic dataset and has fewer harmonised fields.
+
+  Third, status_clean is not a two-valued field. Uganda returns "Functional,
+  needs repair", "Functional, not in use" and "Non-Functional"; an equality test
+  against "Functional" silently scores every point as broken. See
+  status_semantics above.
+
+  "Abandoned/Decommissioned" was not in the original semantics block. It was
+  found by the unrecognised-status detector on the Kiryandongo run (83 records)
+  and added here. The detector stays in place for the next country.
+
+  Age is reported, not filtered. Uganda district holdings range from a mean of
+  6 years to over 16 years old. Dropping stale points would delete whole
+  districts, so the cap only removes absurd values and the median age of the
+  surviving records is carried into the report's Limitations section.

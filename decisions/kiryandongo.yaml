@@ -1,0 +1,84 @@
+# Decisions for the Kiryandongo water siting assessment.
+#
+# Each of these is a judgement about values, not a technical parameter. The
+# analysis refuses to run without them rather than assuming one, because
+# assuming one would move the decision from the officer accountable for it to
+# whoever wrote the code.
+#
+# Every entry needs a name and a reason. Both are printed in the assessment
+# beside the figure they produced.
+
+decisions:
+  - key: service_radius_m
+    value: 1000
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      One kilometre corresponds to the 30 minute round trip the JMP uses as a
+      basic drinking water service threshold, and to the figure the district
+      already reports against. Adopted for continuity with existing reporting
+      rather than because the terrain has been assessed.
+
+  - key: coverage_basis
+    value: walking_time
+    decided_by: District Water Officer
+    reason: >-
+      Reach is measured as walking time over the modelled terrain rather than as
+      straight-line distance, because the straight-line measure counts households
+      as served across the Kafu and the seasonal swamps that they cannot in fact
+      cross on foot. The friction surface is coarse and does not know local
+      footpaths, and that limitation is accepted in preference to ignoring
+      terrain altogether.
+
+  - key: objective
+    value: worst_case
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      The 2026 district development plan prioritises the refugee settlement
+      sub-counties and the dispersed eastern parishes, which are the households
+      currently furthest from any serving point. Reducing the worst-served
+      distance is therefore the objective, accepting a lower total covered than
+      maximum coverage would reach. The analyst reported the trade as roughly
+      12,000 people of coverage against a fall in the worst-served distance from
+      31.5 km to 8.1 km.
+
+  - key: budget
+    value: 10
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      Ten boreholes are funded under the FY2026 rural water capital allocation.
+
+  - key: data_currency_accepted
+    value: yes
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      The register's median record is 4.4 years old, ranging from 3.5 to 16.2
+      years. Accepted as the best available basis for a siting decision that
+      cannot wait for a resurvey, on the condition that the assessment states
+      the age prominently and describes its findings as the surveyed state of
+      the network rather than its present state.
+
+  - key: coverage_tolerance
+    value: 0.05
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      Local vetoes forgoing more than five per cent of achievable coverage are
+      to be reported to the District Water and Sanitation Coordination Committee
+      rather than settled at officer level.
+
+  - key: review_floor
+    value: 6.5
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      Six and a half out of ten, the figure this system carried as a constant
+      before the decision was moved to the register. Retained rather than chosen,
+      so that this assessment stays comparable with those produced before the
+      threshold became a recorded decision.
+
+  - key: equity_accepted
+    value: "yes"
+    decided_by: District Water Officer, Kiryandongo
+    reason: >-
+      With the worst_case objective the plan is directed at remote households by
+      design, so the distributional concern that applies to coverage
+      maximisation does not arise in the same form here. The measured
+      distribution is accepted.

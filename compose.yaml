@@ -1,0 +1,34 @@
+# Run the web interview on your own machine, against your own Anthropic key.
+#
+#     export ANTHROPIC_API_KEY=sk-ant-...
+#     docker compose up
+#
+# then open http://localhost:7860
+#
+# The three bind mounts are the point of this file. `cache/` carries the warmed
+# data in and any live retrieval back out, so a raster downloaded during one run
+# is still there for the next. `sessions/` and `runs/` keep what a run produced
+# — the decisions file, RUN_RECORD.md, results.json, the compiled PDFs — on your
+# own disk, where you can read them after the container stops.
+
+services:
+  siting:
+    build: .
+    image: oasis-siting-agent
+    ports:
+      - "${PORT:-7860}:7860"
+    environment:
+      # No default. An interview cannot run without it, and a wrong key should
+      # fail loudly rather than be substituted for.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?set ANTHROPIC_API_KEY before running compose}
+      # `sdk` delegates to the four subagents for real; `legacy` uses the raw
+      # Messages API. Override without rebuilding.
+      SITING_WEB_ENGINE: ${SITING_WEB_ENGINE:-sdk}
+    volumes:
+      - ./cache:/app/cache
+      - ./sessions:/app/sessions
+      - ./runs:/app/runs
+    # The container runs as uid 1000. On Linux, if your account is not uid 1000
+    # the mounts above will be unwritable; set UID and GID in your environment
+    # (`export UID GID`) and this will follow them.
+    user: "${UID:-1000}:${GID:-1000}"

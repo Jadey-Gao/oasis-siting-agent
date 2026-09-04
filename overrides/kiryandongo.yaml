@@ -1,0 +1,26 @@
+# Planner overrides for Kiryandongo, water domain.
+# Every entry needs a reason. The reason is printed in Annex A of the brief
+# alongside what the decision cost in coverage.
+
+- verb: VETO
+  site: S-001
+  veto_radius_m: 1500
+  actor: District Water Officer
+  reason: >-
+    Land tenure dispute unresolved at this location; district council minutes of
+    July 2026 record two competing claims.
+
+- verb: VETO
+  site: S-003
+  veto_radius_m: 1500
+  actor: District Water Officer
+  reason: >-
+    Seasonal flooding recorded here in 2024 and 2025; access road impassable for
+    roughly eight weeks a year.
+
+- verb: PIN
+  site: S-008
+  actor: District Water Officer
+  reason: >-
+    Refugee settlement sub-county has been prioritised in the district
+    development plan regardless of ranking.

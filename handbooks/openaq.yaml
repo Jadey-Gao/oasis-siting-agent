@@ -1,0 +1,31 @@
+title: OpenAQ air quality measurements
+endpoint: https://api.openaq.org/v3
+auth: api_key
+licence: "varies by provider, attribution required"
+spatial: point, WGS84 (EPSG:4326)
+citation: "OpenAQ, open air quality data platform, https://openaq.org"
+
+fields:
+  coordinates: station location
+  parameter: "pm25 | pm10 | no2 | o3 | so2 | co"
+  value: measured concentration
+  lastUpdated: most recent observation timestamp
+
+cleaning:
+  - rule: require_fields
+    fields: [coordinates, parameter]
+    reason: station without location or parameter
+  - rule: max_staleness
+    field: days_since_update
+    max: 365
+    reason: station silent for over a year
+
+query:
+  client: openaq
+  parameters: [pm25]
+  limit: 1000
+
+notes: |
+  v3 requires a free API key in the X-API-Key header; unauthenticated requests
+  return HTTP 401. Set OPENAQ_API_KEY. Without a key this domain is skipped and
+  the report says so rather than silently omitting it.

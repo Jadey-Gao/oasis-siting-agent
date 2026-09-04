@@ -1,0 +1,54 @@
+# OASIS siting agent — Python dependencies
+# verified against PyPI 2026-08-26
+
+# --- L1  retrieval -----------------------------------------------------
+sodapy>=2.2.0              # WPdx+ via Socrata            MIT
+osmnx>=2.1.1               # OSM facilities + roads       MIT
+openaq>=1.1.0              # air quality (official SDK)   Apache-2.0
+hdx-python-api>=6.6.9      # HDX / CKAN fallback          MIT
+requests>=2.32             # WorldPop + GADM (hand-rolled, ~30 lines)
+
+# --- L1/L2  geo core ---------------------------------------------------
+geopandas>=1.1.4
+rasterio>=1.5.1
+shapely>=2.1
+pyproj>=3.7
+mapclassify>=2.11.0        # choropleth classification    BSD-3
+scikit-image>=0.26.0       # MCP_Geometric least-cost path fallback
+
+# --- L2  accessibility -------------------------------------------------
+access>=1.1.10             # 2SFCA and friends (PySAL)    BSD-3
+# GOSTnetsraster: not on PyPI, install from git (see below)
+
+# --- L3  location-allocation ------------------------------------------
+spopt>=0.7.0               # MCLP / LSCP / PMedian / PCenter   BSD-3
+PuLP>=3.3.2                # CBC solver backend           MIT
+
+# --- L4  intent parsing ------------------------------------------------
+anthropic>=0.40            # free text -> one of 4 verbs; also the web
+                            # interview's engine until the Agent SDK
+                            # migration's rollback flag is retired
+pydantic>=2.9              # verb schema, refuse anything else
+
+# --- web interview --------------------------------------------------------
+fastapi>=0.141.1            # HTTP surface for web/app.py. Pinned at >=0.141.1:
+                            # anything <0.46-starlette-compatible (e.g. the
+                            # 0.115.0 this repo previously ran on) conflicts
+                            # with the starlette pulled in by claude-agent-sdk
+uvicorn>=0.52.4             # ASGI server, `uvicorn web.app:app`
+claude-agent-sdk>=0.2.152   # the Agent SDK engine web/claude.py migrates to
+
+# --- warmed cache ---------------------------------------------------------
+huggingface_hub>=0.30      # scripts/fetch_cache.py, which pulls the published
+                            # retrieval cache. Only the fetch script imports it;
+                            # nothing in siting/ or web/ depends on it
+
+# --- L5  validation ----------------------------------------------------
+pandera>=0.32.1            # data contracts on cleaned layers   MIT
+
+# --- L6  report --------------------------------------------------------
+typst>=0.15.0              # compiler bundled in the wheel      Apache-2.0
+pypdf>=6.16.2              # assemble / inspect                 BSD-3
+
+# --- install separately ------------------------------------------------
+# pip install git+https://github.com/worldbank/GOSTnetsraster.git   MIT

@@ -1,0 +1,145 @@
+{
+  "scope": {
+    "country": "Tanzania",
+    "adm2": "Ngara",
+    "iso3": "TZA",
+    "domain": "water"
+  },
+  "budget": 3,
+  "tables": {
+    "service_radius_m": {
+      "key": "service_radius_m",
+      "question": "What distance, or what walking time, counts as served?",
+      "why_not_a_default": "This defines who the assessment says already has service and who does not, so it sets the size of the gap it reports. A 1 km walk is a common stand-in for the 30 minutes the JMP uses for a basic service, but terrain, season and who does the walking all bear on it, and none of that is in the data.",
+      "unit": "metres",
+      "options_hint": "500 (strict) | 1000 (JMP-aligned) | 1500 (permissive)",
+      "priced": [
+        {
+          "value": 500.0,
+          "label": "500 m",
+          "covered_today": 23229,
+          "covered_share": 0.0627,
+          "newly_covered": 9497,
+          "evidence": {
+            "uncovered": 347428,
+            "rule": "within about 6 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014451Z"
+        },
+        {
+          "value": 1000.0,
+          "label": "1000 m",
+          "covered_today": 74006,
+          "covered_share": 0.1997,
+          "newly_covered": 13994,
+          "evidence": {
+            "uncovered": 296651,
+            "rule": "within about 12 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014500Z"
+        },
+        {
+          "value": 1500.0,
+          "label": "1500 m",
+          "covered_today": 128166,
+          "covered_share": 0.3458,
+          "newly_covered": 12742,
+          "evidence": {
+            "uncovered": 242491,
+            "rule": "within about 18 minutes of walking over the modelled terrain"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: coverage_basis, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014504Z"
+        }
+      ],
+      "unpriceable": null,
+      "caveat": "These are probe runs. In each one, every decision except the one being compared was taken by the agent, so the figures show what this choice changes — they are not this district's plan."
+    },
+    "coverage_basis": {
+      "key": "coverage_basis",
+      "question": "Should reach be measured as straight-line distance, or as walking time over terrain?",
+      "why_not_a_default": "Straight-line distance ignores rivers, ridges and the absence of a path, and so overstates who is served. Walking time over a published friction surface is closer to what a household experiences, but the surface is modelled at about one kilometre and does not know the footpaths a village actually uses. Which error a district prefers to carry is its judgement.",
+      "unit": "",
+      "options_hint": "straight_line | walking_time",
+      "priced": [
+        {
+          "value": "straight_line",
+          "label": "straight line",
+          "covered_today": 78343,
+          "covered_share": 0.2114,
+          "newly_covered": 12993,
+          "evidence": {
+            "rule": "within 1000 m straight-line walking distance"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: service_radius_m, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014507Z"
+        },
+        {
+          "value": "walking_time",
+          "label": "walking time",
+          "covered_today": 74006,
+          "covered_share": 0.1997,
+          "newly_covered": 13994,
+          "evidence": {
+            "rule": "within about 12 minutes of walking over the modelled terrain",
+            "coverage_minutes": 12.0,
+            "friction_calibration": {
+              "median_minutes_per_km": 12.0,
+              "p90_minutes_per_km": 21.754985809326172,
+              "radius_m": 1000.0,
+              "median_minutes_at_radius": 12.0,
+              "p90_minutes_at_radius": 21.754985809326172
+            }
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: service_radius_m, objective, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014511Z"
+        }
+      ],
+      "unpriceable": null,
+      "caveat": "These are probe runs. In each one, every decision except the one being compared was taken by the agent, so the figures show what this choice changes — they are not this district's plan."
+    },
+    "objective": {
+      "key": "objective",
+      "question": "Should the programme reach the most people, or the worst-served people?",
+      "why_not_a_default": "These are different objectives with different answers. Maximum coverage reaches the largest number and concentrates on settled areas; minimising the worst case reaches remote households at a lower total. Choosing between them is a distributional judgement, not an optimisation detail.",
+      "unit": "",
+      "options_hint": "max_coverage (greedy MCLP, within 1-1/e of the optimum) | worst_case (population-weighted p-centre)",
+      "priced": [
+        {
+          "value": "max_coverage",
+          "label": "max coverage",
+          "covered_today": 74006,
+          "covered_share": 0.1997,
+          "newly_covered": 13994,
+          "evidence": {
+            "nearest_working_m_median": 1236,
+            "nearest_working_m_max": 1598,
+            "equity": "100% of newly covered people live in the densest quartile of cells, against 58% district-wide; the plan favours dense settlements over remote ones",
+            "equity_level": "flag"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: service_radius_m, coverage_basis, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014515Z"
+        },
+        {
+          "value": "worst_case",
+          "label": "worst case",
+          "covered_today": 74006,
+          "covered_share": 0.1997,
+          "newly_covered": 1328,
+          "evidence": {
+            "nearest_working_m_median": 11907,
+            "nearest_working_m_max": 24842,
+            "equity": "74% of newly covered people live in the densest quartile of cells, against 58% district-wide; the plan favours dense settlements over remote ones",
+            "equity_level": "flag"
+          },
+          "attribution": "2 of 7 decisions were recorded by a person. The remaining 5 were taken by the agent in automatic mode and are attributed to it: service_radius_m, coverage_basis, data_currency_accepted, coverage_tolerance, equity_accepted.",
+          "run_id": "ngara-water-20260903T014519Z"
+        }
+      ],
+      "unpriceable": null,
+      "caveat": "These are probe runs. In each one, every decision except the one being compared was taken by the agent, so the figures show what this choice changes — they are not this district's plan."
+    }
+  }
+}

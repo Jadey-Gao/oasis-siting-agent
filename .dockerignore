@@ -1,0 +1,29 @@
+# What must not enter the image.
+#
+# `cache/` is excluded and then bind-mounted at run time by compose.yaml. Baking
+# 580 MB into the image would rebuild it on every code change, and would hide
+# from the operator which data their answer was computed from.
+cache/
+
+.git
+.gitignore
+**/__pycache__
+**/*.pyc
+.DS_Store
+**/.DS_Store
+~$*
+**/~$*
+
+# Run artefacts. Regenerated, never source.
+runs/
+harness/logs/
+sessions/*
+!sessions/.gitignore
+!sessions/_pricing
+sessions/_pricing/work/
+
+# Editor and agent state that has no business in a shipped image.
+.claude/settings.local.json
+.playwright-mcp/
+
+figures/

@@ -1,0 +1,29 @@
+title: GADM administrative boundaries
+endpoint: https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm41_ISO3.gpkg
+auth: none
+licence: "GADM licence, free for academic and non-commercial use"
+spatial: polygon, WGS84 (EPSG:4326)
+citation: "GADM database of Global Administrative Areas, version 4.1, https://gadm.org"
+
+fields:
+  NAME_1: first-level admin unit name
+  NAME_2: second-level admin unit name
+  NAME_3: third-level admin unit name
+  GID_2: stable second-level identifier
+
+cleaning:
+  - rule: make_valid
+    reason: invalid polygon geometry repaired
+  - rule: require_fields
+    fields: [geometry]
+    reason: empty geometry
+
+query:
+  client: requests
+  url_template: "https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm41_{iso3}.gpkg"
+
+notes: |
+  GADM admin names do not always match the names used by other sources. WPdx+
+  ships its own harmonised clean_adm2, which will not always equal GADM NAME_2.
+  Joins are done on a normalised name and unmatched units are reported, never
+  silently dropped.

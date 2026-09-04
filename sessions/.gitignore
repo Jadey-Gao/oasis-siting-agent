@@ -1,0 +1,13 @@
+# Session working directories are run artefacts, not source. They also hold the
+# verbatim transcript of whoever was interviewed, which is not something to
+# publish by accident.
+*
+!.gitignore
+
+# The exception: the priced option tables. Each one costs a full analysis run to
+# produce and none of them ever changes, which is why prewarm.py writes them
+# ahead of time. Without them a deployed interview prices on demand and the
+# officer waits through it.
+!_pricing/
+_pricing/*
+!_pricing/*.json

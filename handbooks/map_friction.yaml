@@ -1,0 +1,52 @@
+title: Malaria Atlas Project friction surface
+endpoint: https://data.malariaatlas.org
+auth: none
+licence: CC BY 4.0
+spatial: raster, ~1 km, WGS84 (EPSG:4326)
+citation: "Weiss, D.J. et al. Global maps of travel time to healthcare facilities. Nature Medicine 26, 1835-1838 (2020)."
+
+fields:
+  value: minutes required to traverse one metre of the cell
+
+cleaning:
+  - rule: nodata_to_max
+    reason: nodata treated as impassable
+
+query:
+  client: requests
+  protocol: OGC WCS 2.0.1 GetCoverage against the Accessibility coverage store
+  coverages:
+    walking: Accessibility__202001_Global_Walking_Only_Friction_Surface
+    motorised: Accessibility__202001_Global_Motorized_Friction_Surface
+  subset: bounding box in WGS 84, padded, one GeoTIFF per area of interest
+  cache: cache/friction/<surface>_<minx>_<miny>_<maxx>_<maxy>.tif
+
+notes: |
+  Two surfaces are published and they are not interchangeable. The motorised
+  surface assumes road access and understates the time a household on foot
+  actually spends, which is the quantity a service radius is trying to bound, so
+  the water domain requests the walking-only surface. Which one a run used is
+  recorded in that run's retrieval record, in the `query` field of the pull; the
+  report must not conflate the two.
+
+  What this system computes over the surface is NOT a least-cost accumulation.
+  A true traverse, as GOSTnetsraster and AccessMod perform it, would take one
+  least-cost path per origin, which is not tractable at the several thousand
+  candidate sites a district lattice produces. Instead the surface is sampled at
+  each candidate, the local friction is converted into an effective speed, and
+  coverage is tested as a straight-line reach in metres that varies by candidate.
+
+  The consequence is that terrain BETWEEN a candidate and a demand cell is not
+  represented at all: a river or a ridge in between does not reduce the reach the
+  model claims. Where the candidate itself sits on difficult ground the estimate
+  is conservative, and where it sits on easy ground beside an obstacle it is
+  optimistic. The error is not one-sided and the assessment should not describe
+  it as such.
+
+  `siting/sources/friction.py` carries `travel_time_from`, which does perform the
+  least-cost accumulation with skimage's MCP_Geometric. Nothing calls it. It is
+  the implementation a future version would switch to if the candidate count were
+  reduced enough to afford it.
+
+  The surface is modelled at roughly one kilometre and does not represent local
+  footpaths, so it understates the reach of a village that has one.

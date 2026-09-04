@@ -1,0 +1,252 @@
+<!doctype html>
+<!--
+  The run log.
+
+  This is not the finished interface. It is the one view that every design of
+  the interface keeps: the CLI's own stages, arriving as they happen, so a
+  reader can see that a real analysis ran rather than being told one did. In the
+  finished page it becomes the "run log" tab of the artefact panel.
+
+  The finished interface, for reference:
+    top bar        district, mode badge, "3 of 6 recorded", language
+                   in automatic mode this bar turns amber and states, in words,
+                   how many judgements were the machine's and that they are not
+                   the district's position. Required by CLAUDE.md.
+    conversation   agent cards and the officer's answers, alternating
+    artefact panel decisions.yaml as it grows, this log, the bundle
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siting run log</title>
+<style>
+  :root{
+    --ground:#F6F7F4; --surface:#FFF; --sunk:#EDF0EA;
+    --ink:#1B211F; --soft:#4A544F; --mute:#78827C;
+    --rule:#DCE1D9; --accent:#0F5F5C; --accent-soft:#E2EFEC;
+    --amber:#9C551A; --amber-soft:#F6EADC; --flag:#8A3324;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#121614; --surface:#1A201D; --sunk:#161C19;
+      --ink:#E6E9E4; --soft:#B3BCB6; --mute:#8B958E;
+      --rule:#2C3532; --accent:#5CBDB5; --accent-soft:#17302E;
+      --amber:#D89552; --amber-soft:#2C2318; --flag:#D9765F;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font:15px/1.6 "Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:21px;margin:0 0 3px;font-weight:600}
+  .sub{color:var(--mute);font-size:13.5px;margin:0 0 22px}
+
+  fieldset{border:1px solid var(--rule);border-radius:7px;background:var(--surface);
+    padding:16px 18px;margin:0 0 18px}
+  legend{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);padding:0 6px}
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+  label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mute)}
+  input,select{font:inherit;font-size:14px;padding:6px 9px;border:1px solid var(--rule);
+    border-radius:5px;background:var(--ground);color:var(--ink);min-width:120px}
+  button{font:inherit;font-size:14px;font-weight:600;padding:8px 18px;border-radius:5px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+  button:disabled{opacity:.45;cursor:default}
+  button.ghost{background:none;color:var(--accent)}
+  .hint{font-size:12.5px;color:var(--mute);margin:10px 0 0}
+
+  .rail{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+  .st{font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em;
+    text-transform:uppercase;padding:6px 10px;border-radius:4px;border:1px solid var(--rule);
+    color:var(--mute);background:var(--surface)}
+  .st.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+  .st.done{opacity:.55}
+
+  #log{font:12.5px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface);
+    border:1px solid var(--rule);border-radius:7px;padding:14px 16px;min-height:220px;
+    max-height:58vh;overflow:auto;white-space:pre-wrap;word-break:break-word}
+  .ln{display:flex;gap:10px}
+  .ln .tag{flex:none;width:76px;color:var(--mute);text-align:right}
+  .ln.detail .txt{padding-left:14px;color:var(--soft)}
+  .ln.gate .txt,.ln.checkpoint .txt{color:var(--amber)}
+  .ln.review .txt{color:var(--accent)}
+  .ln .txt b{color:var(--flag);font-weight:600}
+  .ln .txt i{color:var(--accent);font-style:normal;font-weight:600}
+
+  #outcome{margin:16px 0 0;padding:14px 18px;border-radius:7px;border:1px solid var(--rule);
+    background:var(--surface);display:none}
+  #outcome.on{display:block}
+  #outcome .big{font-size:17px;font-weight:600;margin-bottom:4px}
+  #outcome.issued{border-left:4px solid var(--accent)}
+  #outcome.below_floor,#outcome.decisions_outstanding,#outcome.halted{border-left:4px solid var(--amber)}
+  #figs{display:flex;flex-wrap:wrap;gap:22px;margin-top:12px;font-size:13.5px}
+  #figs div span{display:block;color:var(--mute);font-size:11.5px}
+  #figs div b{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+  .cmd{font:11.5px/1.6 ui-monospace,Menlo,monospace;color:var(--mute);
+    margin-top:10px;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Siting run log</h1>
+  <p class="sub">The CLI's own stages, streamed as they happen. Every figure below is read
+     back from <code>results.json</code>, never from this log.</p>
+
+  <fieldset>
+    <legend>run</legend>
+    <div class="row">
+      <label>District
+        <select id="district">
+          <option value="Tanzania|Ngara|TZA" selected>Ngara, Tanzania</option>
+          <option value="Uganda|Kiryandongo|UGA">Kiryandongo, Uganda</option>
+          <option value="Uganda|Masindi|UGA">Masindi, Uganda</option>
+        </select>
+      </label>
+      <label>Decisions
+        <select id="decisions">
+          <option value="decisions/ngara.yaml" selected>decisions/ngara.yaml</option>
+          <option value="">none — automatic mode</option>
+          <option value="__partial__">only one recorded (shows the refusal)</option>
+        </select>
+      </label>
+      <label>Budget
+        <input id="budget" type="number" value="3" min="1" max="50">
+      </label>
+      <button id="go">Run</button>
+      <button id="force" class="ghost" title="Issue below the review floor; recorded in the output">Run, force issue</button>
+    </div>
+    <p class="hint">“Only one recorded” sends a deliberately incomplete decisions file. The run
+       refuses to start and prints what is outstanding and why none of it has a default.
+       That refusal is the design working, not an error.</p>
+  </fieldset>
+
+  <div class="rail" id="rail"></div>
+  <div id="log"></div>
+
+  <div id="outcome">
+    <div class="big" id="outcome-title"></div>
+    <div id="outcome-note"></div>
+    <div id="figs"></div>
+    <div class="cmd" id="cmd"></div>
+  </div>
+
+</div>
+
+<script>
+const STAGES = ["retrieve","compile","solve","review","evaluate","score","render","issue"];
+const $ = id => document.getElementById(id);
+const log = $("log"), rail = $("rail");
+
+const PARTIAL = [{
+  key:"service_radius_m", value:1000, decided_by:"Operator, for the demonstration",
+  reason:"Recorded on its own so that the refusal to proceed can be seen."
+}];
+
+function drawRail(active){
+  rail.innerHTML = "";
+  const i = STAGES.indexOf(active);
+  STAGES.forEach((s, n) => {
+    const el = document.createElement("span");
+    el.className = "st" + (n === i ? " on" : n < i ? " done" : "");
+    el.textContent = s;
+    rail.appendChild(el);
+  });
+}
+
+function esc(s){ return s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+function mark(text){
+  // FLAG / FLOOR are the two words in this log a reader must not skim past.
+  return esc(text)
+    .replace(/\b(FLAG|FLOOR|refused|rejected)\b/g, "<b>$1</b>")
+    .replace(/\b(PASS|ok)\b/g, "<i>$1</i>");
+}
+
+function line(ev){
+  const el = document.createElement("div");
+  el.className = "ln " + (ev.continues ? "detail " : "") + ev.kind;
+  const tag = ev.continues ? "" : (ev.kind === "stage" ? ev.stage : ev.kind);
+  el.innerHTML = `<span class="tag">${esc(tag)}</span><span class="txt">${mark(ev.text)}</span>`;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function run(force){
+  const [country, adm2, iso3] = $("district").value.split("|");
+  const d = $("decisions").value;
+  const body = {
+    country, adm2, iso3,
+    budget: Number($("budget").value),
+    force_issue: force,
+    mode: d === "" ? "auto" : "manual",
+  };
+  if (d === "__partial__") body.answers = PARTIAL;
+  else if (d !== "") body.decisions_path = d;
+
+  log.innerHTML = ""; drawRail(null);
+  $("outcome").className = ""; $("figs").innerHTML = "";
+  $("go").disabled = $("force").disabled = true;
+
+  let prepared;
+  try {
+    const res = await fetch("/api/run", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body),
+    });
+    prepared = await res.json();
+    if (!res.ok) throw new Error(prepared.detail || "could not prepare the run");
+  } catch (err) {
+    line({kind: "log", text: String(err.message || err), continues: false});
+    $("go").disabled = $("force").disabled = false;
+    return;
+  }
+  $("cmd").textContent = prepared.command;
+
+  const src = new EventSource(`/api/run/${prepared.id}/stream`);
+  src.onmessage = async (m) => {
+    const ev = JSON.parse(m.data);
+    if (ev.kind === "done") {
+      src.close();
+      $("go").disabled = $("force").disabled = false;
+      drawRail(null);
+      await finish(prepared.id, ev);
+      return;
+    }
+    if (ev.stage) drawRail(ev.stage);
+    line(ev);
+  };
+  src.onerror = () => {
+    src.close();
+    $("go").disabled = $("force").disabled = false;
+    line({kind: "log", text: "the stream closed", continues: false});
+  };
+}
+
+async function finish(id, ev){
+  const d = ev.data;
+  const box = $("outcome");
+  box.className = "on " + d.outcome;
+  $("outcome-title").textContent = d.issued
+    ? "Issued" : `Nothing issued — ${d.outcome.replace(/_/g, " ")}`;
+  $("outcome-note").textContent = ev.text;
+
+  if (!d.run_dir) return;
+  const doc = await (await fetch(`/api/run/${id}/results`)).json();
+  const f = [
+    ["people in the district", doc.baseline.population.toLocaleString()],
+    ["covered today", doc.baseline.covered.toLocaleString()],
+    ["sites recommended", String(doc.plan.sites.length)],
+    ["newly covered", doc.plan.newly_covered.toLocaleString()],
+    ["review", `${doc.review.weighted.toFixed(2)} / ${doc.review.accept_at}`],
+  ];
+  $("figs").innerHTML = f.map(([k, v]) =>
+    `<div><b>${v}</b><span>${k}</span></div>`).join("");
+}
+
+$("go").onclick = () => run(false);
+$("force").onclick = () => run(true);
+drawRail(null);
+</script>
+</body>
+</html>

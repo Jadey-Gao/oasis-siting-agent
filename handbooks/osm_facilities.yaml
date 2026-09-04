@@ -1,0 +1,33 @@
+title: OpenStreetMap health facilities via Overpass
+endpoint: https://overpass-api.de/api/interpreter
+auth: none
+licence: ODbL 1.0
+spatial: point and polygon centroid, WGS84 (EPSG:4326)
+citation: "OpenStreetMap contributors, retrieved via the Overpass API, https://www.openstreetmap.org/copyright"
+
+fields:
+  amenity: "hospital | clinic | doctors | health_post"
+  healthcare: secondary classification tag
+  name: facility name, frequently absent
+  operator: operating body, frequently absent
+
+cleaning:
+  - rule: require_fields
+    fields: [lat, lon]
+    reason: element without usable geometry
+  - rule: drop_null_island
+    reason: coordinates at (0, 0)
+  - rule: dedupe_within_metres
+    distance: 50
+    reason: same facility mapped as both node and way
+
+query:
+  client: overpass
+  timeout: 180
+  amenities: [hospital, clinic, doctors, health_post]
+
+notes: |
+  OSM completeness varies sharply by country and is not a census of facilities.
+  Coverage claims built on it must say so; the report states this in Limitations.
+  healthsites.io carries curated facility data for many African countries but
+  requires a free API key, so OSM is the default and healthsites the upgrade.
