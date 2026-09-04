@@ -90,56 +90,30 @@ one run copied out deliberately, described below.
 
 ## The worked example
 
-`sample-runs/mayuge-uganda/` is one complete run as it was produced: **Mayuge
-district, Uganda, ten water points, manual mode.** It is the only compiled
-bundle anyone can read without running the agent themselves.
+`sample-runs/mayuge-uganda/` — Mayuge district, Uganda, ten water points,
+manual mode. The only compiled bundle anyone can read without running the agent
+themselves. Start with `RUN_RECORD.md`; both PDFs compile from the same
+`results.json`, so they can't disagree.
 
 | | |
 |---|---|
-| Register | 1,378 WPdx+ records, 127 dropped as flagged duplicates, 1,251 kept — 354 serving, 897 not |
-| Population in the area of interest | 570,781 |
-| Covered before | 371,949 (65.2%), reach measured as walking time: about 21 minutes per kilometre at the median friction over this terrain |
-| Covered after ten sites | 432,157 (75.7%), 60,208 newly covered |
-| Distance | EPSG:32636, departing from great-circle by 0.32% at the median — about 6 m on a 1 km radius |
-| Review | issue, weighted 8.12 against the floor of 6.5, with every dimension floor met |
-| Flags raised and printed | data currency, boundary exposure, equity, and the figures unreviewed at issue |
+| Register | 1,251 WPdx+ points kept of 1,378 (127 duplicates dropped) — 354 serving, 897 not |
+| Coverage | 65.2% → 75.7% of 570,781 people, 60,208 newly covered, ten sites |
+| Review | issue, 8.12 against a floor of 6.5 |
 
-Open `RUN_RECORD.md` first: it carries the whole account in plain text. The two
-PDFs are the same run as an evidence bundle and as a chaptered assessment,
-compiled from the one `results.json` so they cannot disagree.
-
-**Who decided.** Seven of the eight decisions were recorded through the web
-interview by the author of this system, acting as the officer; the interview
-copies a reason verbatim rather than writing one. The eighth — whether the
-measured equity distribution is accepted — was not settled before the run, and
-the assessment carries it as unresolved rather than as agreed. Nobody at Mayuge
-district made any of them. Read the names and reasons in that bundle as a demonstration of the
-format, not as a record of a district's position — a decision record naming
-someone who did not decide is the exact failure this design exists to prevent,
-and an example is not exempt from it. `decisions/mayuge.yaml` is the register
-that interview produced.
-
-**What it does not hide.** Four of the ten independent checks came back as flags,
-and all four are printed in Ex08 rather than resolved out of it. Three are
-properties of this district and this plan: the median record is 1.9 years old,
-two of the ten sites sit within one service radius of the district boundary, and
-59% of the newly covered live in the densest quartile of cells against 42%
-district-wide, so this plan favours dense settlements over remote ones. The
-fourth is the figures. `figure_review.json` holds the map reviewer's verdict on
-them — `revise` on both maps, for a legend that gives the population raster no
-entry, and for service circles drawn as 1 km geometry when the coverage rule is
-a walking time over terrain. It was recorded after the bundle had been compiled,
-so the bundle's own cartographic check reads **unreviewed**, and unreviewed is
-not a pass. It is left that way rather than tidied: an example that only shows
-the clean path is not evidence of anything.
-
-**One thing was edited after the run.** The recorded command carried the absolute
-path of the machine it ran on. That prefix was removed so the paths read relative
-to the repository root, the manifest hash was recomputed over the shortened
-command, and the edit is disclosed in Ex11 and in `RUN_RECORD.md` beside the
-command itself. Nothing else in the bundle was touched, and the provenance hash
-`ac15a4eae9de9c52` is unchanged because it covers the retrievals, not the
-invocation.
+- **Who decided.** All 8 decisions were recorded by this system's author, acting
+  as the officer, through the web interview — not Mayuge district's actual
+  position. `decisions/mayuge.yaml` is the record; read the bundle as a
+  demonstration of the format, not of anyone's real judgement.
+- **What's not hidden.** 4 of 10 checks came back as flags: a 1.9-year-old
+  register, two sites near the boundary, an equity skew toward dense
+  settlements, and the figures — `figure_review.json` returned `revise` on both
+  maps, recorded after the bundle compiled, so the bundle's own cartographic
+  check reads **unreviewed** rather than tidied away.
+- **One edit after the run.** The recorded command's absolute machine path was
+  shortened to a repo-relative one; the manifest hash was recomputed and the
+  edit is disclosed in Ex11 and `RUN_RECORD.md`. The provenance hash is
+  untouched — it covers the retrievals, not the invocation.
 
 ## The deliverable is an evidence bundle, not a report
 
