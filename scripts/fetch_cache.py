@@ -55,7 +55,11 @@ def report() -> int:
     if not CACHE.exists():
         print(f"no cache directory at {CACHE}")
         return 1
-    files = sorted(p for p in CACHE.rglob("*") if p.is_file())
+    # snapshot_download keeps its own bookkeeping under cache/.cache/. It is not
+    # data and listing it only obscures what was actually fetched.
+    files = sorted(p for p in CACHE.rglob("*") if p.is_file()
+                   and not any(part.startswith(".")
+                               for part in p.relative_to(CACHE).parts))
     if not files:
         print(f"{CACHE} is empty")
         return 1
