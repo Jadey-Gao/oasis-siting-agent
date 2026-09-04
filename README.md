@@ -21,7 +21,7 @@ against your own Anthropic key, because a hosted instance would mean strangers
 spending somebody else's credit on an agent that holds a shell.
 
 ```bash
-git clone https://github.com/<owner>/oasis-siting-agent.git
+git clone https://github.com/Jadey-Gao/oasis-siting-agent.git
 cd oasis-siting-agent
 
 pip install huggingface_hub
