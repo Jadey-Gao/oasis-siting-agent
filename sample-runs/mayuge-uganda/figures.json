@@ -7,7 +7,7 @@
     "population": 570781,
     "covered_before": 371949,
     "uncovered_before": 198832,
-    "sites": 10,
+    "sites": 14,
     "frame_km": [
       47.5,
       72.7
@@ -31,7 +31,7 @@
       "file": "map_plan.png",
       "shows": "The recommended sites and their service radii",
       "assertions": [
-        "Exactly 10 recommended sites are drawn, each numbered. The numbers should run 1 to 10 with none missing or repeated.",
+        "Exactly 14 recommended sites are drawn, each numbered. The numbers should run 1 to 14 with none missing or repeated.",
         "Each recommended site carries a translucent circle showing its service radius of 1000 m. On a frame about 48 km wide, each circle should be roughly 4.2 per cent of the frame's width across. Circles far larger or smaller than that indicate the radius was drawn in the wrong units.",
         "Recommended sites should sit in or beside warm-shaded areas, since they were selected to reach unserved population. A site in the middle of an empty or already-served area is a finding.",
         "The plan's minimum separation is 1000 m, so no two numbered sites should appear closer together than that.",

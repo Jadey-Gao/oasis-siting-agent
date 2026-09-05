@@ -1,0 +1,13 @@
+# Planner overrides for Mayuge, water domain.
+# Every entry needs a reason. The reason is printed in Ex07 alongside what
+# the decision cost in coverage.
+
+- verb: RESCOPE
+  budget: 14
+  actor: Jadey
+  reason: >-
+    The marginal-coverage curve for the first 10 sites hasn't flattened: site
+    10 still adds 4,207 people, close to site 7's 4,609. Before settling the
+    capital ask at 10, I want the curve out to 14 to see whether it's worth
+    asking for more before this programme closes, per the original budget
+    decision's own uncertainty about the ideal number.

@@ -90,30 +90,59 @@ one run copied out deliberately, described below.
 
 ## The worked example
 
-`sample-runs/mayuge-uganda/` — Mayuge district, Uganda, ten water points,
-manual mode. The only compiled bundle anyone can read without running the agent
-themselves. Start with `RUN_RECORD.md`; both PDFs compile from the same
-`results.json`, so they can't disagree.
+`sample-runs/mayuge-uganda/` — Mayuge district, Uganda, water points,
+manual mode, one officer override. The only compiled bundle anyone can read
+without running the agent themselves. Start with `RUN_RECORD.md`; both PDFs
+compile from the same `results.json`, so they can't disagree.
 
 | | |
 |---|---|
 | Register | 1,251 WPdx+ points kept of 1,378 (127 duplicates dropped) — 354 serving, 897 not |
-| Coverage | 65.2% → 75.7% of 570,781 people, 60,208 newly covered, ten sites |
-| Review | issue, 8.12 against a floor of 6.5 |
+| Coverage | 65.2% → 78.6% of 570,781 people, 76,465 newly covered, 14 sites |
+| Review | issue, 8.82 against a floor of 6.5 |
 
-- **Who decided.** All 8 decisions were recorded by this system's author, acting
-  as the officer, through the web interview — not Mayuge district's actual
-  position. `decisions/mayuge.yaml` is the record; read the bundle as a
-  demonstration of the format, not of anyone's real judgement.
-- **What's not hidden.** 4 of 10 checks came back as flags: a 1.9-year-old
-  register, two sites near the boundary, an equity skew toward dense
-  settlements, and the figures — `figure_review.json` returned `revise` on both
-  maps, recorded after the bundle compiled, so the bundle's own cartographic
-  check reads **unreviewed** rather than tidied away.
-- **One edit after the run.** The recorded command's absolute machine path was
-  shortened to a repo-relative one; the manifest hash was recomputed and the
-  edit is disclosed in Ex11 and `RUN_RECORD.md`. The provenance hash is
-  untouched — it covers the retrievals, not the invocation.
+- **Who decided.** All 8 decisions, and the one override, were recorded by this
+  system's author, acting as the officer, through the web interview — not
+  Mayuge district's actual position. `decisions/mayuge.yaml` and
+  `overrides/mayuge.yaml` are the record; read the bundle as a demonstration of
+  the format, not of anyone's real judgement.
+- **The override.** The initial solve, at the recorded budget of 10, left the
+  marginal-coverage curve unflattened — the 10th site still added 4,207 people.
+  The officer's recorded RESCOPE raised the budget to 14 to see the curve
+  further out before closing the capital ask. Ex07 prices it: +16,257 people
+  over the unconstrained 10-site plan, more than the 10-to-14 delta alone would
+  suggest, because greedy site selection is not optimal and a constraint can
+  occasionally beat it — the run says so in its own log rather than presenting
+  the gain as pure benefit of a bigger budget.
+- **What's not hidden.** 2 of 10 checks still come back as flags in the
+  published bundle: a 1.9-year-old register, and 4 of 14 sites within one
+  service radius of the boundary (up from 2 of 10, once the override added four
+  more sites in a district whose neighbours the coverage figures cannot see
+  across). The equity check, which flagged in the pre-override run, passes
+  after it — 53% of newly covered people in the densest quartile against 42%
+  district-wide, down from 59%. A companion run under `objective=worst_case` at
+  the same budget of 10 (`decisions/mayuge-worstcase.yaml`, not published as a
+  bundle) covers only 391,790 people against max_coverage's 432,157, and its
+  equity check flags *worse*, at 61% — reaching the worst-served point is not
+  the same decision as reaching the remote ones, and the register's two
+  objectives answer different questions on this data. The maps were reviewed
+  twice: the first pass, on the original 10-site plan, returned `revise` on
+  both; the second, after the plan changed under override, returned `accept` on
+  all three figures. Both verdicts are kept, not just the one that passed.
+- **A bug this run found, not one it hid.** The scoring stage caches its result
+  per run and, unlike the render stage, was never wired to rebuild when a later
+  override or figure review changes what it should have scored — so a resumed
+  run reused a score computed before the override, and its `actionability`
+  basis line still read "10 sites with coordinates" against a plan that by then
+  had 14. Rather than patch `siting/cli.py` to paper over it, the fix applied
+  to this bundle was a disclosed, out-of-band one: `handoff.json`'s record of
+  the scoring stage as complete was cleared and the run resumed once more,
+  which forced an honest recompute (8.12 → 8.82) under the harness's own
+  resume semantics. The underlying gap — `score` has no staleness check where
+  `render` has one — is unfixed in `siting/`, and reproducing this exact bundle
+  from a clean run requires the same four-command sequence (run, RESCOPE,
+  figure-review, and this correction), not the single command `RUN_RECORD.md`
+  prints, which is only the last of them.
 
 ## The deliverable is an evidence bundle, not a report
 

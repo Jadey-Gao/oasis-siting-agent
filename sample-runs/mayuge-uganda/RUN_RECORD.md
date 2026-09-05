@@ -1,15 +1,13 @@
 # Siting run record: Mayuge, Uganda (water)
 
-> Rural water point siting. Budget 10. Generated 2026-09-04T15:59:05Z.
-> Provenance hash `ac15a4eae9de9c52`, manifest `70831fd2c0b51651`.
+> Rural water point siting. Budget 14. Generated 2026-09-04T15:59:05Z.
+> Provenance hash `ac15a4eae9de9c52`, manifest `dd0bf412c3c8d3c0`.
 
 ## Command
 
 ```sh
-python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml
+python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml --overrides overrides/mayuge.yaml --figure-review sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/figure_review.json --resume mayuge-water-20260904T155905Z
 ```
-
-The `--out` and `--decisions` paths above have been shortened to be relative to the repository root. This run was produced under sessions/mayuge-20260904T152614Z-6127d5/ and the directory was copied to sample-runs/mayuge-uganda/ for publication. Only the machine-specific path prefix was removed; the manifest hash in manifest.json was recomputed over the shortened command, and nothing else in this record was altered.
 
 ## Decisions
 
@@ -24,7 +22,7 @@ All 8 decisions in this run were recorded by a person.
 | `data_currency_accepted` | yes | Jadey | conditional, some will have been repaired and some of the 354 will have failed |
 | `coverage_tolerance` | 0.05 | Jadey | 198,832 unserved is too many to spend a small programme on the margins |
 | `review_floor` | 6.5 | Jadey | don't be too strict |
-| `equity_accepted` | unresolved | not settled at run time | The measured distribution was reported to the operator and no position was recorded, so the assessment states it as unresolved rather than accepted. |
+| `equity_accepted` | yes | Jadey | 198,832 unserved is too many to spend a small programme on the margins |
 
 ## Result
 
@@ -32,9 +30,9 @@ All 8 decisions in this run were recorded by a person.
 |---|---|
 | Population in the area of interest | 570,781 |
 | Covered before | 371,949 (65.2%) |
-| Covered after | 432,157 (75.7%) |
-| Newly covered | 60,208 |
-| Sites | 10 |
+| Covered after | 448,414 (78.6%) |
+| Newly covered | 76,465 |
+| Sites | 14 |
 
 ## Exhibits
 
@@ -76,16 +74,24 @@ All 8 decisions in this run were recorded by a person.
    - Handling: Coverage is tested as walking time rather than straight-line distance. Reach is computed per candidate from the local friction value rather than by a least-cost accumulation from every candidate, which would be exact but is not tractable at this candidate count.
    - Bearing: Where terrain changes sharply within one facility's reach, the local-friction approximation applies the conditions at the site in every direction, and is conservative rather than optimistic. The surface is modelled at about one kilometre and does not represent local footpaths.
 
+## Planner overrides
+
+| Verb | Target | Cost in people | Reason |
+|---|---|---|---|
+| RESCOPE | run scope | +16,257 | The marginal-coverage curve for the first 10 sites hasn't flattened: site 10 still adds 4,207 people, close to site 7's 4,609. Before settling the capital ask at 10, I want the curve out to 14 to see whether it's worth asking for more before this programme closes, per the original budget decision's own uncertainty about the ideal number. |
+
+> Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it.
+
 ## Scoring review
 
-Weighted **8.12** against a floor of 6.50: **issue**. Reviewer: deterministic rules over results.json.
+Weighted **8.82** against a floor of 6.50: **issue**. Reviewer: deterministic rules over results.json.
 
 | Dimension | Score | Floor | Weight | Outcome |
 |---|---|---|---|---|
 | data adequacy | 8.5 | 5.0 | 0.25 | met |
 | method fitness | 7.5 | 5.0 | 0.20 | met |
-| spatial rigour | 7.0 | 6.0 | 0.25 | met |
-| accountability | 9.0 | 6.0 | 0.20 | met |
+| spatial rigour | 9.0 | 6.0 | 0.25 | met |
+| accountability | 10.0 | 6.0 | 0.20 | met |
 | actionability | 9.5 | 4.0 | 0.10 | met |
 
 ## Gate decisions
@@ -94,19 +100,19 @@ Weighted **8.12** against a floor of 6.50: **issue**. Reviewer: deterministic ru
 |---|---|---|---|
 | source authorisation | allowed | harness | Water Point Data Exchange Plus (WPdx+) is a public endpoint; no authorisation required |
 | source authorisation | allowed | harness | WorldPop gridded population is a public endpoint; no authorisation required |
-| guardrail breach | allowed | harness | Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run. |
+| guardrail breach | allowed | harness | Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it. |
 
 ## Independent checks
 
 | Check | Result | Finding |
 |---|---|---|
-| coverage arithmetic | PASS | union recount matches at 432,157; across the 10 new sites a per-facility sum would report 68,916 against a true union of 68,602, an overcount of 313 |
-| geometry | PASS | all 10 sites lie inside the area of interest |
-| budget | PASS | 10 sites within the budget of 10 |
+| coverage arithmetic | PASS | union recount matches at 448,414; across the 14 new sites a per-facility sum would report 85,726 against a true union of 84,860, an overcount of 867 |
+| geometry | PASS | all 14 sites lie inside the area of interest |
+| budget | PASS | 14 sites within the budget of 14 |
 | coordinate reference system | PASS | EPSG:32636 (WGS 84 / UTM zone 36N); over 400 sampled pairs the projected distance departs from great-circle by 0.317% at the median and 0.595% at most, or about 6 m on a 1000 m service radius |
 | data currency | FLAG | median source record is 1.9 years old. The age was put to the accountable officer and accepted: conditional, some will have been repaired and some of the 354 will have failed |
-| aggregation sensitivity | PASS | reweighting the demand surface within cells moves the coverage claim from 75.7% to 75.7%, a shift of 0.02% |
-| boundary effect | FLAG | 2 of 10 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated |
-| equity | FLAG | 59% of newly covered people live in the densest quartile of cells, against 42% district-wide; the plan favours dense settlements over remote ones |
+| aggregation sensitivity | PASS | reweighting the demand surface within cells moves the coverage claim from 78.6% to 78.5%, a shift of 0.06% |
+| boundary effect | FLAG | 4 of 14 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated |
+| equity | PASS | 53% of newly covered people live in the densest quartile of cells, against 42% district-wide |
 | provenance | PASS | 4 sources recorded, all figures traceable |
-| cartographic consistency | FLAG | the rendered figures were not reviewed against the account; run the map-reviewer agent over figures.json and pass its verdict with --figure-review |
+| cartographic consistency | PASS | 3 figures reviewed against the account; all consistent |

@@ -1,0 +1,47 @@
+# Decisions for the Mayuge siting assessment -- worst_case comparison.
+#
+# Same district, same register, same budget as decisions/mayuge.yaml. Only
+# `objective` differs. This run exists to answer the question the SKILL raises
+# at the equity checkpoint: what would the worst_case objective have achieved
+# instead of max_coverage. It is a comparison run, not a second recommendation
+# competing with the one in sample-runs/mayuge-uganda/.
+#
+# Written by the siting interview, 2026-09-04.
+decisions:
+- key: data_currency_accepted
+  value: 'yes'
+  decided_by: Jadey
+  reason: |-
+    conditional, some will have been repaired and some of the 354 will have failed
+- key: budget
+  value: 10
+  decided_by: Jadey
+  reason: kept at 10 to compare against the max_coverage plan at the same budget
+- key: coverage_basis
+  value: walking_time
+  decided_by: Jadey
+  reason: 'walking time : Mayuge walk around water rather than across it'
+- key: service_radius_m
+  value: 1000.0
+  decided_by: Jadey
+  reason: 1000 m  Mayuge already reports against,
+- key: objective
+  value: worst_case
+  decided_by: Jadey
+  reason: >-
+    the equity check on the max_coverage plan showed newly covered people
+    skewing toward dense settlements; before accepting that, I want to see
+    what reaching the worst-served population instead would have cost in
+    total coverage
+- key: coverage_tolerance
+  value: 0.05
+  decided_by: Jadey
+  reason: 198,832 unserved is too many to spend a small programme on the margins
+- key: review_floor
+  value: '6.5'
+  decided_by: Jadey
+  reason: don't be too strict
+- key: equity_accepted
+  value: 'yes'
+  decided_by: Jadey
+  reason: this run answers the equity question directly by construction; no separate acceptance needed

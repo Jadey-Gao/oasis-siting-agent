@@ -9,16 +9,16 @@
     "overrides": null,
     "format": "both"
   },
-  "stage": "evaluate",
+  "stage": "issue",
   "completed": [
     "retrieve",
     "compile",
     "solve",
     "review",
     "evaluate",
-    "score",
     "render",
-    "issue"
+    "issue",
+    "score"
   ],
   "artifacts": {
     "document_0": "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/evidence-bundle.pdf",
@@ -26,7 +26,7 @@
   },
   "generated_at": "2026-09-04T15:59:05Z",
   "rendered": {
-    "results_hash": "bef3cc55d0bc546e",
+    "results_hash": "ea77d650952bf81b",
     "formats": [
       "assessment",
       "bundle"
@@ -34,7 +34,7 @@
   },
   "review_score": {
     "reviewer": "deterministic rules over results.json",
-    "weighted": 8.12,
+    "weighted": 8.82,
     "accept_at": 6.5,
     "decision": "issue",
     "why_not_issued": "",
@@ -57,7 +57,7 @@
       },
       {
         "dimension": "spatial rigour",
-        "value": 7.0,
+        "value": 9.0,
         "weight": 0.25,
         "floor": 6.0,
         "basis": "6 of 6 required diagnostics present; distances in EPSG:32636 (WGS 84 / UTM zone 36N)",
@@ -65,10 +65,10 @@
       },
       {
         "dimension": "accountability",
-        "value": 9.0,
+        "value": 10.0,
         "weight": 0.2,
         "floor": 6.0,
-        "basis": "every figure resolves to a recorded retrieval; 3 source anomalies disclosed",
+        "basis": "every figure resolves to a recorded retrieval; 3 source anomalies disclosed; 1 overrides recorded with their cost",
         "passes": true
       },
       {
@@ -76,7 +76,7 @@
         "value": 9.5,
         "weight": 0.1,
         "floor": 4.0,
-        "basis": "10 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios",
+        "basis": "14 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios",
         "passes": true
       }
     ],
@@ -115,32 +115,32 @@
       "allowed": true,
       "reason": "Water Point Data Exchange Plus (WPdx+) is a public endpoint; no authorisation required",
       "actor": "harness",
-      "ts": "2026-09-04T16:11:57Z"
+      "ts": "2026-09-04T22:10:55Z"
     },
     {
       "checkpoint": "source authorisation",
       "allowed": true,
       "reason": "WorldPop gridded population is a public endpoint; no authorisation required",
       "actor": "harness",
-      "ts": "2026-09-04T16:11:57Z"
+      "ts": "2026-09-04T22:10:55Z"
     },
     {
       "checkpoint": "guardrail breach",
       "allowed": true,
-      "reason": "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run.",
+      "reason": "Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it.",
       "actor": "harness",
-      "ts": "2026-09-04T16:11:59Z"
+      "ts": "2026-09-04T22:10:56Z"
     }
   ],
   "refusals": [],
   "token_notes": {},
   "recovery": {
-    "resume_at": "evaluate",
+    "resume_at": "issue",
     "read_first": [
       "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/evidence-bundle.pdf",
       "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/assessment.pdf"
     ],
-    "note": "stages retrieve, compile, solve, review, evaluate, score, render, issue are complete and must not be re-run"
+    "note": "stages retrieve, compile, solve, review, evaluate, render, issue, score are complete and must not be re-run"
   },
-  "updated_at": "2026-09-04T16:11:59Z"
+  "updated_at": "2026-09-04T22:10:57Z"
 }

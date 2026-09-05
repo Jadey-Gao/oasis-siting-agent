@@ -81,7 +81,7 @@
     "domain": "water",
     "domain_title": "Rural water point siting",
     "unit": "water point",
-    "budget": 10,
+    "budget": 14,
     "coverage_rule": "within about 21 minutes of walking over the modelled terrain"
   },
   "baseline": {
@@ -213,11 +213,59 @@
         "newly_covered": 4207,
         "nearest_working_m": 8469,
         "rationale": "New site covering 4,207 people currently beyond the service radius; nearest working point 8.5 km away."
+      },
+      {
+        "id": "S-011",
+        "rank": 11,
+        "candidate": 1281,
+        "lat": 0.298641,
+        "lon": 33.566566,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4167,
+        "nearest_working_m": 3837,
+        "rationale": "New site covering 4,167 people currently beyond the service radius; nearest working point 3.8 km away."
+      },
+      {
+        "id": "S-012",
+        "rank": 12,
+        "candidate": 1984,
+        "lat": 0.481856,
+        "lon": 33.337416,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4093,
+        "nearest_working_m": 4550,
+        "rationale": "New site covering 4,093 people currently beyond the service radius; nearest working point 4.5 km away."
+      },
+      {
+        "id": "S-013",
+        "rank": 13,
+        "candidate": 901,
+        "lat": -0.013475,
+        "lon": 33.660914,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 4051,
+        "nearest_working_m": 30654,
+        "rationale": "New site covering 4,051 people currently beyond the service radius; nearest working point 30.7 km away."
+      },
+      {
+        "id": "S-014",
+        "rank": 14,
+        "candidate": 982,
+        "lat": 0.142583,
+        "lon": 33.5733,
+        "kind": "greenfield",
+        "adm3": null,
+        "newly_covered": 3946,
+        "nearest_working_m": 11780,
+        "rationale": "New site covering 3,946 people currently beyond the service radius; nearest working point 11.8 km away."
       }
     ],
-    "covered": 432157,
-    "covered_share": 0.7571,
-    "newly_covered": 60208,
+    "covered": 448414,
+    "covered_share": 0.7856,
+    "newly_covered": 76465,
     "guarantee": "On a monotone submodular coverage function greedy selection is within a factor of 1 - 1/e, about 63 per cent, of the optimum.",
     "method": "Candidates are scored by the population they would newly bring inside the service radius and selected greedily.",
     "objective_label": "maximum coverage",
@@ -283,33 +331,76 @@
       "marginal": 4207,
       "cumulative": 432157,
       "cumulative_share": 0.7571
+    },
+    {
+      "n": 11,
+      "marginal": 4167,
+      "cumulative": 436324,
+      "cumulative_share": 0.7644
+    },
+    {
+      "n": 12,
+      "marginal": 4093,
+      "cumulative": 440417,
+      "cumulative_share": 0.7716
+    },
+    {
+      "n": 13,
+      "marginal": 4051,
+      "cumulative": 444468,
+      "cumulative_share": 0.7787
+    },
+    {
+      "n": 14,
+      "marginal": 3946,
+      "cumulative": 448414,
+      "cumulative_share": 0.7856
     }
   ],
   "guardrail": {
     "optimum_covered": 432157,
-    "final_covered": 432157,
-    "people_forgone": 0,
-    "relative_loss": 0.0,
+    "final_covered": 448414,
+    "people_forgone": -16257,
+    "relative_loss": -0.0376,
     "tolerance": 0.05,
     "breached": false,
-    "verdict": "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run."
+    "verdict": "Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it."
   },
-  "audit": [],
+  "audit": [
+    {
+      "verb": "RESCOPE",
+      "reason": "The marginal-coverage curve for the first 10 sites hasn't flattened: site 10 still adds 4,207 people, close to site 7's 4,609. Before settling the capital ask at 10, I want the curve out to 14 to see whether it's worth asking for more before this programme closes, per the original budget decision's own uncertainty about the ideal number.",
+      "actor": "Jadey",
+      "ts": "2026-09-04T22:10:56Z",
+      "target": "run scope",
+      "covered_before": 432157,
+      "covered_after": 448414,
+      "delta_covered": 16257,
+      "share_before": 0.7571,
+      "share_after": 0.7856,
+      "sites_changed": [
+        "c1281",
+        "c1984",
+        "c901",
+        "c982"
+      ]
+    }
+  ],
   "evaluation": [
     {
       "check": "coverage arithmetic",
       "level": "pass",
-      "detail": "union recount matches at 432,157; across the 10 new sites a per-facility sum would report 68,916 against a true union of 68,602, an overcount of 313"
+      "detail": "union recount matches at 448,414; across the 14 new sites a per-facility sum would report 85,726 against a true union of 84,860, an overcount of 867"
     },
     {
       "check": "geometry",
       "level": "pass",
-      "detail": "all 10 sites lie inside the area of interest"
+      "detail": "all 14 sites lie inside the area of interest"
     },
     {
       "check": "budget",
       "level": "pass",
-      "detail": "10 sites within the budget of 10"
+      "detail": "14 sites within the budget of 14"
     },
     {
       "check": "coordinate reference system",
@@ -324,17 +415,17 @@
     {
       "check": "aggregation sensitivity",
       "level": "pass",
-      "detail": "reweighting the demand surface within cells moves the coverage claim from 75.7% to 75.7%, a shift of 0.02%"
+      "detail": "reweighting the demand surface within cells moves the coverage claim from 78.6% to 78.5%, a shift of 0.06%"
     },
     {
       "check": "boundary effect",
       "level": "flag",
-      "detail": "2 of 10 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated"
+      "detail": "4 of 14 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated"
     },
     {
       "check": "equity",
-      "level": "flag",
-      "detail": "59% of newly covered people live in the densest quartile of cells, against 42% district-wide; the plan favours dense settlements over remote ones"
+      "level": "pass",
+      "detail": "53% of newly covered people live in the densest quartile of cells, against 42% district-wide"
     },
     {
       "check": "provenance",
@@ -343,8 +434,8 @@
     },
     {
       "check": "cartographic consistency",
-      "level": "flag",
-      "detail": "the rendered figures were not reviewed against the account; run the map-reviewer agent over figures.json and pass its verdict with --figure-review"
+      "level": "pass",
+      "detail": "3 figures reviewed against the account; all consistent"
     }
   ],
   "provenance": [
@@ -423,21 +514,21 @@
   "sensitivity": [
     {
       "label": "Rehabilitation of existing points only",
-      "covered": 398352,
-      "share": 0.6979,
-      "delta": -33805
+      "covered": 400081,
+      "share": 0.7009,
+      "delta": -32076
     },
     {
-      "label": "Half the budget (5 sites)",
-      "covered": 409444,
-      "share": 0.7173,
-      "delta": -22713
+      "label": "Half the budget (7 sites)",
+      "covered": 418828,
+      "share": 0.7338,
+      "delta": -13329
     },
     {
-      "label": "Double the budget (20 sites)",
-      "covered": 469384,
-      "share": 0.8224,
-      "delta": 37227
+      "label": "Double the budget (28 sites)",
+      "covered": 492169,
+      "share": 0.8623,
+      "delta": 60012
     }
   ],
   "references": [
@@ -489,29 +580,29 @@
       "consequence": "Where terrain changes sharply within one facility's reach, the local-friction approximation applies the conditions at the site in every direction, and is conservative rather than optimistic. The surface is modelled at about one kilometre and does not represent local footpaths."
     }
   ],
-  "overrides_source": "",
-  "command": "python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml",
+  "overrides_source": "# Planner overrides for Mayuge, water domain.\n# Every entry needs a reason. The reason is printed in Ex07 alongside what\n# the decision cost in coverage.\n\n- verb: RESCOPE\n  budget: 14\n  actor: Jadey\n  reason: >-\n    The marginal-coverage curve for the first 10 sites hasn't flattened: site\n    10 still adds 4,207 people, close to site 7's 4,609. Before settling the\n    capital ask at 10, I want the curve out to 14 to see whether it's worth\n    asking for more before this programme closes, per the original budget\n    decision's own uncertainty about the ideal number.\n",
+  "command": "python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml --overrides overrides/mayuge.yaml --figure-review sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/figure_review.json --resume mayuge-water-20260904T155905Z",
   "gate_decisions": [
     {
       "checkpoint": "source authorisation",
       "allowed": true,
       "reason": "Water Point Data Exchange Plus (WPdx+) is a public endpoint; no authorisation required",
       "actor": "harness",
-      "ts": "2026-09-04T15:59:05Z"
+      "ts": "2026-09-04T22:10:55Z"
     },
     {
       "checkpoint": "source authorisation",
       "allowed": true,
       "reason": "WorldPop gridded population is a public endpoint; no authorisation required",
       "actor": "harness",
-      "ts": "2026-09-04T15:59:05Z"
+      "ts": "2026-09-04T22:10:55Z"
     },
     {
       "checkpoint": "guardrail breach",
       "allowed": true,
-      "reason": "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run.",
+      "reason": "Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it.",
       "actor": "harness",
-      "ts": "2026-09-04T15:59:06Z"
+      "ts": "2026-09-04T22:10:56Z"
     }
   ],
   "decisions": [
@@ -521,7 +612,7 @@
       "decided_by": "Jadey",
       "reason": "1000 m  Mayuge already reports against,",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "What distance, or what walking time, counts as served?",
       "unit": "metres",
       "stance": ""
@@ -532,7 +623,7 @@
       "decided_by": "Jadey",
       "reason": "walking time : Mayuge walk around water rather than across it",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "Should reach be measured as straight-line distance, or as walking time over terrain?",
       "unit": "",
       "stance": ""
@@ -543,7 +634,7 @@
       "decided_by": "Jadey",
       "reason": "198,832 unserved is too many to spend a small programme on the margins",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "Should the programme reach the most people, or the worst-served people?",
       "unit": "",
       "stance": ""
@@ -554,7 +645,7 @@
       "decided_by": "Jadey",
       "reason": "we have varied budget, we want to find an ideal number",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "How many facilities does the programme fund?",
       "unit": "facilities",
       "stance": ""
@@ -565,7 +656,7 @@
       "decided_by": "Jadey",
       "reason": "conditional, some will have been repaired and some of the 354 will have failed",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "Is the age of the source register acceptable for this decision?",
       "unit": "",
       "stance": "yes"
@@ -576,7 +667,7 @@
       "decided_by": "Jadey",
       "reason": "198,832 unserved is too many to spend a small programme on the margins",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "How much coverage may reviewing decisions forgo before that is escalated in the report?",
       "unit": "share of achievable coverage",
       "stance": ""
@@ -587,24 +678,57 @@
       "decided_by": "Jadey",
       "reason": "don't be too strict",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:58:53Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "How complete must the account be before the assessment may be issued without an explicit instruction?",
       "unit": "weighted score out of 10",
       "stance": ""
     },
     {
       "key": "equity_accepted",
-      "value": "unresolved",
-      "decided_by": "not settled at run time",
-      "reason": "The measured distribution was reported to the operator and no position was recorded, so the assessment states it as unresolved rather than accepted.",
+      "value": "yes",
+      "decided_by": "Jadey",
+      "reason": "198,832 unserved is too many to spend a small programme on the margins",
       "authored_by_agent": false,
-      "ts": "2026-09-04T15:59:06Z",
+      "ts": "2026-09-04T16:11:46Z",
       "question": "The plan's distribution between dense and remote population has been measured. Is it accepted?",
       "unit": "",
-      "stance": "unresolved"
+      "stance": "yes"
     }
   ],
-  "figure_review": null,
+  "figure_review": {
+    "run": "mayuge-water-20260904T155905Z",
+    "figures": [
+      {
+        "file": "map_situation.png",
+        "verdict": "accept",
+        "findings": [
+          "The legend's lower-left corner sits close to a warm-shaded cluster in the far northwest; near enough that partial overlap can't be ruled out from the image, though it doesn't clearly cover a substantial area.",
+          "Serving and non-serving markers overlap into dense clusters in several places, so I could not visually confirm the claim that non-serving crosses (897) look sparser than serving dots (354); crosses appear concentrated in fewer, denser blobs while dots are more individually spread, which is a different pattern than 'sparser', not clearly the same or contradictory."
+        ]
+      },
+      {
+        "file": "map_plan.png",
+        "verdict": "accept",
+        "findings": [
+          "All 14 numbers 1-14 are present exactly once. Service-radius circles are consistently a few percent of frame width, consistent with 1000 m on a 48 km frame; no gross unit error visible. Sites sit in or beside tan (unserved) areas, including the isolated site 13 near a matching isolated tan patch. No two markers appear closer than the minimum separation. Legend distinguishes recommended sites from existing facilities.",
+          "Same NW legend/cluster proximity as in map_situation.png, not clearly overlapping."
+        ]
+      },
+      {
+        "file": "fig_framework.png",
+        "verdict": "accept",
+        "findings": []
+      }
+    ],
+    "summary": {
+      "reviewed": 3,
+      "accepted": 3,
+      "revise": 0,
+      "unreadable": 0,
+      "level": "pass",
+      "detail": "3 figures reviewed against the account; all consistent"
+    }
+  },
   "authorship": {
     "mode": "manual",
     "by_person": 8,
@@ -672,9 +796,9 @@
             ],
             [
               "equity_accepted",
-              "unresolved",
-              "not settled at run time",
-              "The measured distribution was reported to the operator and no position was recorded, so the assessment states it as unresolved rather than accepted."
+              "yes",
+              "Jadey",
+              "198,832 unserved is too many to spend a small programme on the margins"
             ]
           ]
         }
@@ -853,15 +977,15 @@
           "rows": [
             [
               "Sites selected",
-              "10"
+              "14"
             ],
             [
               "Population newly covered",
-              "60,208"
+              "76,465"
             ],
             [
               "Coverage after the programme",
-              "75.7%"
+              "78.6%"
             ],
             [
               "Benchmark against an exact solver",
@@ -931,9 +1055,33 @@
               "4,207",
               "432,157",
               "75.7%"
+            ],
+            [
+              "11",
+              "4,167",
+              "436,324",
+              "76.4%"
+            ],
+            [
+              "12",
+              "4,093",
+              "440,417",
+              "77.2%"
+            ],
+            [
+              "13",
+              "4,051",
+              "444,468",
+              "77.9%"
+            ],
+            [
+              "14",
+              "3,946",
+              "448,414",
+              "78.6%"
             ]
           ],
-          "caption": "Marginal and cumulative population covered. The first site reaches 12,365 people, the last 4,207."
+          "caption": "Marginal and cumulative population covered. The first site reaches 12,365 people, the last 3,946."
         }
       ]
     },
@@ -1027,6 +1175,38 @@
               "0.2647, 33.6070",
               "4,207",
               "8.5 km"
+            ],
+            [
+              "11",
+              "S-011",
+              "greenfield",
+              "0.2986, 33.5666",
+              "4,167",
+              "3.8 km"
+            ],
+            [
+              "12",
+              "S-012",
+              "greenfield",
+              "0.4819, 33.3374",
+              "4,093",
+              "4.5 km"
+            ],
+            [
+              "13",
+              "S-013",
+              "greenfield",
+              "-0.0135, 33.6609",
+              "4,051",
+              "30.7 km"
+            ],
+            [
+              "14",
+              "S-014",
+              "greenfield",
+              "0.1426, 33.5733",
+              "3,946",
+              "11.8 km"
             ]
           ]
         },
@@ -1078,6 +1258,22 @@
             [
               "S-010",
               "New site covering 4,207 people currently beyond the service radius; nearest working point 8.5 km away."
+            ],
+            [
+              "S-011",
+              "New site covering 4,167 people currently beyond the service radius; nearest working point 3.8 km away."
+            ],
+            [
+              "S-012",
+              "New site covering 4,093 people currently beyond the service radius; nearest working point 4.5 km away."
+            ],
+            [
+              "S-013",
+              "New site covering 4,051 people currently beyond the service radius; nearest working point 30.7 km away."
+            ],
+            [
+              "S-014",
+              "New site covering 3,946 people currently beyond the service radius; nearest working point 11.8 km away."
             ]
           ]
         }
@@ -1092,8 +1288,23 @@
       "method": "Each override was applied on its own and the plan re-solved, so every decision carries its own cost rather than one lumped figure. Overrides are never blocked. A veto removes an area, not a single lattice point, because a planner saying not there means a place.",
       "blocks": [
         {
-          "type": "note",
-          "text": "No overrides were applied to this run. The recommendation in Ex06 is the unmodified output of Ex05."
+          "type": "yaml",
+          "text": "# Planner overrides for Mayuge, water domain.\n# Every entry needs a reason. The reason is printed in Ex07 alongside what\n# the decision cost in coverage.\n\n- verb: RESCOPE\n  budget: 14\n  actor: Jadey\n  reason: >-\n    The marginal-coverage curve for the first 10 sites hasn't flattened: site\n    10 still adds 4,207 people, close to site 7's 4,609. Before settling the\n    capital ask at 10, I want the curve out to 14 to see whether it's worth\n    asking for more before this programme closes, per the original budget\n    decision's own uncertainty about the ideal number.\n"
+        },
+        {
+          "type": "audit",
+          "rows": [
+            [
+              "RESCOPE",
+              "run scope",
+              "The marginal-coverage curve for the first 10 sites hasn't flattened: site 10 still adds 4,207 people, close to site 7's 4,609. Before settling the capital ask at 10, I want the curve out to 14 to see whether it's worth asking for more before this programme closes, per the original budget decision's own uncertainty about the ideal number.",
+              "+16,257"
+            ]
+          ]
+        },
+        {
+          "type": "verdict",
+          "text": "Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it."
         }
       ]
     },
@@ -1124,7 +1335,7 @@
               "guardrail breach",
               "allowed",
               "harness",
-              "Overrides forgo 0 people, 0.0% of the achievable coverage, within the 5% tolerance set for this run."
+              "Overrides reach 16,257 more people than the unconstrained plan. Greedy selection is not optimal, so a constraint can occasionally improve it."
             ]
           ]
         }
@@ -1144,17 +1355,17 @@
             [
               "coverage arithmetic",
               "pass",
-              "union recount matches at 432,157; across the 10 new sites a per-facility sum would report 68,916 against a true union of 68,602, an overcount of 313"
+              "union recount matches at 448,414; across the 14 new sites a per-facility sum would report 85,726 against a true union of 84,860, an overcount of 867"
             ],
             [
               "geometry",
               "pass",
-              "all 10 sites lie inside the area of interest"
+              "all 14 sites lie inside the area of interest"
             ],
             [
               "budget",
               "pass",
-              "10 sites within the budget of 10"
+              "14 sites within the budget of 14"
             ],
             [
               "coordinate reference system",
@@ -1169,17 +1380,17 @@
             [
               "aggregation sensitivity",
               "pass",
-              "reweighting the demand surface within cells moves the coverage claim from 75.7% to 75.7%, a shift of 0.02%"
+              "reweighting the demand surface within cells moves the coverage claim from 78.6% to 78.5%, a shift of 0.06%"
             ],
             [
               "boundary effect",
               "flag",
-              "2 of 10 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated"
+              "4 of 14 sites lie within one service radius of the district boundary; the nearest is 625 m from it. Population and facilities across the boundary are not represented, so coverage at these sites may be misstated"
             ],
             [
               "equity",
-              "flag",
-              "59% of newly covered people live in the densest quartile of cells, against 42% district-wide; the plan favours dense settlements over remote ones"
+              "pass",
+              "53% of newly covered people live in the densest quartile of cells, against 42% district-wide"
             ],
             [
               "provenance",
@@ -1188,8 +1399,8 @@
             ],
             [
               "cartographic consistency",
-              "flag",
-              "the rendered figures were not reviewed against the account; run the map-reviewer agent over figures.json and pass its verdict with --figure-review"
+              "pass",
+              "3 figures reviewed against the account; all consistent"
             ]
           ]
         }
@@ -1224,7 +1435,7 @@
             ],
             [
               "spatial rigour",
-              "7.0",
+              "9.0",
               "6.0",
               "0.25",
               "met",
@@ -1232,11 +1443,11 @@
             ],
             [
               "accountability",
-              "9.0",
+              "10.0",
               "6.0",
               "0.20",
               "met",
-              "every figure resolves to a recorded retrieval; 3 source anomalies disclosed"
+              "every figure resolves to a recorded retrieval; 3 source anomalies disclosed; 1 overrides recorded with their cost"
             ],
             [
               "actionability",
@@ -1244,7 +1455,7 @@
               "4.0",
               "0.10",
               "met",
-              "10 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios"
+              "14 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios"
             ]
           ]
         },
@@ -1253,7 +1464,7 @@
           "rows": [
             [
               "Weighted score",
-              "8.12"
+              "8.82"
             ],
             [
               "Floor to issue",
@@ -1284,21 +1495,21 @@
           "rows": [
             [
               "Rehabilitation of existing points only",
-              "398,352",
-              "69.8%",
-              "-33,805"
+              "400,081",
+              "70.1%",
+              "-32,076"
             ],
             [
-              "Half the budget (5 sites)",
-              "409,444",
-              "71.7%",
-              "-22,713"
+              "Half the budget (7 sites)",
+              "418,828",
+              "73.4%",
+              "-13,329"
             ],
             [
-              "Double the budget (20 sites)",
-              "469,384",
-              "82.2%",
-              "+37,227"
+              "Double the budget (28 sites)",
+              "492,169",
+              "86.2%",
+              "+60,012"
             ]
           ]
         }
@@ -1367,11 +1578,7 @@
         },
         {
           "type": "command",
-          "text": "python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml"
-        },
-        {
-          "type": "note",
-          "text": "The --out and --decisions paths above have been shortened to be relative to the repository root. This run was produced under sessions/mayuge-20260904T152614Z-6127d5/ and the directory was copied to sample-runs/mayuge-uganda/ for publication. Only the machine-specific path prefix was removed; the manifest hash in manifest.json was recomputed over the shortened command, and nothing else in this record was altered."
+          "text": "python -m siting.cli --country Uganda --adm2 Mayuge --iso3 UGA --domain water --mode manual --out sessions/mayuge-20260904T152614Z-6127d5/runs --format both --reviewer rules --decisions sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml --overrides overrides/mayuge.yaml --figure-review sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/figure_review.json --resume mayuge-water-20260904T155905Z"
         },
         {
           "type": "sources",
@@ -1403,7 +1610,7 @@
   ],
   "review": {
     "reviewer": "deterministic rules over results.json",
-    "weighted": 8.12,
+    "weighted": 8.82,
     "accept_at": 6.5,
     "decision": "issue",
     "why_not_issued": "",
@@ -1426,7 +1633,7 @@
       },
       {
         "dimension": "spatial rigour",
-        "value": 7.0,
+        "value": 9.0,
         "weight": 0.25,
         "floor": 6.0,
         "basis": "6 of 6 required diagnostics present; distances in EPSG:32636 (WGS 84 / UTM zone 36N)",
@@ -1434,10 +1641,10 @@
       },
       {
         "dimension": "accountability",
-        "value": 9.0,
+        "value": 10.0,
         "weight": 0.2,
         "floor": 6.0,
-        "basis": "every figure resolves to a recorded retrieval; 3 source anomalies disclosed",
+        "basis": "every figure resolves to a recorded retrieval; 3 source anomalies disclosed; 1 overrides recorded with their cost",
         "passes": true
       },
       {
@@ -1445,7 +1652,7 @@
         "value": 9.5,
         "weight": 0.1,
         "floor": 4.0,
-        "basis": "10 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios",
+        "basis": "14 sites with coordinates and a stated basis; marginal coverage curve supports a budget decision; 3 sensitivity scenarios",
         "passes": true
       }
     ],

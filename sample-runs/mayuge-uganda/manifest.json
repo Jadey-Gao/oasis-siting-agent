@@ -22,7 +22,13 @@
     "--reviewer",
     "rules",
     "--decisions",
-    "sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml"
+    "sessions/mayuge-20260904T152614Z-6127d5/decisions.yaml",
+    "--overrides",
+    "overrides/mayuge.yaml",
+    "--figure-review",
+    "sessions/mayuge-20260904T152614Z-6127d5/runs/mayuge-water-20260904T155905Z/figure_review.json",
+    "--resume",
+    "mayuge-water-20260904T155905Z"
   ],
   "scope": {
     "country": "Uganda",
@@ -100,10 +106,10 @@
     "domain": "water",
     "domain_title": "Rural water point siting",
     "unit": "water point",
-    "budget": 10,
+    "budget": 14,
     "coverage_rule": "within about 21 minutes of walking over the modelled terrain"
   },
-  "overrides_file": null,
+  "overrides_file": "overrides/mayuge.yaml",
   "provenance_hash": "ac15a4eae9de9c52",
   "sources": [
     {
@@ -135,5 +141,5 @@
       "from_cache": true
     }
   ],
-  "manifest_hash": "70831fd2c0b51651"
+  "manifest_hash": "dd0bf412c3c8d3c0"
 }

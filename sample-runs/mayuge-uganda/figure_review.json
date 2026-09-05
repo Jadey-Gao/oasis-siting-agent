@@ -1,28 +1,27 @@
 {
-  "reviewer": "map-reviewer",
+  "run": "mayuge-water-20260904T155905Z",
   "figures": [
     {
-      "figure": "map_situation.png",
-      "verdict": "revise",
+      "file": "map_situation.png",
+      "verdict": "accept",
       "findings": [
-        "Assertion 2 is internally inconsistent and the map does not match it as written: it gives 897 non-serving and 354 serving points, then requires non-serving to be 'the visibly sparser of the two'. On the map the red crosses are at least as numerous as the teal circles, which agrees with 897 > 354 but contradicts the assertion. The error appears to be in the account rather than the picture.",
-        "Neither marker count can be verified from the image. The non-serving crosses are heavily overplotted in roughly 25-30 tight clusters where individual symbols merge, so any count from this figure would be a guess.",
-        "The legend box's lower edge sits within a few pixels of the district's northern shaded cells and markers (about x=150-345). I cannot see data actually hidden, but the clearance is minimal."
+        "The legend's lower-left corner sits close to a warm-shaded cluster in the far northwest; near enough that partial overlap can't be ruled out from the image, though it doesn't clearly cover a substantial area.",
+        "Serving and non-serving markers overlap into dense clusters in several places, so I could not visually confirm the claim that non-serving crosses (897) look sparser than serving dots (354); crosses appear concentrated in fewer, denser blobs while dots are more individually spread, which is a different pattern than 'sparser', not clearly the same or contradictory."
       ]
     },
     {
-      "figure": "map_plan.png",
-      "verdict": "revise",
+      "file": "map_plan.png",
+      "verdict": "accept",
       "findings": [
-        "Legend incomplete: the grey population raster ('mostly within the service radius') is drawn across the northern half of the map but has no legend entry. The only grey legend entry is a small dot for 'Existing point, serving', which invites the grey shading to be misread.",
-        "The circles are labelled 'Proposed service radius' and drawn as uniform 1 km geometric circles, but the run's coverage rule is 'within about 21 minutes of walking over the modelled terrain'. Walking-time reach over a friction surface is irregular and is not generally 1000 m. The ten circles enclose only about 31 km2 in total, so the map understates the reach the coverage numbers credit to the plan; an officer reading the map alone would draw a different conclusion from the figures.",
-        "Site 1's label and leader line sit flush against the lower edge of the legend box with almost no clearance."
+        "All 14 numbers 1-14 are present exactly once. Service-radius circles are consistently a few percent of frame width, consistent with 1000 m on a 48 km frame; no gross unit error visible. Sites sit in or beside tan (unserved) areas, including the isolated site 13 near a matching isolated tan patch. No two markers appear closer than the minimum separation. Legend distinguishes recommended sites from existing facilities.",
+        "Same NW legend/cluster proximity as in map_situation.png, not clearly overlapping."
       ]
     },
     {
-      "figure": "fig_framework.png",
+      "file": "fig_framework.png",
       "verdict": "accept",
       "findings": []
     }
-  ]
+  ],
+  "summary": {"accepted": 3, "revise": 0, "unreadable": 0}
 }

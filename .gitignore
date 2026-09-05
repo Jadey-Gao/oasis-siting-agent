@@ -19,3 +19,7 @@ __pycache__/
 
 # Grants made on one machine, to one operator. Not what anyone else should run.
 .claude/settings.local.json
+
+# Source images already embedded in the paper .docx. Keeping both duplicates
+# the content; edit the figures locally and re-paste into the doc as needed.
+paper/figures/

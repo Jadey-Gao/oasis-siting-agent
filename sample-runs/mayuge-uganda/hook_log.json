@@ -1,84 +1,79 @@
 [
   {
-    "ts": "2026-09-04T15:59:05Z",
+    "ts": "2026-09-04T22:10:55Z",
     "stage": "retrieve",
-    "event": "start",
-    "note": "water for Mayuge, Uganda"
+    "event": "rebuild"
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "retrieve",
     "event": "done",
     "artifacts": []
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "compile",
-    "event": "start",
-    "note": ""
+    "event": "rebuild"
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "compile",
     "event": "done",
     "artifacts": []
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "solve",
-    "event": "start",
-    "note": ""
+    "event": "rebuild"
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "solve",
     "event": "done",
     "artifacts": []
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "review",
-    "event": "start",
-    "note": ""
+    "event": "rebuild"
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "review",
     "event": "done",
     "artifacts": []
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "evaluate",
-    "event": "start",
-    "note": ""
+    "event": "rebuild"
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:56Z",
     "stage": "evaluate",
     "event": "done",
     "artifacts": []
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:57Z",
     "stage": "score",
     "event": "start",
     "note": ""
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:57Z",
     "stage": "score",
     "event": "done",
     "artifacts": []
   },
   {
-    "ts": "2026-09-04T15:59:06Z",
+    "ts": "2026-09-04T22:10:57Z",
     "stage": "render",
-    "event": "start",
-    "note": "assessment, bundle requested, nothing on disk"
+    "event": "rebuild-forced",
+    "note": "results.json has changed since the documents were compiled"
   },
   {
-    "ts": "2026-09-04T15:59:07Z",
+    "ts": "2026-09-04T22:10:57Z",
     "stage": "render",
     "event": "done",
     "artifacts": [
@@ -87,15 +82,8 @@
     ]
   },
   {
-    "ts": "2026-09-04T15:59:07Z",
+    "ts": "2026-09-04T22:10:57Z",
     "stage": "issue",
-    "event": "start",
-    "note": ""
-  },
-  {
-    "ts": "2026-09-04T15:59:07Z",
-    "stage": "issue",
-    "event": "done",
-    "artifacts": []
+    "event": "skipped"
   }
 ]
