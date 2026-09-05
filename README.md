@@ -8,6 +8,12 @@ in population coverage.
 
 Built for the OASIS 2026 student challenge at ACM SIGSPATIAL.
 
+**Open source, and not locked to one model vendor.** This repository is
+MIT-licensed end to end. Claude is the default model, not a hardwired
+dependency: the model name is one constant (`MODEL` in `web/claude.py`) and
+the endpoint follows `ANTHROPIC_BASE_URL`, so retargeting the interview to an
+open-weight model is a two-line change, not a rewrite.
+
 ## Two ways to run it
 
 Same agent either way — same skill, same four subagents, same refusal to assume
@@ -68,7 +74,6 @@ pip install -r requirements.txt      # do this before opening the page — see b
 npm install -g @anthropic-ai/claude-code
 uvicorn web.app:app --port 7860
 ```
-
 
 ### Where a run lands
 
